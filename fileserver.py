@@ -10,6 +10,8 @@ import os
 import select
 import socket
 import sys
+import threading
+
 
 # Global constants
 PORT_NUMBER = 45678
@@ -33,7 +35,7 @@ def open_file(path, received, connection):
     full_file_path = directory + received[2]
 
     if os.path.isfile(full_file_path):
-        response = str(MessageType.FILE_EXISTS)
+        response = str(MessageType.MessageType.FILE_EXISTS)
         print_console_message('File found - will send ' + response + 'to client')
         connection.sendall(response)
 
@@ -49,7 +51,7 @@ def open_file(path, received, connection):
         print_console_message('Server file closed successfully.')
     else:
         print_console_message('File does not exist: ' + full_file_path)
-        response = str(MessageType.FILE_NOT_EXISTS)
+        response = str(MessageType.MessageType.FILE_NOT_EXISTS)
         connection.sendall(response)
 
 
@@ -74,22 +76,33 @@ def receive_file(path, received, connection):
     print_console_message('Write to file completed. Closing file.')
     f.close()
 
-#Function to handle queries about the existence of files
+
+# Function to handle queries about the existence of files
 def verify_dir_exists(path, message, conn):
     directory = path + message[1] + '/'
     full_file_path = directory + message[2]
-    response = str(MessageType.FILE_EXISTS)
-    print_console_message('Client querying directory: ' + directory + ' for file: ' + message[2])
-    if os.path.exists(path):
-        if not os.path.isfile(full_file_path):
-            response = str(MessageType.FILE_NOT_EXISTS)
-    else:
-        response = str(MessageType.DIR_NOT_FOUND)
-    print_console_message(response)
-    conn.sendall(response)
 
+    print_console_message('Client querying directory: ' + directory + ' for file: ' + message[2])
+    # default value
+    response = MessageType.MessageType.FILE_EXISTS
+    # if the basic dir exists
+    if os.path.exists(path):
+        print_console_message('The dir exists: checking for the file')
+        # if dir exists but not file
+        if not os.path.isfile(full_file_path):
+            print_console_message('The dir exists, but not the file')
+            response = MessageType.MessageType.FILE_NOT_EXISTS
+    # if dir doesn't exist
+    else:
+        print_console_message('The dir does not exist')
+        response = MessageType.MessageType.DIR_NOT_FOUND
+    print_console_message(str(response))
+    conn.sendall(str(response))
+
+
+# Function to handle a connection received from a client
 def handle_client_connection(connection, address):
-    print_console_message('Connection received from %s', str(address))
+    print_console_message('Received a connection from ' + str(address))
     connected = True
 
     while connected:
@@ -107,11 +120,11 @@ def handle_client_connection(connection, address):
             else:
                 info = data_received.split(NEWLINE_CHAR)
                 request = data_received[0]
-                print_console_message('Request received: ' + request)
                 request = int(request)
-                if request == MessageType.FILE_OPEN:
+                print_console_message('Request received: ' + str(request)) # MessageType.MessageType(str(request)))
+                if request == MessageType.MessageType.FILE_OPEN:
                     open_file(SERVER_FILE_PATH, info, connection)
-                elif request == MessageType.FILE_WRITE:
+                elif request == MessageType.MessageType.FILE_WRITE:
                     receive_file(SERVER_FILE_PATH, info, connection)
                     receive_file(SERVER_FILE_PATH, info, connection)
                 else:
@@ -121,10 +134,10 @@ def handle_client_connection(connection, address):
     return connected
 
 
-def make_dir_if_not_exists(requestedDirectory):
-    if not os.path.exists(requestedDirectory):
+def make_dir_if_not_exists(directory):
+    if not os.path.exists(directory):
         print_console_message('Directory does not exist')
-        os.makedirs(requestedDirectory)
+        os.makedirs(directory)
         print_console_message('Created directory')
 
 
@@ -152,7 +165,6 @@ def main():
                 for sock in read:
                     if sock is s:
                         connection, address = sock.accept()
-                        print_console_message('Received a connection ')
                         server_running = handle_client_connection(connection, address)
             s.close()
             print_console_message("Server shutting down")

@@ -1,7 +1,7 @@
 #
 # Test client to demonstrate the implemented server features.
 # Interaction through terminal session.
-#
+
 import MessageType, sys, os
 from socket import gethostbyname, SOCK_STREAM, getfqdn, socket, AF_INET, error, inet_aton
 
@@ -19,21 +19,22 @@ def print_message(message):
     print('Client::\t' + message + NEWLINE_CHAR)
 
 
-def check_existence_on_server(path, name, specified_socket):
+def check_existence_on_server(file_path, file_name, specified_socket):
     # send request to server
-    message = str(MessageType.VALIDATE_DIR) + NEWLINE_CHAR + path + NEWLINE_CHAR + name
-    print_message('Checking server for file: ' + name + ' in path: ' + path)
+    message = str(MessageType.MessageType.VALIDATE_DIR) + NEWLINE_CHAR + file_path + NEWLINE_CHAR + file_name
+    print_message('Checking server for file: ' + file_name + ' in path: ' + file_path)
+    print_message('Sending message: ' + message)
     specified_socket.sendall(message)
     print_message('Sent request for server to check if file exists...')
 
     # get response from server
     response = specified_socket.recv(MAX_BYTES)
-    print_message('Server says: ' + str(response))
+    print_message('Server responded: ' + MessageType.MessageType.__str__(response))
 
 
 def get_filename_and_filepath_from_user():
-    file_path = raw_input("\nEnter file path to check: ")
-    file_name = raw_input("\nEnter file name to check: ")
+    file_path = raw_input("\nEnter desired file path: ")
+    file_name = raw_input("\nEnter desired file name: ")
     return file_path, file_name
 
 
@@ -58,13 +59,13 @@ def kill_server(sock):
 def open_file(file_path, file_name, specified_socket):
     print_message("Will open file " + file_name)
     # send request to server for file requested
-    message = str(MessageType.FILE_OPEN) + NEWLINE_CHAR + file_path + NEWLINE_CHAR + file_name
+    message = str(MessageType.MessageType.FILE_OPEN.value) + NEWLINE_CHAR + file_path + NEWLINE_CHAR + file_name
     specified_socket.sendall(message)
     print_message("Sending request to server for file as follows: " + message)
 
     # check if the file exists
     response = specified_socket.recv(MAX_BYTES)
-    if response == str(MessageType.FILE_EXISTS):
+    if response == str(MessageType.MessageType.FILE_EXISTS.value):
         print_message("File exists on server!")
         full_file_path = CLIENT_PATH + file_path + FORWARD_SLASH + file_name
 
@@ -72,12 +73,12 @@ def open_file(file_path, file_name, specified_socket):
         print_message("Opening local file to be updated with server changes")
         f = open(full_file_path, 'w')
         print_message('Downloading file from server for reading latest version')
-        maintain_connection = True
-        while maintain_connection:
+        keep_connected = True
+        while keep_connected:
             data = socket.recv(MAX_BYTES)
             f.write(str(data))
-            print_message('Received: ' + data)
-            maintain_connection = len(data) == MAX_BYTES
+            print_message('Received: ' + MessageType.MessageType(str(data)))
+            keep_connected = len(data) == MAX_BYTES
         print_message('File downloaded. Will close local copy.')
         f.close()
 
@@ -87,7 +88,7 @@ def open_file(file_path, file_name, specified_socket):
 
 
 def write_file(file_path, file_name, specified_socket):
-    message = str(MessageType.FILE_WRITE) + NEWLINE_CHAR + file_path + NEWLINE_CHAR + file_name
+    message = str(MessageType.MessageType.FILE_WRITE) + NEWLINE_CHAR + file_path + NEWLINE_CHAR + file_name
     specified_socket.sendall(message)
     full_file_path = CLIENT_PATH + file_path + FORWARD_SLASH + file_name
 
@@ -109,8 +110,7 @@ def maintain_connection(host, port):
     running = (sock != None)
     while running:
         try:
-            user_input = raw_input(
-            "Select option:\n1) Query server\n2) Open File\n3) Write file\n4) Kill server\nx) Close Connection\n\n")
+            user_input = raw_input("Select option:\n1) Verify file exists on server server\n2) Open file from server \n3) Write file from server\n4) Kill server\nx) Close Connection to Server\n\n")
             if user_input == "x" or user_input == "X":
                 print_message('You requested to close the connection.')
                 running = False
@@ -129,7 +129,7 @@ def maintain_connection(host, port):
                         kill_server(sock)
                         running = False
                     else:
-                        print_message("You said: ", user_input, NEWLINE_CHAR)
+                        print_message("You said: " + user_input + ", which is invalid." + NEWLINE_CHAR)
         except Exception as e:
             print_message('An error occurred with handling the connection request')
             print_message(e.message)
@@ -141,8 +141,11 @@ def open_connection_to_server():
     user_input = raw_input("\nEnter the port number: ")
 
     # check that type is int
-    if type(str(user_input)) == int:
-        port = int(user_input)
+    if type(user_input) == int:
+        try:
+            port = int(user_input)
+        except error:
+            print_message('Invalid port number provided')
         try:
             host = raw_input("\nEnter the IP address of the host: ")
             print_message('You provided host ' + str(host))
@@ -159,8 +162,11 @@ def main():
     # keep client alive for input from user continuously
     while running:
         user_action = raw_input("Select option:\n1) Open connection\n2) Default connection\nx) Exit Program\n")
+
+        # check if want to exit
         if user_action == "x" or user_action == "X":
             running = False
+        # want to connect to server
         else:
             # we want to do something else
             if user_action == "1":
@@ -169,7 +175,7 @@ def main():
             elif user_action == "2":
                 maintain_connection(DEFAULT_HOST, DEFAULT_PORT)
             else:
-                print_message("You said: ", get_filename_and_filepath_from_user, NEWLINE_CHAR)
+                print_message('You said: ' + user_action + NEWLINE_CHAR)
 
 
 main()

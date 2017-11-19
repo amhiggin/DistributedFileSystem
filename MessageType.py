@@ -4,4 +4,19 @@
 # Used by the client to be compliant with the request types the server expects.
 # Each request type maps to an integer
 #
-CREATE_DIR, VALIDATE_DIR, FILE_OPEN, FILE_CLOSE, FILE_WRITE, FILE_EXISTS, FILE_NOT_EXISTS, DIR_NOT_FOUND = range(8)
+
+from enum import Enum
+
+
+class MessageType(Enum):
+    def __str__(self):
+        return str(self.value)
+
+    CREATE_DIR = 0
+    VALIDATE_DIR = 1
+    FILE_OPEN = 2
+    FILE_CLOSE = 3
+    FILE_WRITE = 4
+    FILE_EXISTS = 5
+    FILE_NOT_EXISTS = 6
+    DIR_NOT_FOUND = 7
