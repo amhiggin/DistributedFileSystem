@@ -1,0 +1,6 @@
+*.iml
+.idea/workspace.xml
+.idea/modules.xml
+ClientDir/Hello/hello.txt
+*.pyc
+MessageType.pyc
