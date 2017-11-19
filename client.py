@@ -2,8 +2,7 @@
 # Test client to demonstrate the implemented server features.
 # Interaction through terminal session.
 #
-
-import MessageType
+import MessageType, sys, os
 from socket import gethostbyname, SOCK_STREAM, getfqdn, socket, AF_INET, error, inet_aton
 
 CLIENT_PATH = "ClientDir/"
@@ -130,11 +129,11 @@ def maintain_connection(host, port):
                         kill_server(sock)
                         running = False
                     else:
-                        print "You said: ", user_input, NEWLINE_CHAR
-        except Exception, e:
+                        print_message("You said: ", user_input, NEWLINE_CHAR)
+        except Exception as e:
             print_message('An error occurred with handling the connection request')
-            print e.message
-    print "Closing connection to server. Terminating the client."
+            print_message(e.message)
+    print_message("Closing connection to server. Terminating the client.")
     sock.close()
 
 
@@ -150,7 +149,7 @@ def open_connection_to_server():
             inet_aton(host)
             maintain_connection(host, port)
         except error:
-            print "Invalid IP address provided"
+            print_message("Invalid IP address provided")
     else:
         print("\nPort number must be an integer")
 
@@ -170,7 +169,7 @@ def main():
             elif user_action == "2":
                 maintain_connection(DEFAULT_HOST, DEFAULT_PORT)
             else:
-                print "You said: ", get_filename_and_filepath_from_user, NEWLINE_CHAR
+                print_message("You said: ", get_filename_and_filepath_from_user, NEWLINE_CHAR)
 
 
 main()

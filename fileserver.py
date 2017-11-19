@@ -89,7 +89,7 @@ def verify_dir_exists(path, message, conn):
     conn.sendall(response)
 
 def handle_client_connection(connection, address):
-    print 'Connection received from %s', str(address)
+    print_console_message('Connection received from %s', str(address))
     connected = True
 
     while connected:
@@ -155,17 +155,16 @@ def main():
                         print_console_message('Received a connection ')
                         server_running = handle_client_connection(connection, address)
             s.close()
-            print "Server shutting down"
-
-        except Exception, e:
+            print_console_message("Server shutting down")
+        except Exception as e:
             print_console_message('Exception thrown during server operation')
-            print e.message
+            print_console_message(e.message)
         finally:
             print_console_message('Closing socket')
             s.close()
-    except Exception, e:
+    except Exception as e:
         print_console_message('Exception thrown during server initialisation')
-        print e.message
+        print_console_message(e.message)
 
 
 main()
