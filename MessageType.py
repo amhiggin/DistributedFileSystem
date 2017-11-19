@@ -12,11 +12,24 @@ class MessageType(Enum):
     def __str__(self):
         return str(self.value)
 
-    CREATE_DIR = 0
-    VALIDATE_DIR = 1
+    CHECK_DIR_EXISTS = 0
+    CREATE_DIR = 1
     FILE_OPEN = 2
-    FILE_CLOSE = 3
+    FILE_READ = 3
     FILE_WRITE = 4
     FILE_EXISTS = 5
     FILE_NOT_EXISTS = 6
     DIR_NOT_FOUND = 7
+    CREATE_FILE = 8 # implementing
+    DELETE_FILE = 9 # not used yet
+
+# SUGGESTED:
+# "CREATE"
+# "REMOVE"
+# "WRITE"
+# "READ"
+# "MKDIR:
+# "RMDIR:
+# "KILL_SERVICE"
+# FILE_EXISTS
+# DIR_EXISTS

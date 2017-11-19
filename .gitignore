@@ -4,3 +4,6 @@
 ClientDir/Hello/hello.txt
 *.pyc
 MessageType.pyc
+.idea/misc.xml
+*.pyc
+MessageType.pyc
