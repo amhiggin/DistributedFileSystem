@@ -7,7 +7,7 @@ from socket import gethostbyname, SOCK_STREAM, getfqdn, socket, AF_INET, error, 
 
 CLIENT_PATH = "ClientDir/"
 DEFAULT_HOST = gethostbyname(getfqdn())
-DEFAULT_PORT = 45678
+DEFAULT_PORT = 12345
 MAX_BYTES = 2048
 
 FORWARD_SLASH = '/'

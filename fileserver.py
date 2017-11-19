@@ -21,9 +21,9 @@ import select
 import socket
 
 # Global constants
-PORT_NUMBER = 45678
 MAX_BYTES = 2048
 HOST = ''
+DEFAULT_PORT = 12345
 IP_ADDRESS = socket.gethostbyname(socket.getfqdn())
 SERVER_FILE_PATH = 'ServerDir/'
 server_running = True
@@ -64,6 +64,9 @@ class ThreadPool:
         for i in range(0, self.num):
             self.threads[i].join()
 
+    def wait_completion(self):
+        self.tasks.join()
+
 
 def print_console_message(message):
     print('FileServer:\t' + message)
@@ -77,8 +80,8 @@ def server_running():
     return server_running
 
 
-def open_file(path, received, connection):
-    directory = path + received[1] + FORWARD_SLASH
+def open_file(received, connection):
+    directory = SERVER_FILE_PATH + received[1] + FORWARD_SLASH
     full_file_path = directory + received[2]
 
     # check if the requested file exists on the server
@@ -104,9 +107,9 @@ def open_file(path, received, connection):
         connection.sendall(response)
 
 
-def receive_file(path, received, connection):
+def receive_file(received, connection):
     # Get the directory
-    directory = path + received[1] + FORWARD_SLASH
+    directory = SERVER_FILE_PATH + received[1] + FORWARD_SLASH
     make_dir_if_not_exists(directory)
 
     # Get the full target filepath
@@ -127,15 +130,15 @@ def receive_file(path, received, connection):
 
 
 # Function to handle queries about the existence of files
-def verify_dir_exists(path, message, conn):
-    directory = path + message[1] + '/'
+def verify_dir_exists(message, conn):
+    directory = SERVER_FILE_PATH + message[1] + FORWARD_SLASH
     full_file_path = directory + message[2]
 
     print_console_message('Client querying directory: ' + directory + ' for file: ' + message[2])
     # default value
     response = MessageType.MessageType.FILE_EXISTS
     # if the dir exists
-    if os.path.exists(path):
+    if os.path.exists(directory):
         print_console_message('The dir exists: checking for the file')
         # if dir exists but not file
         if not os.path.isfile(full_file_path):
@@ -153,7 +156,7 @@ def verify_dir_exists(path, message, conn):
 
 # creates a file
 def create_file(path, received):
-    full_directory_path = path + received[1] + NEWLINE_CHAR
+    full_directory_path = SERVER_FILE_PATH + received[1] + NEWLINE_CHAR
     print_console_message('Creating new file' + received[2] + ' in dir ' + full_directory_path)
 
     # make the dir if it doesn't already exist
@@ -185,16 +188,16 @@ def accept_connection(connection, address):
             # Check if request to read or write file
             else:
                 received = data_received.split(NEWLINE_CHAR)
-                request = data_received[0]
-                print_console_message('Request received: ' + str(request))
+                request = str(data_received[0])
+                print_console_message('Request received: ' + request)
                 if request == MessageType.MessageType.FILE_OPEN.value:
-                    open_file(SERVER_FILE_PATH, received, connection)
+                    open_file(received, connection)
                 elif request == MessageType.MessageType.FILE_WRITE.value:
-                    receive_file(SERVER_FILE_PATH, received, connection)
+                    receive_file(received, connection)
                 elif request == MessageType.MessageType.CREATE_FILE.value:
-                    create_file(SERVER_FILE_PATH, received)
+                    create_file(received)
                 elif request == MessageType.MessageType.CHECK_DIR_EXISTS.value:
-                    verify_dir_exists(SERVER_FILE_PATH, received, connection)
+                    verify_dir_exists(received, connection)
                 else:
                     print_console_message('Invalid request sent by client: ' + request)
 
@@ -217,9 +220,11 @@ def main():
         print_console_message('Initialising server')
         if len(sys.argv) < 2:
             port = int(sys.argv[0])
+        else:
+            port = DEFAULT_PORT
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.bind((HOST, port))
-        print_console_message('Server running at:\nIP ADDRESS: ' + IP_ADDRESS + '\nPORT: ' + str(PORT_NUMBER))
+        print_console_message('Server running at:\nIP ADDRESS: ' + IP_ADDRESS + '\nPORT: ' + str(port))
         if not os.path.exists(SERVER_FILE_PATH):
             print_console_message('Creating base directory')
             os.makedirs(SERVER_FILE_PATH)
