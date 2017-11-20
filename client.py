@@ -1,11 +1,13 @@
 #
 # Test client to demonstrate the implemented server features.
 # Interaction through terminal session.
+from pip._vendor.distlib.compat import raw_input
 
 import MessageType, sys, os
 from socket import gethostbyname, SOCK_STREAM, getfqdn, socket, AF_INET, error, inet_aton
 
 CLIENT_PATH = "ClientDir/"
+CLIENT_ID = ""
 DEFAULT_HOST = gethostbyname(getfqdn())
 DEFAULT_PORT = 12345
 MAX_BYTES = 2048
@@ -16,7 +18,7 @@ NEWLINE_CHAR = '\n'
 
 
 def print_console_message(message):
-    print('Client::\t' + message + NEWLINE_CHAR)
+    print('Client:\t' + message + NEWLINE_CHAR)
 
 
 def check_existence_on_server(file_path, file_name, sock):
@@ -50,6 +52,18 @@ def connect_to_file_server(host, port):
     return s
 
 
+# TODO finish testing this
+def get_client_id_in_system(sock):
+    print_console_message("Requesting client id from server")
+    request = str(MessageType.MessageType.CLIENT_ID_REQUEST)
+    sock.sendall(request)
+    response = str(sock.recv(MAX_BYTES))
+    print_console_message("Received response " + response[0] + " from server")
+    if response[0] == str(MessageType.MessageType.CLIENT_ID_RESPONSE.value):
+        CLIENT_ID = response[1]
+    print_console_message("Client id is: " + CLIENT_ID)
+
+
 def kill_server(sock):
     # send 'kill' request
     sock.sendall("kill")
@@ -73,6 +87,7 @@ def create_file(file_path, file_name, sock):
         print_console_message('Could not create file ' + file_name)
 
 
+# same as a read - we want to download the whole file from the server
 def open_file(file_path, file_name, specified_socket):
     print_console_message("Will open file " + file_name)
     # send request to server for file requested
@@ -80,8 +95,8 @@ def open_file(file_path, file_name, specified_socket):
     specified_socket.sendall(message)
     print_console_message("Sending request to server for file as follows: " + message)
 
-    # check if the file exists
     response = specified_socket.recv(MAX_BYTES)
+    # check if the file exists
     if response == str(MessageType.MessageType.FILE_EXISTS.value):
         print_console_message("File exists on server!")
         full_file_path = CLIENT_PATH + file_path + FORWARD_SLASH + file_name
@@ -125,6 +140,8 @@ def write_file(file_path, file_name, specified_socket):
 def maintain_connection(host, port):
     sock = connect_to_file_server(host, port)
     running = (sock != None)
+    # assign a global id for this client
+    get_client_id_in_system(sock)
     while running:
         try:
             user_input = raw_input("Select option:\n1) Verify file exists on server \n2) Open file from server \n3) Write file from server\n4) Create a file \n5)Kill server\nx) Close Connection to Server\n\n")
