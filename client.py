@@ -83,7 +83,7 @@ def create_file(file_path, file_name, sock):
     if response == str(MessageType.MessageType.FILE_CREATED):
         print_console_message("File created on server!")
         full_file_path = CLIENT_PATH + file_path + FORWARD_SLASH + file_name
-        f = open(full_file_path, 'w')
+        f = open(full_file_path, 'w+')
         print_console_message("File created on client now too to mirror this!")
     else:
         print_console_message('Could not create file ' + file_name)

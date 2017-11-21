@@ -83,7 +83,7 @@ def create_file(received, connection):
     make_dir_if_not_exists(full_directory_path)
     # make the file
     full_file_path = full_directory_path + received[2]
-    f = open(full_file_path, 'w')
+    f = open(full_file_path, 'w+')
     print_console_message('File ' + received[2] + ' created. ')
     f.close()
 
@@ -176,6 +176,10 @@ def assign_client_id(connection, address):
         print_console_message("Sending response " + response + " back to the client..")
         connection.sendall(response.encode())
 
+def send_invalid_request_provided_message(received, connection):
+    print_console_message("invalid message request received from client")
+    connection.sendall(str(received).encode())
+
 
 # Function to handle a connection received from a client
 def accept_connection(connection, address):
@@ -206,13 +210,22 @@ def accept_connection(connection, address):
                     assign_client_id(connection, address)
                 elif request == str(MessageType.MessageType.FILE_OPEN):
                     # we want to send the whole file to the client
-                    open_file(received, connection)
+                    if received[1] == "" or received[2] == "":
+                        send_invalid_request_provided_message(received, connection)
+                    else:
+                        open_file(received, connection)
                 elif request == str(MessageType.MessageType.FILE_WRITE):
                     # we want to update our version of the file with the changes we have
-                    receive_file(received, connection)
+                    if received[1] == "" or received[2] == "":
+                        send_invalid_request_provided_message(received, connection)
+                    else:
+                        receive_file(received, connection)
                 elif request == str(MessageType.MessageType.CREATE_FILE):
                     # we want to create a new file
-                    create_file(received, connection)
+                    if received[1] == "" or received[2] == "":
+                        send_invalid_request_provided_message(received, connection)
+                    else:
+                        create_file(received, connection)
                 elif request == str(MessageType.MessageType.CHECK_DIR_EXISTS):
                     # we want to send back a response that the dir exists
                     verify_dir_exists(received, connection)
