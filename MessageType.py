@@ -12,39 +12,41 @@ class MessageType(Enum):
     def __str__(self):
         return str(self.value)
 
-    # Client request messages
-    CHECK_DIR_EXISTS = 0
-    CREATE_DIR = 1
-    FILE_OPEN = 2
-    FILE_READ = 3
-    FILE_WRITE = 4
-    CREATE_FILE = 5  # implementing
-    DELETE_FILE = 6  # not used yet
-    CLIENT_ID_REQUEST = 7
-    CLIENT_ID_RESPONSE = 8
+    # ASSIGN CLIENT ID MESSAGES
+    CLIENT_ID_REQUEST = 0
+    CLIENT_ID_RESPONSE = 1
+
+    # CHECK DIRECTORY EXISTS MESSAGES
+    CHECK_DIR_EXISTS = 2
+    DIR_FOUND = 3
+    DIR_NOT_FOUND = 4
+
+    # CREATE AND REMOVE DIR MESSAGES
+    MKDIR = 5
+    RMDIR = 6
+    MADE_DIR = 7
+    DELETED_DIR = 8
+
+    # FILE OPEN
+    FILE_OPEN = 9
+    FILE_READ = 10
+    FILE_WRITE = 11
+
+    # CREATE AND DELETE FILE MESSAGES
+    CREATE_FILE = 12  # implementing
+    DELETE_FILE = 13  # not used yet
+    FILE_CREATED = 14
+    FILE_DELETED = 15
 
     # Server response messages
-    FILE_EXISTS = 9
-    FILE_NOT_EXISTS = 10
-    DIR_NOT_FOUND = 11
-    # FILE_OPENED? etc
+    FILE_EXISTS =  16
+    FILE_NOT_EXISTS = 17
 
-    # Locking service
-    LOCk_FILE = 12
-    FILE_LOCKED = 13
-    UNLOCK_FILE = 14
-    FILE_UNLOCKED = 15
-    REQUEST_LOCK = 16
-    REQUEST_LOCK_DENIED = 17
+    # Locking service - TODO implement
+    LOCk_FILE = 18
+    UNLOCK_FILE = 19
+    REQUEST_LOCK = 20
+    FILE_LOCKED = 21
+    FILE_UNLOCKED = 22
+    REQUEST_LOCK_DENIED = 23
 
-
-# THE MINIMUM:
-# "CREATE"
-# "REMOVE"
-# "WRITE"
-# "READ"
-# "MKDIR"
-# "RMDIR"
-# "KILL_SERVICE"
-# "FILE_EXISTS"
-# "DIR_EXISTS"

@@ -48,36 +48,63 @@ def verify_dir_exists(message, conn):
 
     print_console_message('Client querying directory: ' + directory + ' for file: ' + message[2])
     # default value
-    response = MessageType.MessageType.FILE_EXISTS
+    response = str(MessageType.MessageType.FILE_EXISTS)
     # if the dir exists
     if os.path.exists(directory):
         print_console_message('The dir exists: checking for the file')
         # if dir exists but not file
         if not os.path.isfile(full_file_path):
             print_console_message('The dir exists, but not the file')
-            response = MessageType.MessageType.FILE_NOT_EXISTS
+            response = str(MessageType.MessageType.FILE_NOT_EXISTS)
         else:
             print_console_message('The file exists within the dir - file found!')
     # if dir doesn't exist
     else:
         print_console_message('The dir does not exist')
-        response = MessageType.MessageType.DIR_NOT_FOUND
-    print_console_message('Server says it will send message code: ' + str(response) + " to the client..")
+        response = str(MessageType.MessageType.DIR_NOT_FOUND)
+    print_console_message("Server says it will send message code: " + response + " to the client..")
     conn.sendall(response.encode())
 
 
 # creates a file
-def create_file(received):
-    full_directory_path = SERVER_FILE_PATH + received[1] + NEWLINE_CHAR
-    print_console_message('Creating new file' + received[2] + ' in dir ' + full_directory_path)
+def create_file(received, connection):
+    full_directory_path = SERVER_FILE_PATH + received[1] + FORWARD_SLASH
+    print_console_message('Creating new file ' + received[2] + ' in dir ' + full_directory_path)
 
     # make the dir if it doesn't already exist
-    make_dir_if_not_exists(full_directory_path)
+    mkdir(full_directory_path, connection)
     # make the file
     full_file_path = full_directory_path + received[2]
     f = open(full_file_path, 'w')
-    print_console_message('File ' + received[2] + 'created. ')
+    print_console_message('File ' + received[2] + ' created. ')
     f.close()
+
+    print_console_message("Sending response to client to confirm file created: " + str(MessageType.MessageType.FILE_CREATED))
+    connection.sendall(str(MessageType.MessageType.FILE_CREATED).encode())
+
+
+# create a directory
+def mkdir(received, connection):
+    full_directory_path = SERVER_FILE_PATH + received[1] + FORWARD_SLASH
+    if not os.path.exists(full_directory_path):
+        print_console_message('Creating directory: ' + full_directory_path + ' as requested')
+        os.makedirs(full_directory_path)
+        connection.sendall(str(MessageType.MessageType.DIR_CREATED))
+    else:
+        print_console_message("Couldn't create the dir: already exists");
+        connection.sendall(MessageType.MessageType.DIR_NOT_CREATED);
+
+
+# remove a directory
+def rmdir(received, connection):
+    full_directory_path = SERVER_FILE_PATH + received[1] + FORWARD_SLASH
+    if(os.path.exists(full_directory_path)):
+        os.removedirs(full_directory_path)
+        connection.sendall(str(MessageType.MessageType.DELETED_DIR))
+        print_console_message("Deleted dir " + full_directory_path)
+    else:
+        print_console_message("Couldn't delete the dir: does not exist");
+        connection.sendall(MessageType.MessageType.DIR_NOT_FOUND);
 
 
 # opening file means sending the whole file to the client
@@ -115,7 +142,7 @@ def open_file(received, connection):
 def receive_file(received, connection):
     # Get the directory
     directory = SERVER_FILE_PATH + received[1] + FORWARD_SLASH
-    make_dir_if_not_exists(directory)
+    mkdir(directory, connection)
 
     # Get the full target filepath
     full_file_path = directory + received[2]
@@ -155,12 +182,13 @@ def accept_connection(connection, address):
         if not data_received:
             continue
         else:
+            print_console_message("Received data: " + data_received)
             # Check if request to kill fileserver
             if data_received == 'kill':
                 print_console_message("Server shutdown initiated")
                 connected = False
                 set_server_running(False)
-                break
+                return
             # Check if request to read or write file
             else:
                 received = data_received.split(NEWLINE_CHAR)
@@ -176,23 +204,20 @@ def accept_connection(connection, address):
                     receive_file(received, connection)
                 elif request == str(MessageType.MessageType.CREATE_FILE):
                     # we want to create a new file
-                    create_file(received)
+                    create_file(received, connection)
                 elif request == str(MessageType.MessageType.CHECK_DIR_EXISTS):
                     # we want to send back a response that the dir exists
                     verify_dir_exists(received, connection)
+                elif request == str(MessageType.MessageType.MKDIR):
+                    # we want to make a new directory
+                    mkdir(received, connection)
+                elif request == str(MessageType.MessageType.RMDIR):
+                    rmdir(received, connection)
                 else:
                     print_console_message('Invalid request sent by client: ' + request)
 
     print_console_message('Connection closed')
     return connected
-
-
-# creates a directory if the required directory doesn't already exist
-def make_dir_if_not_exists(directory):
-    if not os.path.exists(directory):
-        print_console_message('Directory does not exist')
-        os.makedirs(directory)
-        print_console_message('Created directory' + directory)
 
 
 def main():

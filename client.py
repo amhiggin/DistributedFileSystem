@@ -26,12 +26,12 @@ def check_existence_on_server(file_path, file_name, sock):
     message = str(MessageType.MessageType.CHECK_DIR_EXISTS) + NEWLINE_CHAR + file_path + NEWLINE_CHAR + file_name
     print_console_message('Checking server for file: ' + file_name + ' in path: ' + file_path)
     print_console_message('Sending message: ' + message)
-    sock.sendall(message)
+    sock.sendall(message.encode())
     print_console_message('Sent request for server to check if file exists...')
 
     # get response from server
-    response = sock.recv(MAX_BYTES)
-    print_console_message('Server responded: ' + MessageType.MessageType(response))
+    response = sock.recv(MAX_BYTES).decode()
+    print_console_message('Server responded: ' + response)
 
 
 def get_filename_and_filepath_from_user():
@@ -52,7 +52,6 @@ def connect_to_file_server(host, port):
     return s
 
 
-# TODO finish testing this
 def get_client_id_in_system(sock):
     global CLIENT_ID
     print_console_message("Requesting client id from server")
@@ -80,11 +79,12 @@ def create_file(file_path, file_name, sock):
     print_console_message("Sending request to server for file as follows: " + message)
 
     # check if the file exists
-    response = sock.recv(MAX_BYTES)
-    if response == str(MessageType.MessageType.FILE_EXISTS.value):
+    response = str(sock.recv(MAX_BYTES).decode())
+    if response == str(MessageType.MessageType.FILE_CREATED):
         print_console_message("File created on server!")
         full_file_path = CLIENT_PATH + file_path + FORWARD_SLASH + file_name
         f = open(full_file_path, 'w')
+        print_console_message("File created on client now too to mirror this!")
     else:
         print_console_message('Could not create file ' + file_name)
 
@@ -137,6 +137,10 @@ def write_file(file_path, file_name, specified_socket):
         data_available = data != ''
     print_console_message('Transmission complete, closing local copy')
     f.close()
+
+
+#def mkdir():
+
 
 
 def maintain_connection(host, port):
