@@ -6,27 +6,18 @@
 # - Caching should be done on the file contents (eventually)
 # - Locking and threading should be done (eventually)
 #
-
-import sys
-
-is_py2 = sys.version[0] == '2'
-if is_py2:
-    import Queue as queue
-else:
-    import queue as queue
-
-from threading import Thread
 import MessageType
 import os
 import select
 import socket
+import sys
 
 # Global constants
 MAX_BYTES = 2048
 HOST = ''
 DEFAULT_PORT = 12345
 IP_ADDRESS = socket.gethostbyname(socket.getfqdn())
-SERVER_FILE_PATH = 'ServerDir/'
+SERVER_FILE_PATH = 'ServerDir/' # server base dir
 server_running = True
 number_of_clients = 0
 list_of_addresses_connected = []
@@ -35,40 +26,6 @@ list_of_addresses_connected = []
 FORWARD_SLASH = '/'
 NULL_CONTENTS = ''
 NEWLINE_CHAR = '\n'
-
-
-class Worker(Thread):
-    def __init__(self, queue):
-        self.tasks = queue
-        self.on = True
-        Thread.__init__(self)
-        self.start()  # Start thread
-
-    def run(self):
-        while self.on:
-            func, args, kargs = self.tasks.get()
-            self.on = func(*args, **kargs)
-
-
-class ThreadPool:
-    def __init__(self, num_threads, queue_size):
-        self.queue = queue.Queue(queue_size)
-        self.num = num_threads
-        self.threads = []
-        for i in range(0, num_threads):  # Start each thread and add to the list
-            self.threads.append(Worker(self.queue))
-
-    def addTask(self, func, *args, **kargs):
-        self.queue.put((func, args, kargs))
-
-    def endThreads(self):
-        for i in range(0, self.num):
-            self.addTask(False)
-        for i in range(0, self.num):
-            self.threads[i].join()
-
-    def wait_completion(self):
-        self.tasks.join()
 
 
 def print_console_message(message):
