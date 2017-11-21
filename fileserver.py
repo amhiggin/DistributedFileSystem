@@ -63,7 +63,7 @@ def verify_dir_exists(message, conn):
         print_console_message('The dir does not exist')
         response = MessageType.MessageType.DIR_NOT_FOUND
     print_console_message('Server says it will send message code: ' + str(response) + " to the client..")
-    conn.sendall(str(response))
+    conn.sendall(response.encode())
 
 
 # creates a file
@@ -91,13 +91,13 @@ def open_file(received, connection):
         print_console_message("Requested file to open exists on the server")
         response = str(MessageType.MessageType.FILE_EXISTS)
         print_console_message('File found - will send code ' + response + 'to client')
-        connection.sendall(response)
+        connection.sendall(response.encode())
 
         # open the file
         f = open(full_file_path)
         data = f.read(MAX_BYTES)
         while data != NULL_CONTENTS:
-            connection.sendall(data)
+            connection.sendall(data.encode())
             print_console_message('Sending ' + data + ' to client')
             data = f.read(MAX_BYTES)
         print_console_message('Whole file successfully transmitted. Closing file')
@@ -106,7 +106,7 @@ def open_file(received, connection):
     else:
         print_console_message('File does not exist: ' + full_file_path)
         response = str(MessageType.MessageType.FILE_NOT_EXISTS)
-        connection.sendall(response)
+        connection.sendall(response.encode())
 
 
 # this is the same as closing the file
@@ -134,11 +134,12 @@ def receive_file(received, connection):
     f.close()
 
 
-def assign_client_id(received, connection, address):
+def assign_client_id(connection, address):
     if not(address in list_of_addresses_connected):
-        response = MessageType.MessageType.CLIENT_ID_RESPONSE + NEWLINE_CHAR + str(number_of_clients+1)
+        response = str(MessageType.MessageType.CLIENT_ID_RESPONSE) + NEWLINE_CHAR + str(number_of_clients + 1)
         list_of_addresses_connected.append(address)
-        connection.sendall(response)
+        print_console_message("Sending response " + response + " back to the client..")
+        connection.sendall(response.encode())
 
 
 # Function to handle a connection received from a client
@@ -148,7 +149,7 @@ def accept_connection(connection, address):
     connected = True
 
     while connected:
-        data_received = connection.recv(MAX_BYTES)
+        data_received = connection.recv(MAX_BYTES).decode()
 
         # Check if any data received
         if not data_received:
@@ -158,24 +159,25 @@ def accept_connection(connection, address):
             if data_received == 'kill':
                 print_console_message("Server shutdown initiated")
                 connected = False
-                server_running = False
+                set_server_running(False)
+                break
             # Check if request to read or write file
             else:
                 received = data_received.split(NEWLINE_CHAR)
-                request = str(data_received[0])
+                request = received[0]
                 print_console_message('Request received: ' + request)
-                if request == MessageType.MessageType.CLIENT_ID_REQUEST.value:
-                    assign_client_id(received, connection, address)
-                elif request == MessageType.MessageType.FILE_OPEN.value:
+                if request == str(MessageType.MessageType.CLIENT_ID_REQUEST):
+                    assign_client_id(connection, address)
+                elif request == str(MessageType.MessageType.FILE_OPEN):
                     # we want to send the whole file to the client
                     open_file(received, connection)
-                elif request == MessageType.MessageType.FILE_WRITE.value:
+                elif request == str(MessageType.MessageType.FILE_WRITE):
                     # we want to update our version of the file with the changes we have
                     receive_file(received, connection)
-                elif request == MessageType.MessageType.CREATE_FILE.value:
+                elif request == str(MessageType.MessageType.CREATE_FILE):
                     # we want to create a new file
                     create_file(received)
-                elif request == MessageType.MessageType.CHECK_DIR_EXISTS.value:
+                elif request == str(MessageType.MessageType.CHECK_DIR_EXISTS):
                     # we want to send back a response that the dir exists
                     verify_dir_exists(received, connection)
                 else:
@@ -225,14 +227,14 @@ def main():
                     if sock is s:
                         connection, address = sock.accept()
                         pool.addTask(accept_connection, connection, address)
-            s.close()
-            print_console_message("Server shutting down")
         except Exception as e:
             print_console_message('Exception thrown during server operation')
             print_console_message(e.message)
         finally:
-            print_console_message('Closing socket')
+            print_console_message("Server shutting down")
             s.close()
+            pool.endThreads()
+            sys.exit(0)
     except Exception as e:
         print_console_message('Exception thrown during server initialisation')
         print_console_message(e.message)

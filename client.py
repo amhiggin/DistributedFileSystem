@@ -54,19 +54,21 @@ def connect_to_file_server(host, port):
 
 # TODO finish testing this
 def get_client_id_in_system(sock):
+    global CLIENT_ID
     print_console_message("Requesting client id from server")
     request = str(MessageType.MessageType.CLIENT_ID_REQUEST)
-    sock.sendall(request)
-    response = str(sock.recv(MAX_BYTES))
-    print_console_message("Received response " + response[0] + " from server")
-    if response[0] == str(MessageType.MessageType.CLIENT_ID_RESPONSE.value):
-        CLIENT_ID = response[1]
+    sock.sendall(request.encode())
+    response = str(sock.recv(MAX_BYTES).decode())
+    received = response.split(NEWLINE_CHAR)
+    print_console_message("Received response " + received[0] + " from server")
+    if received[0] == str(MessageType.MessageType.CLIENT_ID_RESPONSE):
+        CLIENT_ID = received[1]
     print_console_message("Client id is: " + CLIENT_ID)
 
 
 def kill_server(sock):
     # send 'kill' request
-    sock.sendall("kill")
+    sock.sendall("kill".encode())
     print_console_message('Sent kill request to server')
 
 
@@ -74,7 +76,7 @@ def create_file(file_path, file_name, sock):
     print_console_message("Will create new file " + file_name + ' in dir ' + file_path)
     # send request to server for file requested
     message = str(MessageType.MessageType.CREATE_FILE) + NEWLINE_CHAR + file_path + NEWLINE_CHAR + file_name
-    sock.sendall(message)
+    sock.sendall(message.encode())
     print_console_message("Sending request to server for file as follows: " + message)
 
     # check if the file exists
@@ -92,7 +94,7 @@ def open_file(file_path, file_name, specified_socket):
     print_console_message("Will open file " + file_name)
     # send request to server for file requested
     message = str(MessageType.MessageType.FILE_OPEN.value) + NEWLINE_CHAR + file_path + NEWLINE_CHAR + file_name
-    specified_socket.sendall(message)
+    specified_socket.sendall(message.encode())
     print_console_message("Sending request to server for file as follows: " + message)
 
     response = specified_socket.recv(MAX_BYTES)
@@ -121,7 +123,7 @@ def open_file(file_path, file_name, specified_socket):
 
 def write_file(file_path, file_name, specified_socket):
     message = str(MessageType.MessageType.FILE_WRITE) + NEWLINE_CHAR + file_path + NEWLINE_CHAR + file_name
-    specified_socket.sendall(message)
+    specified_socket.sendall(message.encode())
     full_file_path = CLIENT_PATH + file_path + FORWARD_SLASH + file_name
 
     # open file for reading
