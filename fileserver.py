@@ -41,6 +41,14 @@ def server_running():
     return server_running
 
 
+
+# creates a directory if the required directory doesn't already exist
+def make_dir_if_not_exists(directory):
+    if not os.path.exists(directory):
+        print_console_message('Directory does not exist')
+        os.makedirs(directory)
+        print_console_message('Created directory' + directory)
+
 # Function to handle queries about the existence of files
 def verify_dir_exists(message, conn):
     directory = SERVER_FILE_PATH + message[1] + FORWARD_SLASH
@@ -72,7 +80,7 @@ def create_file(received, connection):
     print_console_message('Creating new file ' + received[2] + ' in dir ' + full_directory_path)
 
     # make the dir if it doesn't already exist
-    mkdir(full_directory_path, connection)
+    make_dir_if_not_exists(full_directory_path)
     # make the file
     full_file_path = full_directory_path + received[2]
     f = open(full_file_path, 'w')
@@ -142,7 +150,7 @@ def open_file(received, connection):
 def receive_file(received, connection):
     # Get the directory
     directory = SERVER_FILE_PATH + received[1] + FORWARD_SLASH
-    mkdir(directory, connection)
+    make_dir_if_not_exists(directory)
 
     # Get the full target filepath
     full_file_path = directory + received[2]
