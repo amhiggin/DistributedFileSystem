@@ -1,5 +1,5 @@
 import sys
-import ThreadWorker
+from threading import Thread
 is_py2 = sys.version[0] == '2'
 if is_py2:
     import Queue as queue
@@ -26,3 +26,16 @@ class ThreadPool:
 
     def wait_completion(self):
         self.tasks.join()
+
+
+class ThreadWorker(Thread):
+    def __init__(self, _queue):
+        self.tasks = _queue
+        self.on = True
+        Thread.__init__(self)
+        self.start()  # Start thread
+
+    def run(self):
+        while self.on:
+            func, args, kargs = self.tasks.get()
+            self.on = func(*args, **kargs)

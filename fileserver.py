@@ -11,6 +11,7 @@ import os
 import select
 import socket
 import sys
+import ThreadingHelper
 
 # Global constants
 MAX_BYTES = 2048
@@ -208,7 +209,7 @@ def main():
             print_console_message('Creating base directory')
             os.makedirs(SERVER_FILE_PATH)
         print_console_message('Initialising server threadpool')
-        pool = ThreadPool(10, 10)
+        pool = ThreadingHelper.ThreadPool(10, 10)
         set_server_running(True)
 
         try:
