@@ -139,10 +139,6 @@ def write_file(file_path, file_name, specified_socket):
     f.close()
 
 
-#def mkdir():
-
-
-
 def maintain_connection(host, port):
     sock = connect_to_file_server(host, port)
     running = (sock != None)
