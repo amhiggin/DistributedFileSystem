@@ -20,7 +20,7 @@ class ThreadPool:
 
     def endThreads(self):
         for i in range(0, self.num):
-            self.addTask(False)
+            self.addTask(None)
         for i in range(0, self.num):
             self.threads[i].join()
 

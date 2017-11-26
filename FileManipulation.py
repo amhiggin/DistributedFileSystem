@@ -7,7 +7,7 @@ def make_dir_if_not_exists(directory):
     if not os.path.exists(directory):
         print('Directory does not exist')
         os.makedirs(directory)
-        print('Created directory' + directory)
+        print('Created directory ' + directory)
 
 
 def verify_dir_exists(directory, full_file_path, filename):
@@ -22,7 +22,7 @@ def verify_dir_exists(directory, full_file_path, filename):
         else:
             print('The file ' + filename + ' exists')
     else:
-        print('The dir ' + directory + 'does not exist')
+        print('The dir ' + directory + ' does not exist')
         response = str(MessageType.MessageType.DIR_NOT_FOUND)
     print("Server says it will send message code: " + response + " to the client..")
     return response
@@ -54,7 +54,7 @@ def mkdir(dir_to_make):
 
 def rmdir(full_directory_path):
     response = str(MessageType.MessageType.DIR_NOT_DELETED)
-    if(os.path.exists(full_directory_path)):
+    if os.path.exists(full_directory_path):
         os.removedirs(full_directory_path)
         print("Deleted dir " + full_directory_path)
         response = str(MessageType.MessageType.DELETED_DIR)

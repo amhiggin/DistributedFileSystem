@@ -35,6 +35,7 @@ def print_console_message(message):
 
 
 def set_server_running(value):
+    global server_running;
     server_running = value
 
 
@@ -73,6 +74,7 @@ def create_file(received, connection):
     response = FileManipulation.create_file(full_directory_path, received[2])
     print("Sending response to client to confirm file created: " + str(MessageType.MessageType.FILE_CREATED))
     connection.sendall(response.encode())
+
 
 # opening file means sending the whole file to the client
 # reads and writes then happen locally
@@ -194,17 +196,13 @@ def accept_connection(connection, address):
 
     while connected:
         data_received = connection.recv(MAX_BYTES).decode()
-
         # Check if any data received
         if not data_received:
             continue
         else:
             print_console_message("Received data: " + data_received)
-            # Check if request to kill fileserver
             connected = handle_request(connection, address, data_received)
-
     print_console_message('Connection closed')
-    return connected
 
 
 def main():
@@ -212,7 +210,7 @@ def main():
 
     try:
         print_console_message('Initialising server')
-        if len(sys.argv) < 2:
+        if sys.argv.__sizeof__() < 2:
             port = int(sys.argv[0])
         else:
             port = DEFAULT_PORT
@@ -222,8 +220,8 @@ def main():
         if not os.path.exists(BASE_SERVER_FILEPATH):
             print_console_message('Creating base directory')
             os.makedirs(BASE_SERVER_FILEPATH)
-        print_console_message('Initialising server threadpool')
-        pool = ThreadingHelper.ThreadPool(10, 10)
+        print_console_message('Initialising server thread pool')
+        pool = ThreadingHelper.ThreadPool(20, 20)
         set_server_running(True)
 
         try:
@@ -233,7 +231,7 @@ def main():
             print_console_message('Listening for requests...')
 
             # Run server until kill request received/exception thrown
-            while server_running():
+            while get_server_running():
                 read, _, _ = select.select(sockets_list, [], [], 0.1)
                 for sock in read:
                     if sock is s:
