@@ -55,7 +55,7 @@ def verify_dir_exists(message, conn):
     directory = BASE_SERVER_FILEPATH + message[1] + FORWARD_SLASH
     full_file_path = directory + message[2]
     filename = message[2]
-    print('Client querying directory: ' + directory + ' for file: ' + filename)
+    print_console_message('Client querying directory: ' + directory + ' for file: ' + filename)
     response = FileManipulation.verify_dir_exists(directory, full_file_path, filename)
     conn.sendall(response.encode())
 
@@ -70,9 +70,9 @@ def rmdir(received, connection):
 # creates a file
 def create_file(received, connection):
     full_directory_path = BASE_SERVER_FILEPATH + received[1] + FORWARD_SLASH
-    print('Creating new file ' + received[2] + ' in dir ' + full_directory_path)
+    print_console_message('Creating new file ' + received[2] + ' in dir ' + full_directory_path)
     response = FileManipulation.create_file(full_directory_path, received[2])
-    print("Sending response to client to confirm file created: " + str(MessageType.MessageType.FILE_CREATED))
+    print_console_message("Sending response to client to confirm file created: " + str(MessageType.MessageType.FILE_CREATED))
     connection.sendall(response.encode())
 
 
@@ -86,14 +86,14 @@ def open_file(received, connection):
     if os.path.isfile(full_file_path):
         print_console_message("Requested file to open exists on the server")
         response = str(MessageType.MessageType.FILE_EXISTS)
-        print_console_message('File found - will send code ' + response + 'to client')
-        connection.sendall(response.encode())
+        print_console_message('File found - will send code ' + response + ' to client')
+        connection.sendall(response)
 
         # open the file
         f = open(full_file_path)
         data = f.read(MAX_BYTES)
         while data != NULL_CONTENTS:
-            connection.sendall(data.encode())
+            connection.sendall(data)
             print_console_message('Sending ' + data + ' to client')
             data = f.read(MAX_BYTES)
         print_console_message('Whole file successfully transmitted. Closing file')
@@ -165,13 +165,13 @@ def handle_request(connection, address, data_received):
                 open_file(received, connection)
         elif request == str(MessageType.MessageType.FILE_WRITE):
             # we want to update our version of the file with the changes we have
-            if received[1] == "" or received[2] == "":
+            if received[2] == "":
                 send_invalid_request_provided_message(received, connection)
             else:
                 receive_file(received, connection)
         elif request == str(MessageType.MessageType.CREATE_FILE):
             # we want to create a new file
-            if received[1] == "" or received[2] == "":
+            if received[2] == "":
                 send_invalid_request_provided_message(received, connection)
             else:
                 create_file(received, connection)

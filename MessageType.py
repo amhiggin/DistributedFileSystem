@@ -36,17 +36,19 @@ class MessageType(Enum):
     CREATE_FILE = 12  # implementing
     DELETE_FILE = 13  # not used yet
     FILE_CREATED = 14
-    FILE_DELETED = 15
+    FILE_NOT_CREATED = 15
+    FILE_DELETED = 16
+    FILE_NOT_DELETED = 17
 
     # Server response messages
-    FILE_EXISTS =  16
-    FILE_NOT_EXISTS = 17
+    FILE_EXISTS = 18
+    FILE_NOT_EXISTS = 19
 
     # Locking service - TODO implement
-    LOCk_FILE = 18
-    UNLOCK_FILE = 19
-    REQUEST_LOCK = 20
-    FILE_LOCKED = 21
-    FILE_UNLOCKED = 22
-    REQUEST_LOCK_DENIED = 23
+    LOCk_FILE = 20
+    UNLOCK_FILE = 21
+    REQUEST_LOCK = 22
+    FILE_LOCKED = 23
+    FILE_UNLOCKED = 24
+    REQUEST_LOCK_DENIED = 25
 

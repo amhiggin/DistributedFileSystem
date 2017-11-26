@@ -56,6 +56,7 @@ def get_client_id_in_system(sock):
         CLIENT_ID = received[1]
         CLIENT_PATH = CLIENT_PATH + CLIENT_ID
         file_lib.make_dir_if_not_exists(CLIENT_PATH)
+        CLIENT_PATH = CLIENT_PATH + FORWARD_SLASH
     print_console_message("Client id is: " + CLIENT_ID + ". Root dir is now: " + CLIENT_PATH)
 
 
@@ -84,27 +85,27 @@ def create_file(file_path, file_name, sock):
 
 
 # same as a read - we want to download the whole file from the server
-def open_file(file_path, file_name, specified_socket):
+def open_file(file_path, file_name, sock):
     print_console_message("Will open file " + file_name)
     # send request to server for file requested
     message = str(MessageType.MessageType.FILE_OPEN) + NEWLINE_CHAR + file_path + NEWLINE_CHAR + file_name
-    specified_socket.sendall(message.encode())
+    sock.sendall(message.encode())
     print_console_message("Sending request to server for file as follows: " + message)
 
-    response = specified_socket.recv(MAX_BYTES)
+    response = sock.recv(MAX_BYTES)
     # check if the file exists
     if response == str(MessageType.MessageType.FILE_EXISTS):
         print_console_message("File exists on server!")
         full_file_path = CLIENT_PATH + file_path + FORWARD_SLASH + file_name
 
         # open file for writing
-        print_console_message("Opening local file ' + full_file_path + ' to be updated with server changes")
-        f = open(full_file_path, 'w')
+        print_console_message("Opening local file " + full_file_path + " to be updated with server changes")
+        f = open(full_file_path, 'w+')
         print_console_message('Downloading file from server for reading latest version')
         keep_connected = True
         while keep_connected:
-            data = socket.recv(MAX_BYTES)
-            f.write(str(data))
+            data = sock.recv(MAX_BYTES)
+            f.write(data)
             print_console_message('Received payload: ' + str(data))
             keep_connected = len(data) == MAX_BYTES
         print_console_message('File downloaded. Will close local copy.')
@@ -115,18 +116,19 @@ def open_file(file_path, file_name, specified_socket):
         print_console_message('File ' + file_name + ' does not exist on the server.')
 
 
-def write_file(file_path, file_name, specified_socket):
+def write_file(file_path, file_name, sock):
     message = str(MessageType.MessageType.FILE_WRITE) + NEWLINE_CHAR + file_path + NEWLINE_CHAR + file_name
-    specified_socket.sendall(message.encode())
+    sock.sendall(message.encode())
     full_file_path = CLIENT_PATH + file_path + FORWARD_SLASH + file_name
 
     # open file for reading
+    print_console_message("Opening file " + full_file_path + " for writing to server")
     f = open(full_file_path, 'r')
-    print_console_message('Requested file found - will upload/write to server')
     data_available = True
     data = f.read(MAX_BYTES)
     while data_available:
-        specified_socket.sendall(str(data))
+        sock.sendall(str(data))
+        [print_console_message("Sending " + str(data) + " to server")]
         data = f.read(MAX_BYTES)
         data_available = data != ''
     print_console_message('Transmission complete, closing local copy')
@@ -135,7 +137,7 @@ def write_file(file_path, file_name, specified_socket):
 
 def maintain_connection(host, port):
     sock = connect_to_file_server(host, port)
-    running = (sock != None)
+    running = sock is not None
     # assign a global id for this client
     get_client_id_in_system(sock)
     while running:
@@ -147,16 +149,16 @@ def maintain_connection(host, port):
             else:
                 if user_input == "1":
                     filepath, filename = get_filename_and_filepath_from_user()
-                    check_existence_on_server(filepath, filename, sock, CLIENT_PATH)
+                    check_existence_on_server(filepath, filename, sock)
                 elif user_input == '2':
                     filepath, filename = get_filename_and_filepath_from_user()
-                    open_file(filepath, filename, sock, CLIENT_PATH)
+                    open_file(filepath, filename, sock)
                 elif user_input == '3':
                     filepath, filename = get_filename_and_filepath_from_user()
-                    write_file(filepath, filename, sock, CLIENT_PATH)
+                    write_file(filepath, filename, sock)
                 elif user_input == '4':
                     filepath, filename = get_filename_and_filepath_from_user()
-                    create_file(filepath, filename, sock, CLIENT_PATH)
+                    create_file(filepath, filename, sock)
                 else:
                     if user_input == '5':
                         kill_server(sock)

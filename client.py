@@ -3,7 +3,7 @@
 # Interaction through terminal session.
 from pip._vendor.distlib.compat import raw_input
 
-import ClientLibrary as lib
+import ClientAPI as lib
 import MessageType, sys, os
 from socket import gethostbyname, SOCK_STREAM, getfqdn, socket, AF_INET, error, inet_aton
 
