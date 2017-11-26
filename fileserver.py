@@ -159,7 +159,7 @@ def handle_request(connection, address, data_received):
             assign_client_id(connection, address)
         elif request == str(MessageType.MessageType.FILE_OPEN):
             # send the file to the client
-            if received[1] == "" or received[2] == "":
+            if received[2] == "":
                 send_invalid_request_provided_message(received, connection)
             else:
                 open_file(received, connection)
@@ -185,6 +185,7 @@ def handle_request(connection, address, data_received):
             rmdir(received, connection)
         else:
             print_console_message('Invalid request sent by client: ' + request)
+            send_invalid_request_provided_message(received, connection)
         return True
 
 

@@ -142,7 +142,7 @@ def maintain_connection(host, port):
     get_client_id_in_system(sock)
     while running:
         try:
-            user_input = raw_input("Select option:\n1) Verify file exists on server \n2) Open file from server \n3) Write file from server\n4) Create a file \n5)Kill server\nx) Close Connection to Server\n\n")
+            user_input = raw_input("Select option:\n1) Verify file exists on server \n2) Open file from server \n3) Write file from server\n4) Create a file \n5) Kill server\nx) Close Connection to Server\n\n")
             if user_input == "x" or user_input == "X":
                 print_console_message('You requested to close the connection.')
                 running = False
