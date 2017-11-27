@@ -17,8 +17,9 @@ def read_file(file_path, file_name):
     file_server, requested_file = FILE_API.find_file_if_exists(file_path, file_name)
 
     if file_server is not None and requested_file is not None:
-        response = requests.post(FILE_API.create_url())
-        requested_file = open(file_path, 'r')
+        # TODO figure out how we create the corrcet URL: something like below
+        response = requests.post(FILE_API.create_url(file_server, requested_file))
+        requested_file = open(file_path, 'w')
         requested_file.write(response.json()['file'])
         requested_file.close()
 
