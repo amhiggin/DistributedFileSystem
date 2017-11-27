@@ -1,2 +1,2 @@
 import flask
-import flask-restful
+import flask_restful
