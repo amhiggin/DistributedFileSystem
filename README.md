@@ -1,5 +1,7 @@
 # DistributedFileSystem
 NFS filesystem implementation with distributed transparent file access, locking, caching and directory mapping.
+Requests are sent in JSON format through HTTP get, post, put, delete requests as appropriate.
+Will eventually be capable of supporting multiple fileservers and multiple clients, with a single locking server and directory server to tie them together.
 
 ## Dependencies
 * Flask
