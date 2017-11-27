@@ -11,7 +11,7 @@ import FileManipAPI as FILE_API
 
 
 def run():
-    # this will eventually be run such that clients can access it
+    print "in run"
 
 
 # download a copy of the file
@@ -40,19 +40,19 @@ def write_file(file_path, file_name):
 
 
 # check the file exists on the fileserver, as such
-def open_file(file_path):
+def open_file(file_path, file_name):
     print "Request to open " + file_path
     # NOT implemented yet
 
 
 # doesn't really do anything effective (from what I can see)
-def close_file(file_path):
+def close_file(file_path, file_name):
     print "Request to close " + file_path
     # NOT implemented yet
 
 
 def main():
-    # do nothing
+    return 0
 
 
 if __name__ == "__main__":
