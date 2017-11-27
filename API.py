@@ -18,25 +18,18 @@ def run():
 # should inform lock server of the fact that it has a copy
 def read_file(file_path, file_name):
     print "Request to read " + file_path
-    file_server, requested_file = FILE_API.find_file_if_exists(file_path, file_name)
 
-    if file_server is not None and requested_file is not None:
-        # TODO figure out how we create the corrcet URL: something like below
-        response = requests.post(FILE_API.create_url(file_server, requested_file))
-        requested_file = open(file_path, 'w')
-        requested_file.write(response.json()['file'])
-        requested_file.close()
+    # get whatever is available on fileserver URL
+    response = requests.get("http://127.0.0.1:45678")
+    print "response: " + response.json()['Hello']
 
 
 # upload a changed copy of the file
 # should inform the lock server of the fact that it is updating a copy
 def write_file(file_path, file_name):
     print "Request to write " + file_path
-    file_server, requested_file = FILE_API.find_file_if_exists(file_path, file_name)
-
-    if file_server is not None and requested_file is not None:
-        # NOT implemented yet
-        return 0
+    # NOT implemented yet
+    return 0
 
 
 # check the file exists on the fileserver, as such

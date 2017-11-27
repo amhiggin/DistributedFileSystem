@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="412b1a9a-9cff-49c9-acea-7ddb722bdbc5" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/LockingServer.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/API.py" afterPath="$PROJECT_DIR$/API.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client.py" afterPath="$PROJECT_DIR$/Client.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FileManipAPI.py" afterPath="$PROJECT_DIR$/FileManipAPI.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FileServer.py" afterPath="$PROJECT_DIR$/FileServer.py" />
     </list>
@@ -20,8 +18,8 @@
       <file leaf-file-name="Client.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="35" column="32" lean-forward="true" selection-start-line="35" selection-start-column="32" selection-end-line="35" selection-end-column="32" />
+            <state relative-caret-position="595">
+              <caret line="36" column="35" lean-forward="true" selection-start-line="36" selection-start-column="35" selection-end-line="36" selection-end-column="35" />
               <folding>
                 <element signature="e#204#218#0" expanded="true" />
               </folding>
@@ -33,7 +31,7 @@
         <entry file="file://$PROJECT_DIR$/DirectoryServer.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
-              <caret line="0" column="16" lean-forward="false" selection-start-line="0" selection-start-column="16" selection-end-line="0" selection-end-column="16" />
+              <caret line="0" column="16" lean-forward="true" selection-start-line="0" selection-start-column="16" selection-end-line="0" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -52,8 +50,8 @@
       <file leaf-file-name="API.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/API.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="33" column="35" lean-forward="true" selection-start-line="33" selection-start-column="35" selection-end-line="33" selection-end-column="35" />
+            <state relative-caret-position="410">
+              <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
               <folding>
                 <element signature="e#147#161#0" expanded="true" />
               </folding>
@@ -64,9 +62,11 @@
       <file leaf-file-name="FileServer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/FileServer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="10" lean-forward="true" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="10" />
-              <folding />
+            <state relative-caret-position="255">
+              <caret line="15" column="33" lean-forward="false" selection-start-line="15" selection-start-column="33" selection-end-line="15" selection-end-column="33" />
+              <folding>
+                <element signature="e#128#138#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -74,8 +74,8 @@
       <file leaf-file-name="FileManipAPI.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/FileManipAPI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="10" column="69" lean-forward="true" selection-start-line="10" selection-start-column="69" selection-end-line="10" selection-end-column="69" />
+            <state relative-caret-position="102">
+              <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -99,12 +99,12 @@
         <option value="$PROJECT_DIR$/ClientAPI.py" />
         <option value="$PROJECT_DIR$/fileserver.py" />
         <option value="$PROJECT_DIR$/LockServer.py" />
-        <option value="$PROJECT_DIR$/Client.py" />
-        <option value="$PROJECT_DIR$/LockingServer.py" />
         <option value="$PROJECT_DIR$/DirectoryServer.py" />
+        <option value="$PROJECT_DIR$/LockingServer.py" />
         <option value="$PROJECT_DIR$/FileServer.py" />
-        <option value="$PROJECT_DIR$/FileManipAPI.py" />
+        <option value="$PROJECT_DIR$/Client.py" />
         <option value="$PROJECT_DIR$/API.py" />
+        <option value="$PROJECT_DIR$/FileManipAPI.py" />
       </list>
     </option>
   </component>
@@ -222,8 +222,8 @@
     </list>
     <recent_temporary>
       <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Python.FileServer" />
-        <item index="1" class="java.lang.String" itemvalue="Python.Client" />
+        <item index="0" class="java.lang.String" itemvalue="Python.Client" />
+        <item index="1" class="java.lang.String" itemvalue="Python.FileServer" />
         <item index="2" class="java.lang.String" itemvalue="Python.fileserver" />
       </list>
     </recent_temporary>
@@ -311,13 +311,43 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#128#138#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/FileManipulation.py" />
     <entry file="file://$PROJECT_DIR$/ClientAPI.py" />
     <entry file="file://$PROJECT_DIR$/LockServer.py" />
+    <entry file="file://$PROJECT_DIR$/API.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="410">
+          <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+          <folding>
+            <element signature="e#147#161#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/FileServer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="33" lean-forward="false" selection-start-line="15" selection-start-column="33" selection-end-line="15" selection-end-column="33" />
+          <folding>
+            <element signature="e#128#138#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/FileManipAPI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/LockingServer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -329,41 +359,15 @@
     <entry file="file://$PROJECT_DIR$/DirectoryServer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="16" lean-forward="false" selection-start-line="0" selection-start-column="16" selection-end-line="0" selection-end-column="16" />
+          <caret line="0" column="16" lean-forward="true" selection-start-line="0" selection-start-column="16" selection-end-line="0" selection-end-column="16" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/FileServer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="10" lean-forward="true" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/FileManipAPI.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="69" lean-forward="true" selection-start-line="10" selection-start-column="69" selection-end-line="10" selection-end-column="69" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/API.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="33" column="35" lean-forward="true" selection-start-line="33" selection-start-column="35" selection-end-line="33" selection-end-column="35" />
-          <folding>
-            <element signature="e#147#161#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="35" column="32" lean-forward="true" selection-start-line="35" selection-start-column="32" selection-end-line="35" selection-end-column="32" />
+        <state relative-caret-position="595">
+          <caret line="36" column="35" lean-forward="true" selection-start-line="36" selection-start-column="35" selection-end-line="36" selection-end-column="35" />
           <folding>
             <element signature="e#204#218#0" expanded="true" />
           </folding>

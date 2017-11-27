@@ -13,7 +13,7 @@ api = Api(app)
 
 class FileServer(Resource):
     def get(self):
-        return {"Hello": "World"}, 200
+        return {"Hello": "World"}
 
     def post(self):
         # TODO implement what this does
