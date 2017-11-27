@@ -16,7 +16,9 @@ class FileServer(Resource):
         return {"Hello": "World"}, 200
 
     def post(self):
-        return 0
+        # TODO implement what this does
+        # no content to return
+        return "", 204
 
 
 # this adds a url handle for the FileServer

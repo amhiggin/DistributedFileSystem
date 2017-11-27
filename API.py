@@ -35,17 +35,20 @@ def write_file(file_path, file_name):
     file_server, requested_file = FILE_API.find_file_if_exists(file_path, file_name)
 
     if file_server is not None and requested_file is not None:
+        # NOT implemented yet
         return 0
 
 
 # check the file exists on the fileserver, as such
 def open_file(file_path):
     print "Request to open " + file_path
+    # NOT implemented yet
 
 
 # doesn't really do anything effective (from what I can see)
 def close_file(file_path):
     print "Request to close " + file_path
+    # NOT implemented yet
 
 
 def main():
