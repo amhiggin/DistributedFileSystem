@@ -8,9 +8,12 @@ api = Api(app)
 
 class FileServer(Resource):
     def get(self):
-        # placeholder
+        return {"Hello": "World"}
     def post(self):
-        # placeholder
+        return 0
+
+# this adds a url handle for the FileServer
+api.add_resource(FileServer, '/')
 
 if __name__ == "__main__":
-    app.run(debug=True, port=int(sys.argv))
+    app.run(debug=True, port=int(sys.argv[1]))
