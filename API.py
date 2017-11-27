@@ -10,6 +10,10 @@ import requests
 import FileManipAPI as FILE_API
 
 
+def run():
+    # this will eventually be run such that clients can access it
+
+
 # download a copy of the file
 # should inform lock server of the fact that it has a copy
 def read_file(file_path, file_name):
@@ -42,3 +46,11 @@ def open_file(file_path):
 # doesn't really do anything effective (from what I can see)
 def close_file(file_path):
     print "Request to close " + file_path
+
+
+def main():
+    # do nothing
+
+
+if __name__ == "__main__":
+    run()
