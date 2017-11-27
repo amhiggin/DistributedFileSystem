@@ -10,10 +10,6 @@ import requests
 import FileManipAPI as FILE_API
 
 
-def run():
-    print "in run"
-
-
 # download a copy of the file
 # should inform lock server of the fact that it has a copy
 def read_file(file_path, file_name):
@@ -46,7 +42,3 @@ def close_file(file_path, file_name):
 
 def main():
     return 0
-
-
-if __name__ == "__main__":
-    run()

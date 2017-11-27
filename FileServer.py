@@ -1,6 +1,7 @@
 #
 # A RESTful server implementation. Modelling an NFS fileserver.
 # Will use get and post requests with HTTP response codes.
+# The fileserver should know where to find the directory server.
 #
 
 import sys
@@ -10,15 +11,16 @@ from flask import Flask
 app = Flask(__name__)
 api = Api(app)
 
+DIRECTORY_SERVER_ADDRESS = "x:y" #TODO implement later
+
 
 class FileServer(Resource):
-    def get(self):
+    def get(self, requested_file:
         return {"Hello": "World"}
 
-    def post(self):
+    def post(self, requested_file):
         # TODO implement what this does
-        # no content to return
-        return "", 204
+        return "", # no content to return
 
 
 # this adds a url handle for the FileServer
