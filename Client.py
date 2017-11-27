@@ -16,8 +16,9 @@ def print_to_console(message):
 
 
 def get_filename_from_user():
-    file_path = raw_input("\nEnter file path, including filename: ")
-    return file_path
+    file_path = raw_input("\nEnter file path: ")
+    file_name = raw_input("\nEnter file name at this path: ")
+    return file_path, file_name
 
 
 def main():
@@ -28,17 +29,17 @@ def main():
             user_input = raw_input(
                 "Select option:\n1) Read a file from the server \n2) Open file from server \n3) Write file to server\n4) Close a file \n5) Kill client\n\n")
             if user_input == "1":
-                file_path = get_filename_from_user()
-                CLIENT_API.read_file(file_path)
+                file_path, file_name = get_filename_from_user()
+                CLIENT_API.read_file(file_path, file_name)
             elif user_input == '2':
-                file_path = get_filename_from_user()
-                CLIENT_API.open_file(file_path)
+                file_path, file_name = get_filename_from_user()
+                CLIENT_API.open_file(file_path, file_name)
             elif user_input == '3':
-                file_path = get_filename_from_user()
-                CLIENT_API.write_file(file_path)
+                file_path, file_name = get_filename_from_user()
+                CLIENT_API.write_file(file_path, file_name)
             elif user_input == '4':
-                file_path = get_filename_from_user()
-                CLIENT_API.close_file(file_path)
+                file_path, file_name = get_filename_from_user()
+                CLIENT_API.close_file(file_path, file_name)
             elif user_input == '5':
                 running = False
             else:

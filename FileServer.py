@@ -1,3 +1,8 @@
+#
+# A RESTful server implementation. Modelling an NFS fileserver.
+# Will use get and post requests with HTTP response codes.
+#
+
 import sys
 from flask_restful import Resource, Api
 from flask import Flask
@@ -8,11 +13,14 @@ api = Api(app)
 
 class FileServer(Resource):
     def get(self):
-        return {"Hello": "World"}
+        return {"Hello": "World"}, 200
+
     def post(self):
         return 0
 
+
 # this adds a url handle for the FileServer
+# TODO generate some sort of an ID, since we may have multiple fileservers eventually
 api.add_resource(FileServer, '/')
 
 if __name__ == "__main__":
