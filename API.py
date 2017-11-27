@@ -4,16 +4,27 @@
 #
 
 import os, sys
+import flask
+import flask_restful
 
 
-def read_file():
+# download a copy of the file
+# should inform lock server of the fact that it has a copy
+def read_file(file_path):
     # placeholder
 
-def write_file():
+
+# upload a changed copy of the file
+# should inform the lock server of the fact that it is updating a copy
+def write_file(file_path):
     # placeholder
 
-def open_file():
+
+# check the file exists on the fileserver, as such
+def open_file(file_path):
     # placeholder
 
-def close_file():
+
+# doesn't really do anything effective (from what I can see)
+def close_file(file_path):
     # placeholder
