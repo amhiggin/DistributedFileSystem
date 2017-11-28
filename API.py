@@ -12,6 +12,7 @@ import FileManipAPI as FILE_API
 from sys import platform as _platform
 
 
+# opens file in windows or linux default system text editor
 def open_file_in_text_editor(full_file_path):
     if _platform == "linux" or _platform == "linux2":
         os.system('%s %s' % (os.getenv('EDITOR'), full_file_path))
@@ -19,6 +20,7 @@ def open_file_in_text_editor(full_file_path):
         os.system("start " + full_file_path)
 
 
+# create a url to query
 def create_url(ip, port, args):
     return "http://" + ip + ":" + port + "/" + args
 
@@ -51,7 +53,3 @@ def open_file(file_path, file_name):
 def close_file(file_path, file_name):
     print "Request to close " + file_path + ", " + file_name
     # NOT implemented yet
-
-
-def main():
-    return 0
