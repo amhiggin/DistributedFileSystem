@@ -23,8 +23,8 @@ def open_file_in_text_editor(full_file_path):
 
 
 # create a url to query
-def create_url(ip, port, args):
-    return "http://" + ip + ":" + port + "/" + args
+def create_url(ip, port):
+    return "http://" + ip + ":" + port
 
 # download a copy of the file from the file-server
 # should inform lock server of the fact that it has a copy
@@ -33,7 +33,7 @@ def read_file(file_path, file_name):
     print "Request to read " + file_path + "/" + file_name
 
     # get whatever is available on hardcoded single fileserver URL
-    response = requests.get(create_url("127.0.0.1", "45678", {file_path, file_name}))
+    response = requests.get(create_url("127.0.0.1", "45678") , file_name)
     return response.json()['data'].strip()
 
 
