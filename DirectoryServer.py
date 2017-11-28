@@ -10,6 +10,7 @@ import DirectoryServerAPI as API
 
 CONNECTED_FILESERVERS = {}
 FILE_NAMES_ON_RECORD = {} # maybe don't need this
+# TODO look into using a DB to store the key-value pairs?
 
 app = Flask(__name__)
 api = Api(app)
@@ -25,7 +26,7 @@ class DirectoryServer(Resource):
 
     def post(self, requested_file):
         # TODO implement what this does
-        return "", # no content to return
+        return "" # no content to return
 
 
 # this adds a url handle for the Directory Server

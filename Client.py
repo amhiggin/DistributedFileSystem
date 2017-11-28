@@ -8,11 +8,12 @@ import ClientAPI as CLIENT_API
 
 NEWLINE_CHAR = "\n"
 ROOT_DIR = "Client/"
+CLIENT_ID = ""
 running = True
 
 
 def print_to_console(message):
-    print("Client:  " + message)
+    print ("Client%s: %s%s" % (CLIENT_ID, message, NEWLINE_CHAR))
 
 
 def get_filename_from_user():

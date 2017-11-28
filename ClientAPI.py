@@ -72,12 +72,15 @@ def get_file_mapping_from_directory_server(file_path, file_name):
 #plcaeholder lock server methods
 # NOTE: assumes that we have got the mapping for the file first
 def acquire_lock_on_file(file_id):
+    print "In acquire lock method"
     # does a put request to the lock server
 
 def release_lock_on_file(file_id):
+    print "In release lock method"
     # does a delete request to the lock server
 
 def check_lock_on_file(file_id):
+    print "In check lock on file method"
     # does a get request to the lock server to see whether the file  is locked
 
 
