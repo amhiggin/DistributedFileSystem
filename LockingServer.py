@@ -13,15 +13,20 @@ class LockingServer(Resource):
 
     # we want to put a value in the lookup table
     def put(self, requested_file_id):
-        print ' In lock server put method'
-        # add an index for this file
-        # LOCKED_FILES[requested_file_id] = True
+        print 'In lock server put method - trying to acquire the lock for the file'
+        # add some conditional logic
+        LOCKED_FILES[requested_file_id] = True
 
     # we want to delete a value from the lookup table
     def delete(self, requested_file_id):
         # TODO implement what this does
-        # LOCKED_FILES[requested_file_id] = False
+        print 'In lock server delete method - trying to release the lock for the file'
+        LOCKED_FILES[requested_file_id] = False
         return "", # no content to return
+
+    def get(self, requested_file_id):
+        # Return whether or not a paricular file is locked
+        print 'In lock server get method: checking whether file is locked or not'
 
 
 # this adds a url handle for the Locking Server

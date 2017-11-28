@@ -19,7 +19,7 @@ class FileServer(Resource):
 
     def get(self, requested_file_id):
         #will read the data out to the requesting node
-        return {"response": "insert file contents here"}
+        return {"data": "insert file contents here"}
 
     def post(self, requested_file_id):
         # will write the incoming request data to the fileserver version of the file
