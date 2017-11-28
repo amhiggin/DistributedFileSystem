@@ -12,14 +12,15 @@ LOCKED_FILES = {}
 class LockingServer(Resource):
 
     # we want to put a value in the lookup table
-    def put(self, requested_file):
+    def put(self, requested_file_id):
         print ' In lock server put method'
         # add an index for this file
-        # LOCKED_FILES[i] = True
+        # LOCKED_FILES[requested_file_id] = True
 
     # we want to delete a value from the lookup table
-    def delete(self, requested_file):
+    def delete(self, requested_file_id):
         # TODO implement what this does
+        # LOCKED_FILES[requested_file_id] = False
         return "", # no content to return
 
 

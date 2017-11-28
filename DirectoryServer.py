@@ -1,3 +1,9 @@
+#
+# Directory server manages the mappings and distribution of files across file-servers.
+# Files should be given an id from a hash-function, and stored in the table
+# This will enable lookups between the incoming requested filename, and the id of the file on the file-servers
+# Available at http://127.0.0.1:5000
+#
 from flask_restful import Resource, Api
 from flask import Flask
 

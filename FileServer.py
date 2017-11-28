@@ -11,15 +11,18 @@ from flask import Flask
 app = Flask(__name__)
 api = Api(app)
 
-DIRECTORY_SERVER_ADDRESS = "x:y" #TODO implement later
+# Directory server started at default Flask address for ease
+DIRECTORY_SERVER_ADDRESS = "http://127.0.0.1:5000"
 
 
 class FileServer(Resource):
-    def get(self, requested_file:
-        return {"Hello": "World"}
 
-    def post(self, requested_file):
-        # TODO implement what this does
+    def get(self, requested_file_id):
+        #will read the data out to the requesting node
+        return {"response": "insert file contents here"}
+
+    def post(self, requested_file_id):
+        # will write the incoming request data to the fileserver version of the file
         return "", # no content to return
 
 
