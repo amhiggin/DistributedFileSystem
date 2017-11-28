@@ -1,6 +1,6 @@
 #
 # A RESTful server implementation. Modelling an NFS fileserver.
-# Will use get and post requests with HTTP response codes.
+# Uses HTTP requests.
 # The fileserver should know where to find the directory server.
 #
 
@@ -19,6 +19,7 @@ class FileServer(Resource):
 
     def get(self, requested_file_id):
         #will read the data out to the requesting node
+        if
         return {"data": "insert file contents here"}
 
     def post(self, requested_file_id):
@@ -27,7 +28,7 @@ class FileServer(Resource):
 
 
 # this adds a url handle for the FileServer
-# TODO generate some sort of an ID, since we may have multiple fileservers eventually
+# TODO generate some sort of an ID, since we may have multiple file servers eventually
 api.add_resource(FileServer, '/')
 
 if __name__ == "__main__":

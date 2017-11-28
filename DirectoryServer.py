@@ -6,6 +6,10 @@
 #
 from flask_restful import Resource, Api
 from flask import Flask
+import DirectoryServerAPI as API
+
+CONNECTED_FILESERVERS = {}
+FILE_NAMES_ON_RECORD = {} # maybe don't need this
 
 app = Flask(__name__)
 api = Api(app)
@@ -14,7 +18,10 @@ api = Api(app)
 class DirectoryServer(Resource):
 
     def get(self, requested_file):
-        return {"Hello": "World"}
+        # need to generate an id for this file
+        # must put through a hash function and store in a lookuptable
+        hash_value = API.get_lookup_value(requested_file)
+        return {"file_id": hash_value}
 
     def post(self, requested_file):
         # TODO implement what this does

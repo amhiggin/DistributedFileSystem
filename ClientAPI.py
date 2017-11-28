@@ -11,6 +11,8 @@ import requests
 import FileManipAPI as FILE_API
 from sys import platform as _platform
 
+# Directory server started at default Flask address for ease
+DIRECTORY_SERVER_ADDRESS = "http://127.0.0.1:5000"
 
 # opens file in windows or linux default system text editor
 def open_file_in_text_editor(full_file_path):
@@ -57,11 +59,14 @@ def close_file(file_path, file_name):
 # -----------------#
 
 # Placeholder directory server methods
-def get_file_mapping_from_directory_server(file_path, file_id):
+def get_file_mapping_from_directory_server(file_path, file_name):
     # make a get call to the directory server at the URL
     # response should be an id corresponding to this file
-
-
+    print "Client wants to get file mapping for " + file_path + "/" + file_name + " from directory server"
+    response = requests.get(DIRECTORY_SERVER_ADDRESS, {file_path, file_name})
+    file_id = response.json()['file_id'].strip()
+    print "File id returned was: " + file_id
+    return file_id
 #------------------#
 
 #plcaeholder lock server methods

@@ -4,7 +4,7 @@
 # Should be able to access the requested files by doing through the required servers.
 #
 import os, sys
-import API as CLIENT_API
+import ClientAPI as CLIENT_API
 
 NEWLINE_CHAR = "\n"
 ROOT_DIR = "Client/"
