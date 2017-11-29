@@ -50,11 +50,13 @@ def write_file(file_path, file_name):
     contents_to_write = open(file_name, 'r').read()
 
     # TODO this should at some stage return the machine on which the file is located, and its id
-    # TODO Should also handle case where it isn't on any server
-    fileserver_ip, fileserver_port, server_id, file_id = file_api.get_file_mapping_from_directory_server(file_path, file_name)
-    response = requests.post(file_api.create_url(fileserver_ip, fileserver_port, ""), json={'file_id': file_name, 'data': contents_to_write})
-    # no response needed from post
-    print 'Response: ' + response.json()
+    server_address, server_id, file_id = file_api.get_file_mapping_from_directory_server(file_path, file_name)
+    if server_address is not None:
+        response = requests.post(file_api.create_url(str(server_address).split(':')[0], str(server_address).split(':')[1], ""), json={'file_id': file_name, 'data': contents_to_write})
+        print 'Response: ' + response.json()
+    else:
+        # FIXME - this could actually handle file creation if we wanted
+        print 'Could not write to {0}: file does not exist on a server'.format(full_file_path)
 
 
 # TODO implement
