@@ -36,10 +36,10 @@ def get_server_file_details(file_name):
 class DirectoryServer(Resource):
 
     def get(self):
-        file_name = 
-        print_to_console("File {0} requested to get ".format(requested_file))
+        file_name =  request.json['file_name']
+        print_to_console("File {0} requested to get ".format(file_name))
         # TODO look at generating the file_id using a hash function
-        server_address, server_id, file_id = get_server_file_details(requested_file)
+        server_address, server_id, file_id = get_server_file_details(file_name)
         return {'file_server_address': server_address, 'file_server_id': server_id, 'file_id': file_id}
 
     def post(self, requested_file):
