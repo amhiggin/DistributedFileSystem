@@ -31,7 +31,7 @@ def read_file(file_path, file_name):
     print "Request to read " + file_path + "/" + file_name
 
     full_file_path = file_path + "/" + file_name
-    response = requests.get(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), params=full_file_path)
+    response = requests.get(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), json={"file_name":file_name})
     file_to_open = open(full_file_path, 'w')
     file_to_open.write(response.json())
     open_file_in_text_editor(full_file_path)
@@ -90,3 +90,4 @@ def release_lock_on_file(file_id):
 def check_lock_on_file(file_id):
     print "In check lock on file method"
     # does a get request to the lock server to see whether the file  is locked
+

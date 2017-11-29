@@ -35,8 +35,9 @@ def get_server_file_details(file_name):
 
 class DirectoryServer(Resource):
 
-    def get(self, requested_file):
-        print_to_console("File {0} requested to get".format(requested_file))
+    def get(self):
+        file_name = 
+        print_to_console("File {0} requested to get ".format(requested_file))
         # TODO look at generating the file_id using a hash function
         server_address, server_id, file_id = get_server_file_details(requested_file)
         return {'file_server_address': server_address, 'file_server_id': server_id, 'file_id': file_id}
