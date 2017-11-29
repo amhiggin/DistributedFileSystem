@@ -29,6 +29,8 @@ def get_server_file_details(file_name):
         file_id, server_id = FILE_NAMES_ON_RECORD[str(file_name)]
         server_address = CONNECTED_FILESERVERS_BY_ID[server_id]
         return server_address, server_id, file_id
+    else
+        return None, None, None
 
 
 class DirectoryServer(Resource):
