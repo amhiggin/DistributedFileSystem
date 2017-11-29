@@ -15,10 +15,11 @@ api = Api(app)
 # Directory server started at default Flask address for ease
 DIRECTORY_SERVER_ADDRESS = ("127.0.0.1", 5000)
 LOCKING_SERVER_ADDRESS = "" # TODO @Amber
+SERVER_ID = ""
 
 
 def print_to_console(message):
-    print ("FileServer: %s%s" % (message, '\n'))
+    print ("FileServer%s: %s%s" % (SERVER_ID, message, '\n'))
 
 
 class FileServer(Resource):
@@ -55,19 +56,16 @@ api.add_resource(FileServer, '/')
 
 
 if __name__ == "__main__":
-    print_to_console("Hello, I'm a Fileserver!")
+    print_to_console("Hello, I'm a Fileserver! Lets register with the directory server...")
     if len(sys.argv) == 3:
         if os.environ.get("WERKZEUG_RUN_MAIN") == 'true':
             print_to_console("Correct args passed: {0}:{1}".format(sys.argv[1], sys.argv[2]))
-            print "sending request to directory server"
-            print "arg1 {} arg2 {}".format( sys.argv[1],  sys.argv[2])
+            print_to_console("sending request to directory server")
             url =  file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1],"register_fileserver")
-            print "url: " + str(url)
-            response = requests.post(
-                url,
-                json={'ip': sys.argv[1], "port": sys.argv[2]}
-            )
-            print_to_console("Posted request to directory server")
+            print_to_console("Connecting to {0}".format(str(url)))
+            response = requests.post(url, json={'ip': sys.argv[1], "port": sys.argv[2]})
+            SERVER_ID = response.json()['server_id']
+            print_to_console("Successfully registered as server {0}".format(SERVER_ID))
         app.run(debug=True, host=sys.argv[1], port=int(sys.argv[2]))
 else:
     print_to_console("IP address and port weren't entered for the fileserver: cannot launch")

@@ -72,6 +72,7 @@ class RegisterFileserverInstance(Resource):
         # print
         print_to_console("NEW FILESERVER REGISTERED AT: {0}:{1}/".format(server_ip, server_port))
         print_to_console("SERVER ID ASSIGNED AS {0}\nFILESERVER {0} READY TO SERVE!".format(server_id))
+        return {'server_id': server_id}
 
 # this adds a url handle for the Directory Server
 api.add_resource(DirectoryServer, '/')
