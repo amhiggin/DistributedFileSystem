@@ -30,13 +30,14 @@ def open_file_in_text_editor(full_file_path):
 def read_file(file_path, file_name):
     print "Request to read " + file_path + "/" + file_name
 
-    # get whatever is available on hardcoded single fileserver URL
     full_file_path = file_path + "/" + file_name
-    response = requests.get(file_api.create_url("127.0.0.1", "45678"), full_file_path)
+    response = requests.get(DIRECTORY_SERVER_ADDRESS, params=full_file_path)
     file_to_open = open(full_file_path, 'w')
     file_to_open.write(response.json())
     open_file_in_text_editor(full_file_path)
-    return response.json()['data'].strip()
+
+    # return the data that we fetched
+    return response.json()['data']
 
 
 # upload a changed copy of the file
@@ -44,9 +45,16 @@ def read_file(file_path, file_name):
 def write_file(file_path, file_name):
     full_file_path = file_path + "/" + file_name
     print "Request to write " + full_file_path
+    # open file for writing
     open_file_in_text_editor(full_file_path)
-    requests.post(file_api.create_url("127.0.0.1", "45678"), json={'data': contents_to_write})
+    contents_to_write = open(file_name, 'r').read()
+
+    # TODO this should at some stage return the machine on which the file is located, and its id
+    # TODO Should also handle case where it isn't on any server
+    fileserver_ip, fileserver_port, server_id, file_id = file_api.get_file_mapping_from_directory_server(file_path, file_name)
+    response = requests.post(file_api.create_url(fileserver_ip, fileserver_port), json={'file_id': file_name, 'data': contents_to_write})
     # no response needed from post
+    print 'Response: ' + response.json()
 
 
 # check the file exists on the fileserver, as such
@@ -59,19 +67,6 @@ def open_file(file_path, file_name):
 def close_file(file_path, file_name):
     print "Request to close " + file_path + "/" + file_name
     # NOT implemented yet
-
-
-# -----------------#
-
-# Placeholder directory server methods
-def get_file_mapping_from_directory_server(file_path, file_name):
-    # make a get call to the directory server at the URL
-    # response should be an id corresponding to this file
-    print "Client wants to get file mapping for " + file_path + "/" + file_name + " from directory server"
-    response = requests.get(DIRECTORY_SERVER_ADDRESS, {file_path, file_name})
-    file_id = response.json()['file_id'].strip()
-    print "File id returned was: " + file_id
-    return file_id
 
 
 # ------------------#

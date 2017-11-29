@@ -13,6 +13,11 @@ api = Api(app)
 
 # Directory server started at default Flask address for ease
 DIRECTORY_SERVER_ADDRESS = "http://127.0.0.1:5000"
+SERVER_ID = ""
+
+
+def print_to_console(message):
+    print ("FileServer%s: %s%s" % (SERVER_ID, message, '\n'))
 
 
 class FileServer(Resource):
