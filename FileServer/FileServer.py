@@ -30,7 +30,7 @@ class FileServer(Resource):
         with open(requested_file_id, 'r+') as edit_file:
             edit_file.write(file_edits)
             final_version = edit_file.read()
-        return {'file': final_version}
+        return {'data': final_version}
 
 
 # this adds a url handle for the FileServer

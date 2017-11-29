@@ -8,6 +8,7 @@ import os, sys
 import flask
 import flask_restful
 import requests
+import json
 import FileManipAPI as file_api
 from sys import platform as _platform
 
@@ -40,9 +41,10 @@ def read_file(file_path, file_name):
 
 # upload a changed copy of the file
 # should inform the lock server of the fact that it is updating a copy
-def write_file(file_path, file_name, contents_to_write):
+def write_file(file_path, file_name):
     full_file_path = file_path + "/" + file_name
     print "Request to write " + full_file_path
+    open_file_in_text_editor(full_file_path)
     requests.post(file_api.create_url("127.0.0.1", "45678"), json={'data': contents_to_write})
     # no response needed from post
 
@@ -58,6 +60,7 @@ def close_file(file_path, file_name):
     print "Request to close " + file_path + "/" + file_name
     # NOT implemented yet
 
+
 # -----------------#
 
 # Placeholder directory server methods
@@ -69,9 +72,11 @@ def get_file_mapping_from_directory_server(file_path, file_name):
     file_id = response.json()['file_id'].strip()
     print "File id returned was: " + file_id
     return file_id
-#------------------#
 
-#placeholder lock server methods
+
+# ------------------#
+
+# placeholder lock server methods
 # NOTE: assumes that we have got the mapping for the file first
 def acquire_lock_on_file(file_id):
     print "In acquire lock method"
@@ -86,5 +91,3 @@ def release_lock_on_file(file_id):
 def check_lock_on_file(file_id):
     print "In check lock on file method"
     # does a get request to the lock server to see whether the file  is locked
-
-
