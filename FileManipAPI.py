@@ -15,8 +15,8 @@ def create_root_dir_if_not_exists(root_path):
 
 
 # create a url to query
-def create_url(ip, port):
-    return "http://{0}:{1}".format(ip, port)
+def create_url(ip, port, endpoint):
+    return "http://{0}:{1}/{2}".format(ip, port, endpoint)
 
 
 # This method fetches the details of the file and server on which it is stored
@@ -30,3 +30,9 @@ def get_file_mapping_from_directory_server(file_path, file_name):
     file_id = response.json['file_id']
 
     return file_server_address, file_server_id, file_id
+
+
+# gets a name for the file, equal to the file id
+def get_serverside_file_name_by_id(file_id):
+    return str(file_id) + '.txt'
+

@@ -1,37 +1,43 @@
 #
 # A RESTful server implementation. Modelling an NFS fileserver.
-# Uses HTTP requests.
-# The fileserver should know where to find the directory server.
+# Managed and load-balanced by the directory server, which is available at a defined address.
 #
 
 import sys
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 from flask import Flask, request
+import FileManipAPI as file_api
 
 app = Flask(__name__)
 api = Api(app)
 
 # Directory server started at default Flask address for ease
 DIRECTORY_SERVER_ADDRESS = "http://127.0.0.1:5000"
-SERVER_ID = ""
 
 
-def print_to_console(message):
-    print ("FileServer%s: %s%s" % (SERVER_ID, message, '\n'))
+def print_to_console(self, message):
+    print ("FileServer%s: %s%s" % (self.parser.parse_args()['file_id'], message, '\n'))
 
 
 class FileServer(Resource):
 
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        # the server id should be assigned by the directory server
+        self.parser.add_argument('server_id')
+
+
     def get(self, requested_file_id):
         # will read the data out to the requesting node
-        with open(requested_file_id, 'r') as in_file:
+        file_name = file_api.get_serverside_file_name_by_id(requested_file_id)
+        with open(file_name, 'r') as in_file:
             file_text = in_file.read()
         return {'data': file_text}
 
     def post(self, requested_file_id):
         # will write the incoming request data to the fileserver version of the file
         file_edits = request.form['data']
-        print 'Edits to file: ' + file_edits
+        print_to_console(self, file_edits)
         with open(requested_file_id, 'r+') as edit_file:
             edit_file.write(file_edits)
             final_version = edit_file.read()

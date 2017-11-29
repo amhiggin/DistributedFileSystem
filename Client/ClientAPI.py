@@ -52,17 +52,19 @@ def write_file(file_path, file_name):
     # TODO this should at some stage return the machine on which the file is located, and its id
     # TODO Should also handle case where it isn't on any server
     fileserver_ip, fileserver_port, server_id, file_id = file_api.get_file_mapping_from_directory_server(file_path, file_name)
-    response = requests.post(file_api.create_url(fileserver_ip, fileserver_port), json={'file_id': file_name, 'data': contents_to_write})
+    response = requests.post(file_api.create_url(fileserver_ip, fileserver_port, ""), json={'file_id': file_name, 'data': contents_to_write})
     # no response needed from post
     print 'Response: ' + response.json()
 
 
+# TODO implement
 # check the file exists on the fileserver, as such
 def open_file(file_path, file_name):
     print "Request to open " + file_path + "/" + file_name
     # NOT implemented yet
 
 
+# TODO implement
 # doesn't really do anything effective (from what I can see)
 def close_file(file_path, file_name):
     print "Request to close " + file_path + "/" + file_name
