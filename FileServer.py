@@ -18,7 +18,7 @@ DIRECTORY_SERVER_ADDRESS = "http://127.0.0.1:5000"
 class FileServer(Resource):
 
     def get(self, requested_file_id):
-        #will read the data out to the requesting node
+        # will read the data out to the requesting node
         with open(requested_file_id, 'r') as in_file:
             file_text = in_file.read()
         return {'data': file_text}
@@ -29,7 +29,7 @@ class FileServer(Resource):
         print 'Edits to file: ' + file_edits
         with open(requested_file_id, 'r+') as edit_file:
             edit_file.write(file_edits)
-        return "", # no content to return
+        return "", 504  # no content to return
 
 
 # this adds a url handle for the FileServer

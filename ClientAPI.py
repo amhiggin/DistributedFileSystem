@@ -35,14 +35,19 @@ def read_file(file_path, file_name):
     print "Request to read " + file_path + "/" + file_name
 
     # get whatever is available on hardcoded single fileserver URL
-    response = requests.get(create_url("127.0.0.1", "45678") , file_name)
+    full_file_path = file_path + "/" + file_name
+    response = requests.get(create_url("127.0.0.1", "45678"), full_file_path)
+    file_to_open = open(full_file_path, 'w')
+    file_to_open.write(response.json())
+    open_file_in_text_editor(full_file_path)
     return response.json()['data'].strip()
 
 
 # upload a changed copy of the file
 # should inform the lock server of the fact that it is updating a copy
 def write_file(file_path, file_name, contents_to_write):
-    print "Request to write " + file_path + "/" + file_name
+    full_file_path = file_path + "/" + file_name
+    print "Request to write " + full_file_path
     requests.post(create_url("127.0.0.1", "45678", ""), json={'data': contents_to_write})
     # no response needed from post
 
