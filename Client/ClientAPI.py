@@ -13,7 +13,7 @@ import FileManipAPI as file_api
 from sys import platform as _platform
 
 # Directory server started at default Flask address for ease
-DIRECTORY_SERVER_ADDRESS = {"http://127.0.0.1", "5000"}
+DIRECTORY_SERVER_ADDRESS = ("127.0.0.1", 5000)
 
 
 # opens file in windows or linux default system text editor

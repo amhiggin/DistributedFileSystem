@@ -54,11 +54,15 @@ class DirectoryServer(Resource):
 
 class RegisterFileserverInstance(Resource):
 
-    def post(self, request):
+    def post(self):
         global FILESERVER_LOAD
+        print "register file server"
         # get server properties
-        server_ip = request.json()['ip']
-        server_port = request.json()['port']
+        request_contents = request.get_json()
+        server_ip = request_contents['ip']
+        print "ip" + server_ip
+        server_port = request_contents['port']
+        print "port " + server_port
         server_id = len(CONNECTED_FILESERVERS_BY_ID)
 
         # make record of file server with directory server
@@ -66,7 +70,7 @@ class RegisterFileserverInstance(Resource):
         FILESERVER_LOAD[server_id] = 0
 
         # print
-        print_to_console("NEW FILESERVER REGISTERED AT: https://{0}:{1}/".format(server_ip, server_port))
+        print_to_console("NEW FILESERVER REGISTERED AT: {0}:{1}/".format(server_ip, server_port))
         print_to_console("SERVER ID ASSIGNED AS {0}\nFILESERVER {0} READY TO SERVE!".format(server_id))
 
 # this adds a url handle for the Directory Server
