@@ -13,7 +13,7 @@ import FileManipAPI as file_api
 from sys import platform as _platform
 
 # Directory server started at default Flask address for ease
-DIRECTORY_SERVER_ADDRESS = "http://127.0.0.1:5000"
+DIRECTORY_SERVER_ADDRESS = {"http://127.0.0.1", "5000"}
 
 
 # opens file in windows or linux default system text editor
@@ -31,7 +31,7 @@ def read_file(file_path, file_name):
     print "Request to read " + file_path + "/" + file_name
 
     full_file_path = file_path + "/" + file_name
-    response = requests.get(DIRECTORY_SERVER_ADDRESS, params=full_file_path)
+    response = requests.get(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), params=full_file_path)
     file_to_open = open(full_file_path, 'w')
     file_to_open.write(response.json())
     open_file_in_text_editor(full_file_path)

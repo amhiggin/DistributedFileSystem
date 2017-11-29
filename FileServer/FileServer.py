@@ -3,21 +3,23 @@
 # Managed and load-balanced by the directory server, which is available at a defined address.
 #
 
-import sys
+import sys, requests, json, os
 from flask_restful import Resource, Api, reqparse
 from flask import Flask, request
+from pip._vendor import requests
+
 import FileManipAPI as file_api
 
 app = Flask(__name__)
 api = Api(app)
 
 # Directory server started at default Flask address for ease
-DIRECTORY_SERVER_ADDRESS = "http://127.0.0.1:5000"
+DIRECTORY_SERVER_ADDRESS = {"http://127.0.0.1", "5000"}
 LOCKING_SERVER_ADDRESS = "" # TODO @Amber
 
 
-def print_to_console(self, message):
-    print ("FileServer%s: %s%s" % (self.parser.parse_args()['file_id'], message, '\n'))
+def print_to_console(message):
+    print ("FileServer: %s%s" % (message, '\n'))
 
 
 class FileServer(Resource):
@@ -52,5 +54,17 @@ class FileServer(Resource):
 # TODO generate some sort of an ID, since we may have multiple file servers eventually
 api.add_resource(FileServer, '/')
 
+
 if __name__ == "__main__":
-    app.run(debug=True, port=int(sys.argv[1]))
+    print_to_console("Hello, I'm a Fileserver!")
+    if len(sys.argv) == 3:
+        print_to_console("Correct args passed: {0}:{1}".format(sys.argv[1], sys.argv[2]))
+        if os.environ.get("WERKZEUG_RUN_MAIN") == 'true':
+            response = requests.post(
+                file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1],"register_fileserver"),
+                json={'ip': sys.argv[1], "port": sys.argv[2]}
+            )
+            print_to_console("Posted request to directory server")
+            app.run(debug=True, host=int(sys.argv[1]), port=int(sys.argv[2]))
+    else:
+        print_to_console("IP address and port weren't entered for the fileserver: cannot launch")

@@ -52,9 +52,9 @@ class DirectoryServer(Resource):
             return None, None, None
 
 
-class SetupFileserverInstance(Resource):
+class RegisterFileserverInstance(Resource):
 
-    def post(self):
+    def post(self, request):
         global FILESERVER_LOAD
         # get server properties
         server_ip = request.json()['ip']
@@ -66,12 +66,12 @@ class SetupFileserverInstance(Resource):
         FILESERVER_LOAD[server_id] = 0
 
         # print
-        print_to_console("NEW FILESERVER SPAWNED AT: https://{0}:{1}/".format(server_ip, server_port))
+        print_to_console("NEW FILESERVER REGISTERED AT: https://{0}:{1}/".format(server_ip, server_port))
         print_to_console("SERVER ID ASSIGNED AS {0}\nFILESERVER {0} READY TO SERVE!".format(server_id))
 
 # this adds a url handle for the Directory Server
 api.add_resource(DirectoryServer, '/')
-api.add_Resource(SetupFileserverInstance, '/spawn_fileserver/')
+api.add_resource(RegisterFileserverInstance, '/register_fileserver')
 
 if __name__ == "__main__":
     app.run(debug=True)
