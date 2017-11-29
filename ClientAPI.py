@@ -23,11 +23,6 @@ def open_file_in_text_editor(full_file_path):
         os.system("start " + full_file_path)
 
 
-# create a url to query
-def create_url(ip, port):
-    return "http://" + ip + ":" + port
-
-
 # download a copy of the file from the file-server
 # should inform lock server of the fact that it has a copy
 # TODO will need to add this file to the list of locked files
@@ -36,7 +31,7 @@ def read_file(file_path, file_name):
 
     # get whatever is available on hardcoded single fileserver URL
     full_file_path = file_path + "/" + file_name
-    response = requests.get(create_url("127.0.0.1", "45678"), full_file_path)
+    response = requests.get(file_api.create_url("127.0.0.1", "45678"), full_file_path)
     file_to_open = open(full_file_path, 'w')
     file_to_open.write(response.json())
     open_file_in_text_editor(full_file_path)
@@ -48,7 +43,7 @@ def read_file(file_path, file_name):
 def write_file(file_path, file_name, contents_to_write):
     full_file_path = file_path + "/" + file_name
     print "Request to write " + full_file_path
-    requests.post(create_url("127.0.0.1", "45678", ""), json={'data': contents_to_write})
+    requests.post(file_api.create_url("127.0.0.1", "45678"), json={'data': contents_to_write})
     # no response needed from post
 
 
