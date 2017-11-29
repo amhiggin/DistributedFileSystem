@@ -4,7 +4,8 @@
 # Should be able to access the requested files by doing through the required servers.
 #
 import os, sys
-import ClientAPI as CLIENT_API
+import ClientAPI as client_api
+import FileManipAPI as file_api
 
 NEWLINE_CHAR = "\n"
 ROOT_DIR = "Client/"
@@ -29,22 +30,23 @@ def format_file_path(file_path):
 def main():
     global running
     print_to_console("Hello world from client!")
+    file_api.create_root_dir_if_not_exists(ROOT_DIR);
     while running:
         try:
             user_input = raw_input(
                 "Select option:\n1) Read a file from the server \n2) Open file from server \n3) Write file to server\n4) Close a file \n5) Kill client\n\n")
             if user_input == "1":
                 file_path, file_name = get_filename_from_user()
-                print_to_console(CLIENT_API.read_file(format_file_path(file_path), file_name))
+                print_to_console(client_api.read_file(format_file_path(file_path), file_name))
             elif user_input == '2':
                 file_path, file_name = get_filename_from_user()
-                print_to_console(CLIENT_API.open_file(format_file_path(file_path), file_name))
+                print_to_console(client_api.open_file(format_file_path(file_path), file_name))
             elif user_input == '3':
                 file_path, file_name = get_filename_from_user()
-                print_to_console(CLIENT_API.write_file(format_file_path(file_path), file_name))
+                print_to_console(client_api.write_file(format_file_path(file_path), file_name))
             elif user_input == '4':
                 file_path, file_name = get_filename_from_user()
-                print_to_console(CLIENT_API.close_file(format_file_path(file_path), file_name))
+                print_to_console(client_api.close_file(format_file_path(file_path), file_name))
             elif user_input == '5':
                 running = False
             else:
