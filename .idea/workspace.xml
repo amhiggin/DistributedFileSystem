@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="412b1a9a-9cff-49c9-acea-7ddb722bdbc5" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client/ClientAPI.py" afterPath="$PROJECT_DIR$/Client/ClientAPI.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FileManipAPI.py" afterPath="$PROJECT_DIR$/FileManipAPI.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FileServer/FileServer.py" afterPath="$PROJECT_DIR$/FileServer/FileServer.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -37,11 +35,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FileServer.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="FileServer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/FileServer/FileServer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="527">
-              <caret line="31" column="59" lean-forward="false" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="59" />
+            <state relative-caret-position="649">
+              <caret line="41" column="24" lean-forward="true" selection-start-line="41" selection-start-column="24" selection-end-line="41" selection-end-column="24" />
               <folding>
                 <element signature="e#163#173#0" expanded="true" />
               </folding>
@@ -69,11 +67,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ClientAPI.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ClientAPI.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/ClientAPI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="544">
-              <caret line="71" column="0" lean-forward="true" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
+            <state relative-caret-position="833">
+              <caret line="55" column="28" lean-forward="true" selection-start-line="55" selection-start-column="28" selection-end-line="55" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -113,9 +111,9 @@
         <option value="$PROJECT_DIR$/DirectoryServer/__init__.py" />
         <option value="$PROJECT_DIR$/DirectoryServer/DirectoryServerAPI.py" />
         <option value="$PROJECT_DIR$/DirectoryServer/DirectoryServer.py" />
-        <option value="$PROJECT_DIR$/FileServer/FileServer.py" />
         <option value="$PROJECT_DIR$/FileManipAPI.py" />
         <option value="$PROJECT_DIR$/Client/ClientAPI.py" />
+        <option value="$PROJECT_DIR$/FileServer/FileServer.py" />
       </list>
     </option>
   </component>
@@ -444,16 +442,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/FileServer/FileServer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="31" column="59" lean-forward="false" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="59" />
-          <folding>
-            <element signature="e#163#173#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/FileManipAPI.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
@@ -466,9 +454,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Client/ClientAPI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="71" column="0" lean-forward="true" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
+        <state relative-caret-position="833">
+          <caret line="55" column="28" lean-forward="true" selection-start-line="55" selection-start-column="28" selection-end-line="55" selection-end-column="28" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/FileServer/FileServer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="649">
+          <caret line="41" column="24" lean-forward="true" selection-start-line="41" selection-start-column="24" selection-end-line="41" selection-end-column="24" />
+          <folding>
+            <element signature="e#163#173#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

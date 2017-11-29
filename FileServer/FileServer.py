@@ -13,6 +13,7 @@ api = Api(app)
 
 # Directory server started at default Flask address for ease
 DIRECTORY_SERVER_ADDRESS = "http://127.0.0.1:5000"
+LOCKING_SERVER_ADDRESS = "" # TODO @Amber
 
 
 def print_to_console(self, message):
@@ -24,12 +25,15 @@ class FileServer(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
         # the server id should be assigned by the directory server
+        # this id should also be the root dir
         self.parser.add_argument('server_id')
 
 
     def get(self, requested_file_id):
-        # will read the data out to the requesting node
-        file_name = file_api.get_serverside_file_name_by_id(requested_file_id)
+        # construct the filename from the server id and file id
+        server_id = self.parser.parse_args()['server_id']
+        file_name = server_id + "/" + file_api.get_serverside_file_name_by_id(requested_file_id)
+
         with open(file_name, 'r') as in_file:
             file_text = in_file.read()
         return {'data': file_text}
