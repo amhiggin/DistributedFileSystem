@@ -6,7 +6,7 @@
 
 import sys
 from flask_restful import Resource, Api
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 api = Api(app)
@@ -21,10 +21,14 @@ class FileServer(Resource):
         #will read the data out to the requesting node
         with open(requested_file_id, 'r') as in_file:
             file_text = in_file.read()
-        return {"data": file_text}
+        return {'data': file_text}
 
     def post(self, requested_file_id):
         # will write the incoming request data to the fileserver version of the file
+        file_edits = request.form['data']
+        print 'Edits to file: ' + file_edits
+        with open(requested_file_id, 'r+') as edit_file:
+            edit_file.write(file_edits)
         return "", # no content to return
 
 
