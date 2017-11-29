@@ -29,7 +29,8 @@ class FileServer(Resource):
         print 'Edits to file: ' + file_edits
         with open(requested_file_id, 'r+') as edit_file:
             edit_file.write(file_edits)
-        return "", 504  # no content to return
+            final_version = edit_file.read()
+        return {'file': final_version}
 
 
 # this adds a url handle for the FileServer

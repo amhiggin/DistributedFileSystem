@@ -22,6 +22,10 @@ def get_filename_from_user():
     return file_path, file_name
 
 
+def format_file_path(file_path):
+    return ROOT_DIR + "/" + file_path
+
+
 def main():
     global running
     print_to_console("Hello world from client!")
@@ -31,16 +35,16 @@ def main():
                 "Select option:\n1) Read a file from the server \n2) Open file from server \n3) Write file to server\n4) Close a file \n5) Kill client\n\n")
             if user_input == "1":
                 file_path, file_name = get_filename_from_user()
-                print_to_console(CLIENT_API.read_file(file_path, file_name))
+                print_to_console(CLIENT_API.read_file(format_file_path(file_path), file_name))
             elif user_input == '2':
                 file_path, file_name = get_filename_from_user()
-                print_to_console(CLIENT_API.open_file(file_path, file_name))
+                print_to_console(CLIENT_API.open_file(format_file_path(file_path), file_name))
             elif user_input == '3':
                 file_path, file_name = get_filename_from_user()
-                print_to_console(CLIENT_API.write_file(file_path, file_name))
+                print_to_console(CLIENT_API.write_file(format_file_path(file_path), file_name))
             elif user_input == '4':
                 file_path, file_name = get_filename_from_user()
-                print_to_console(CLIENT_API.close_file(file_path, file_name))
+                print_to_console(CLIENT_API.close_file(format_file_path(file_path), file_name))
             elif user_input == '5':
                 running = False
             else:
