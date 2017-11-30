@@ -23,10 +23,10 @@ def create_url(ip, port, endpoint):
 
 # This method fetches the details of the file and server on which it is stored
 def get_file_mapping_from_directory_server(file_path, file_name):
-    request = {'file_name': file_name}
-    response = requests.get(create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), params=request)
+    # TODO test whether we need the file_path too
+    response = requests.get(create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), json={"file_name": file_name})
 
-    # Response from directory server should provide all of these params
+    print 'Response from server: {0}'.format(str(response.json()))
     file_server_address = response.json['file_server_address']
     file_server_id = response.json['file_server_id']
     file_id = response.json['file_id']

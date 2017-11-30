@@ -9,7 +9,7 @@ import FileManipAPI as file_api
 
 NEWLINE_CHAR = "\n"
 ROOT_DIR = "Client"
-CLIENT_ID = "" # TODO figure out where this gets assigned
+CLIENT_ID = "" # TODO figure out where this gets assigned (probably directory server)
 running = True
 
 
@@ -50,7 +50,7 @@ def main():
             elif user_input == '5':
                 running = False
             else:
-                print_to_console("You said: " + user_input + ", which is invalid." + NEWLINE_CHAR)
+                print_to_console("You said: " + user_input + ", which is invalid. Give it another go!" + NEWLINE_CHAR)
         except Exception as e:
             print_to_console('An error occurred with handling the connection request')
             print_to_console(e.message)

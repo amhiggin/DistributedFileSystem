@@ -31,18 +31,17 @@ def read_file(file_path, file_name):
     print "Client requested to read " + file_path + "/" + file_name
 
     full_file_path = file_path + "/" + file_name
-    response = requests.get(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), json={"file_name":file_name})
-    print 'Response from server: {0}'.format(str(response.json()))
+    server_address, server_id, file_id = file_api.get_file_mapping_from_directory_server(file_path, file_name)
 
-    # TODO: the client needs to parse the file_id and other info
-    # then it needs to make a connection to the fileserver whose details were provided
-    # and request the file_id
-    # then it can get the contents to write to its own copy
+    # request the file from this file server
+    response = requests.get(
+        file_api.create_url(server_address[0], server_address[1]), params={'file_id': file_id, 'file_server_id': server_id})
 
-    print 'Opening file locally to update with response contents'
-    file_to_open = open(full_file_path, 'w')
-    file_to_open.write(response.json())
-    open_file_in_text_editor(full_file_path)
+    if response is not None: # TODO test this
+        print 'Opening file locally to update with response contents'
+        file_to_open = open(full_file_path, 'w')
+        file_to_open.write(response.json())
+        open_file_in_text_editor(full_file_path)
 
     # return the data that we fetched
     return response.json()['data']
