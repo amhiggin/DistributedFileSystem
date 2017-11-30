@@ -25,7 +25,8 @@ api = Api(app)
 class DirectoryServer(Resource):
 
     def get(self):
-        file_name =  request.json['file_name']
+        file_name =  request.json()['file_name']
+        file_contents = request.json()['file_contents']
         dir_api.print_to_console("File {0} requested to get ".format(file_name))
         # TODO look at generating the file_id using a hash function
         server_address, server_id, file_id = dir_api.get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
@@ -33,8 +34,7 @@ class DirectoryServer(Resource):
 
     def post(self):
         # TODO implement what this does
-        file_name = request.json['file_name']
-        contents_to_write = request.json['contents_to_write']
+        file_name = request.json()['file_name']
         dir_api.print_to_console("File {0} requested to post".format(file_name))
         server_address, server_id, file_id = dir_api.get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
         if file_id is not None:
@@ -53,9 +53,9 @@ class DirectoryServer(Resource):
 
             response = requests.post(
                 file_api.create_url(server_ip, server_port, 'create_new_remote_copy'),
-                json={'file_id': file_id, 'data': contents_to_write, 'server_id': file_server_id}
+                json={'file_id': file_id, 'file_contents': file_contents, 'server_id': file_server_id}
             )
-            new_remote_copy = response.json['new_remote_copy']
+            new_remote_copy = response.json()['new_remote_copy']
             if new_remote_copy == True:
                 dir_api.print_to_console("Successfully created remote copy with requested changes")
 

@@ -31,24 +31,24 @@ class FileServer(Resource):
 
     def get(self):
         # construct the filename from the server id and file id
-        server_id = self.parser.parse_args()['server_id']
-        file_name = server_id + "/" + file_api.get_serverside_file_name_by_id(request.json()['file_id'])
+        file_id = request.json()['file_id']
+        file_name = ROOT_DIR + "/" + file_api.get_serverside_file_name_by_id(file_id)
 
         with open(file_name, 'r') as in_file:
-            file_text = in_file.read()
-        return {'data': file_text}
+            file_contents = in_file.read()
+        return {'file_contents': file_contents}
 
     def post(self):
         # will write the incoming request data to the fileserver version of the file
-        server_id = self.parser.parse_args()['server_id']
-        file_edits = request.json()['data']
-        print_to_console(self, file_edits)
-        file_name = server_id + '/' + file_api.get_serverside_file_name_by_id(request.json()['file_id'])
+        file_contents = request.json()['file_contents']
+        print_to_console(file_contents)
+        file_id = request.json()['file_id']
+        file_name = ROOT_DIR + "/" + file_api.get_serverside_file_name_by_id(file_id)
 
         with open(file_name, 'r+') as edit_file:
             edit_file.write(file_edits)
-            final_version = edit_file.read()
-        return {'data': final_version}
+            file_contents = edit_file.read()
+        return {'file_contents': file_contents}
 
 
 # create a new remote copy if a remote copy doesn't exist
@@ -57,19 +57,18 @@ class CreateNewRemoteCopy(Resource):
     def post(self):
         file_id = request.get_json()['file_id']
         print_to_console("Request received to create new file for file {0}".format(file_id))
-        file_contents = request.get_json()['data']
+        file_contents = request.get_json()['file_contents']
         print_to_console("File contents: ".format(file_contents))
 
         # have to get the text-file equivalent name for this file id
-        file_name = file_api.get_serverside_file_name_by_id(file_id)
+        file_name = ROOT_DIR + "/" + file_api.get_serverside_file_name_by_id(file_id)
         print_to_console("File name: {0}".format(file_name))
 
         # write the contents to a new remote "master" copy
-        full_file_path = ROOT_DIR + '/' + file_name
-        file_to_write = open(full_file_path, 'w+')
+        file_to_write = open(file_name, 'w+')
         file_to_write.write(file_contents)
         file_to_write.close()
-        if os.path.exists(full_file_path):
+        if os.path.exists(file_name):
             print "Remote copy of file id {0} successfully created".format(file_id)
             return {'new_remote_copy': True}
         else:

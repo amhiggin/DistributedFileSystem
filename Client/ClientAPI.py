@@ -34,11 +34,11 @@ def read_file(file_path, file_name):
     print "Client requested to read " + file_path + "/" + file_name
 
     full_file_path = file_path + "/" + file_name
-    server_address, server_id, file_id = file_api.get_file_mapping_from_directory_server(file_path, file_name)
+    server_address, server_id, file_id = file_api.get_file_mapping_from_directory_server(full_file_path)
 
     # request the file from this file server
     response = requests.get(
-        file_api.create_url(server_address[0], server_address[1]), json={'file_id': file_id, 'file_server_id': server_id})
+        file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_server_id': server_id})
 
     if response.json['data'] is not None: # TODO test this
         print 'Opening file locally to update with response contents'
@@ -57,13 +57,13 @@ def write_file(file_path, file_name):
     print "Request to write " + full_file_path
     # open file for writing
     open_file_in_text_editor(full_file_path)
-    contents_to_write = open(file_name, 'r').read()
+    file_contents = open(full_file_path, 'r').read()
 
     # TODO this should at some stage return the machine on which the file is located, and its id
-    server_address, server_id, file_id, new_remote_copy_created = file_api.post_request_to_directory_server_for_file_mapping(file_path, file_name, contents_to_write)
+    server_address, server_id, file_id, new_remote_copy_created = file_api.post_request_to_directory_server_for_file_mapping(full_file_path, file_contents)
     if new_remote_copy_created == False:
         # We still have to post the updates to the file server
-        response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'data': contents_to_write})
+        response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
         print 'Response: ' + response.json()
         return response.json()
 
@@ -83,6 +83,34 @@ def close_file(file_path, file_name):
 
 
 # ------------------#
+
+# This method fetches the details of the file and server on which it is stored
+def get_file_mapping_from_directory_server(full_file_oath):
+    print  "Sending request to directory server for file {0}".format(full_file_path)
+    response = requests.get(create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), json={"file_name": full_file_path})
+
+    print 'Response from server: {0}'.format(response.json())
+    file_server_address = response.json()['file_server_address']
+    print 'File server address is {0}:{1}'.format(file_server_address[0], file_server_address[1])
+    file_id = response.json()['file_id']
+    print 'File id is {0}:{1}'.format(file_id)
+    file_server_id = response.json()['file_server_id']
+    print 'File server id is {0}:{1}'.format(file_server_id)
+
+    return file_server_address, file_server_id, file_id
+
+
+def post_request_to_directory_server_for_file_mapping(full_file_pathcontents_to_write):
+    print "Sending request to post update to file {0} from directory server"
+    response = requests.post(create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), json={"file_name": full_file_path, "file_contents": file_contents})
+
+    print 'Response from server: {0}'.format(str(response.json()))
+    file_server_address = response.json()['file_server_address']
+    file_server_id = response.json()['file_server_id']
+    file_id = response.json()['file_id']
+    new_remote_copy_created = response.json()['new_remote_copy']
+
+    return file_server_address, file_server_id, file_id, new_remote_copy_created
 
 # placeholder lock server methods
 # NOTE: assumes that we have got the mapping for the file first
