@@ -37,7 +37,7 @@ def request_client_id():
 # download a copy of the file from the file-server
 # should inform lock server of the fact that it has a copy
 # TODO will need to add this file to the list of locked files
-def read_file(file_path, file_name):
+def read_file(file_path, file_name, client_id):
     full_file_path = file_path + "/" + file_name
     print "Client requested to read " + full_file_path
     server_address, server_id, file_id = get_file_mapping_from_directory_server(full_file_path)
@@ -57,7 +57,7 @@ def read_file(file_path, file_name):
 
 # upload a changed copy of the file
 # should inform the lock server of the fact that it is updating a copy
-def write_file(file_path, file_name):
+def write_file(file_path, file_name, client_id):
     full_file_path = file_path + "/" + file_name
     print "Request to write " + full_file_path
     # open file for writing
@@ -74,14 +74,14 @@ def write_file(file_path, file_name):
 
 # TODO implement
 # check the file exists on the fileserver, as such
-def open_file(file_path, file_name):
+def open_file(file_path, file_name, client_id):
     print "Request to open " + file_path + "/" + file_name
     # NOT implemented yet
 
 
 # TODO implement
 # doesn't really do anything effective (from what I can see)
-def close_file(file_path, file_name):
+def close_file(file_path, file_name, client_id):
     print "Request to close " + file_path + "/" + file_name
     # NOT implemented yet
 
@@ -122,17 +122,17 @@ def post_request_to_directory_server_for_file_mapping(full_file_path, file_conte
 
 # placeholder lock server methods
 # NOTE: assumes that we have got the mapping for the file first
-def acquire_lock_on_file(file_id):
+def acquire_lock_on_file(file_id, client_id):
     print "In acquire lock method"
     # does a put request to the lock server
 
 
-def release_lock_on_file(file_id):
+def release_lock_on_file(file_id, client_id):
     print "In release lock method"
     # does a delete request to the lock server
 
 
-def check_lock_on_file(file_id):
+def check_lock_on_file(file_id, client_id):
     print "In check lock on file method"
     # does a get request to the lock server to see whether the file  is locked
 

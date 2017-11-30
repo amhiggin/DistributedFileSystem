@@ -39,16 +39,16 @@ def main():
                 "Select option:\n1) Read a file from the server \n2) Open file from server \n3) Write file to server\n4) Close a file \n5) Kill client\n\n")
             if user_input == "1":
                 file_path, file_name = get_filename_from_user()
-                client_api.read_file(format_file_path(file_path), file_name)
+                client_api.read_file(format_file_path(file_path), file_name, CLIENT_ID)
             elif user_input == '2':
                 file_path, file_name = get_filename_from_user()
-                client_api.open_file(format_file_path(file_path), file_name)
+                client_api.open_file(format_file_path(file_path), file_name, CLIENT_ID)
             elif user_input == '3':
                 file_path, file_name = get_filename_from_user()
-                client_api.write_file(format_file_path(file_path), file_name)
+                client_api.write_file(format_file_path(file_path), file_name, CLIENT_ID)
             elif user_input == '4':
                 file_path, file_name = get_filename_from_user()
-                client_api.close_file(format_file_path(file_path), file_name)
+                client_api.close_file(format_file_path(file_path), file_name, CLIENT_ID)
             elif user_input == '5':
                 running = False
             else:
