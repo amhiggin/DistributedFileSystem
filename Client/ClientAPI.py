@@ -37,11 +37,11 @@ def read_file(file_path, file_name):
     response = requests.get(
         file_api.create_url(server_address[0], server_address[1]), params={'file_id': file_id, 'file_server_id': server_id})
 
-    if response is not None: # TODO test this
+    if response.json['file_server_address'] is not None: # TODO test this
         print 'Opening file locally to update with response contents'
         file_to_open = open(full_file_path, 'w')
         file_to_open.write(response.json())
-        open_file_in_text_editor(full_file_path)
+        open_file_in_text_editor(full_file_path) # display file to user
 
     # return the data that we fetched
     return response.json()['data']

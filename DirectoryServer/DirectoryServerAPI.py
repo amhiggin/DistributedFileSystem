@@ -17,3 +17,10 @@ def get_server_file_details(file_name, file_names_on_record, connected_fileserve
     else:
         print "File {0} isn't recorded in the directory server".format(file_name)
         return None, None, None
+
+def find_least_loaded_file_server(connected_fileservers_by_id, file_server_load_by_id):
+    # TODO implement
+    print_to_console("Searching for the currently least-loaded file server..")
+    server_id = min(file_server_load_by_id, key=file_server_load_by_id.get)
+    print_to_console("The least loaded file server is {0}".format(server_id))
+    return server_id
