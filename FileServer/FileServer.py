@@ -26,7 +26,6 @@ class FileServer(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        # FIXME this id should also be part of the root dir
         self.parser.add_argument('server_id')
 
 
