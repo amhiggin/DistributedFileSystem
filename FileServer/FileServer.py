@@ -31,7 +31,7 @@ class FileServer(Resource):
 
     def get(self):
         # construct the filename from the server id and file id
-        file_id = request.json()['file_id']
+        file_id = request.get_json()['file_id']
         file_name = ROOT_DIR + "/" + file_api.get_serverside_file_name_by_id(file_id)
 
         with open(file_name, 'r') as in_file:
@@ -40,9 +40,9 @@ class FileServer(Resource):
 
     def post(self):
         # will write the incoming request data to the fileserver version of the file
-        file_contents = request.json()['file_contents']
-        print_to_console(file_contents)
-        file_id = request.json()['file_id']
+        file_contents = request.get_json()['file_contents']
+        print_to_console(str(file_contents))
+        file_id = request.get_json()['file_id']
         file_name = ROOT_DIR + "/" + file_api.get_serverside_file_name_by_id(file_id)
 
         with open(file_name, 'r+') as edit_file:

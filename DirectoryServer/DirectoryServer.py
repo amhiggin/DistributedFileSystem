@@ -25,16 +25,16 @@ api = Api(app)
 class DirectoryServer(Resource):
 
     def get(self):
-        file_name =  request.json()['file_name']
-        file_contents = request.json()['file_contents']
+        file_name =  request.get_json()['file_name']
+        file_contents = request.get_json()['file_contents']
         dir_api.print_to_console("File {0} requested to get ".format(file_name))
 
         server_address, server_id, file_id = dir_api.get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
         return {'file_server_address': server_address, 'file_server_id': server_id, 'file_id': file_id}
 
     def post(self):
-        file_name = request.json()['file_name']
-        file_contents = request.json()['file_contents']
+        file_name = request.get_json()['file_name']
+        file_contents = request.get_json()['file_contents']
         dir_api.print_to_console("File {0} requested to post".format(file_name))
         server_address, server_id, file_id = dir_api.get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
         if file_id is not None:
@@ -60,7 +60,7 @@ class DirectoryServer(Resource):
                 dir_api.print_to_console("Successfully created remote copy with requested changes")
 
             # TODO handle the receipt of the 'success' on the client API side
-            return {'file_id': file_id, 'file_server_id': file_server_id, 'server_details': CONNECTED_FILESERVERS_BY_ID[file_server_id], 'new_remote_copy': new_remote_copy}
+            return {'file_id': file_id, 'file_server_id': file_server_id, 'file_server_address': CONNECTED_FILESERVERS_BY_ID[file_server_id], 'new_remote_copy': new_remote_copy}
 
 
 class RegisterFileserverInstance(Resource):
