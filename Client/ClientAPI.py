@@ -28,10 +28,18 @@ def open_file_in_text_editor(full_file_path):
 # should inform lock server of the fact that it has a copy
 # TODO will need to add this file to the list of locked files
 def read_file(file_path, file_name):
-    print "Request to read " + file_path + "/" + file_name
+    print "Client requested to read " + file_path + "/" + file_name
 
     full_file_path = file_path + "/" + file_name
     response = requests.get(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), json={"file_name":file_name})
+    print 'Response from server: {0}'.format(str(response.json()))
+
+    # TODO: the client needs to parse the file_id and other info
+    # then it needs to make a connection to the fileserver whose details were provided
+    # and request the file_id
+    # then it can get the contents to write to its own copy
+
+    print 'Opening file locally to update with response contents'
     file_to_open = open(full_file_path, 'w')
     file_to_open.write(response.json())
     open_file_in_text_editor(full_file_path)

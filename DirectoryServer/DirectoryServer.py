@@ -30,6 +30,7 @@ def get_server_file_details(file_name):
         server_address = CONNECTED_FILESERVERS_BY_ID[server_id]
         return server_address, server_id, file_id
     else:
+        print "File {0} isn't recorded in the directory server".format(file_name)
         return None, None, None
 
 
