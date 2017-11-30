@@ -28,13 +28,13 @@ class DirectoryServer(Resource):
         file_name =  request.json()['file_name']
         file_contents = request.json()['file_contents']
         dir_api.print_to_console("File {0} requested to get ".format(file_name))
-        # TODO look at generating the file_id using a hash function
+
         server_address, server_id, file_id = dir_api.get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
         return {'file_server_address': server_address, 'file_server_id': server_id, 'file_id': file_id}
 
     def post(self):
-        # TODO implement what this does
         file_name = request.json()['file_name']
+        file_contents = request.json()['file_contents']
         dir_api.print_to_console("File {0} requested to post".format(file_name))
         server_address, server_id, file_id = dir_api.get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
         if file_id is not None:

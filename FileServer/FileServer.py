@@ -46,7 +46,7 @@ class FileServer(Resource):
         file_name = ROOT_DIR + "/" + file_api.get_serverside_file_name_by_id(file_id)
 
         with open(file_name, 'r+') as edit_file:
-            edit_file.write(file_edits)
+            edit_file.write(file_contents)
             file_contents = edit_file.read()
         return {'file_contents': file_contents}
 
