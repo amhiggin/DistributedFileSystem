@@ -11,6 +11,7 @@ import requests
 import json
 import FileManipAPI as file_api
 from sys import platform as _platform
+import subprocess as sp
 
 # Directory server started at default Flask address for ease
 DIRECTORY_SERVER_ADDRESS = ("127.0.0.1", 5000)
@@ -19,9 +20,11 @@ DIRECTORY_SERVER_ADDRESS = ("127.0.0.1", 5000)
 # opens file in windows or linux default system text editor
 def open_file_in_text_editor(full_file_path):
     if _platform == "linux" or _platform == "linux2":
-        os.system('%s %s' % (os.getenv('EDITOR'), full_file_path))
+        print 'We are on linux'
+        return os.system('%s %s' % (os.getenv('EDITOR'), full_file_path))
     elif _platform == "win32" or "win64":
-        os.system("start " + full_file_path)
+        print 'We are on windows '
+        return sp.Popen(['notepad.exe', full_file_path]).wait()
 
 
 # download a copy of the file from the file-server
@@ -35,12 +38,12 @@ def read_file(file_path, file_name):
 
     # request the file from this file server
     response = requests.get(
-        file_api.create_url(server_address[0], server_address[1]), params={'file_id': file_id, 'file_server_id': server_id})
+        file_api.create_url(server_address[0], server_address[1]), json={'file_id': file_id, 'file_server_id': server_id})
 
-    if response.json['file_server_address'] is not None: # TODO test this
+    if response.json['data'] is not None: # TODO test this
         print 'Opening file locally to update with response contents'
         file_to_open = open(full_file_path, 'w')
-        file_to_open.write(response.json())
+        file_to_open.write(response.json()['data'])
         open_file_in_text_editor(full_file_path) # display file to user
 
     # return the data that we fetched
@@ -57,13 +60,12 @@ def write_file(file_path, file_name):
     contents_to_write = open(file_name, 'r').read()
 
     # TODO this should at some stage return the machine on which the file is located, and its id
-    server_address, server_id, file_id = file_api.get_file_mapping_from_directory_server(file_path, file_name)
-    if server_address is not None:
-        response = requests.post(file_api.create_url(str(server_address).split(':')[0], str(server_address).split(':')[1], ""), json={'file_id': file_name, 'data': contents_to_write})
+    server_address, server_id, file_id, new_remote_copy_created = file_api.post_request_to_directory_server_for_file_mapping(file_path, file_name, contents_to_write)
+    if new_remote_copy_created == False:
+        # We still have to post the updates to the file server
+        response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'data': contents_to_write})
         print 'Response: ' + response.json()
-    else:
-        # FIXME - this could actually handle file creation if we wanted
-        print 'Could not write to {0}: file does not exist on a server'.format(full_file_path)
+        return response.json()
 
 
 # TODO implement

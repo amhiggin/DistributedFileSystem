@@ -41,7 +41,7 @@ class FileServer(Resource):
     def post(self):
         # will write the incoming request data to the fileserver version of the file
         server_id = self.parser.parse_args()['server_id']
-        file_edits = request.form['data']
+        file_edits = request.json()['data']
         print_to_console(self, file_edits)
         file_name = server_id + '/' + file_api.get_serverside_file_name_by_id(request.json()['file_id'])
 
@@ -51,14 +51,40 @@ class FileServer(Resource):
         return {'data': final_version}
 
 
+# create a new remote copy if a remote copy doesn't exist
+class CreateNewRemoteCopy(Resource):
+
+    def post(self):
+        file_id = request.get_json()['file_id']
+        print_to_console("Request received to create new file for file {0}".format(file_id))
+        file_contents = request.get_json()['data']
+        print_to_console("File contents: ".format(file_contents))
+
+        # have to get the text-file equivalent name for this file id
+        file_name = file_api.get_serverside_file_name_by_id(file_id)
+        print_to_console("File name: {0}".format(file_name))
+
+        # write the contents to a new remote "master" copy
+        full_file_path = ROOT_DIR + '/' + file_name
+        file_to_write = open(full_file_path, 'w+')
+        file_to_write.write(file_contents)
+        file_to_write.close()
+        if os.path.exists(full_file_path):
+            print "Remote copy of file id {0} successfully created".format(file_id)
+            return {'new_remote_copy': True}
+        else:
+            print "Remote copy of file id {0} could not be created".format(file_id)
+            return {'new_remote_copy': False}
+
 # this adds a url handle for the FileServer
 api.add_resource(FileServer, '/')
+api.add_resource(CreateNewRemoteCopy, '/create_new_remote_copy')
 
 
 if __name__ == "__main__":
-    print_to_console("Hello, I'm a Fileserver! Lets register with the directory server...")
     if len(sys.argv) == 3:
         if os.environ.get("WERKZEUG_RUN_MAIN") == 'true':
+            print_to_console("Hello, I'm a Fileserver! Lets register with the directory server...")
             print_to_console("Correct args passed: {0}:{1}".format(sys.argv[1], sys.argv[2]))
             print_to_console("sending request to directory server")
             url =  file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1],"register_fileserver")

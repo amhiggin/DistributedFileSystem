@@ -34,16 +34,17 @@ class DirectoryServer(Resource):
     def post(self):
         # TODO implement what this does
         file_name = request.json['file_name']
+        contents_to_write = request.json['contents_to_write']
         dir_api.print_to_console("File {0} requested to post".format(file_name))
         server_address, server_id, file_id = dir_api.get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
         if file_id is not None:
-            return {'file_server_address': server_address, 'file_server_id': server_id, 'file_id':file_id}
+            return {'file_server_address': server_address, 'file_server_id': server_id, 'file_id':file_id, 'new_remote_copy': False}
         else:
             dir_api.print_to_console("File {0} wasn't found on any server. Will add it to a file-server".format(file_name))
             file_id = len(FILES_ON_RECORD_BY_NAME)
             dir_api.print_to_console("Assigned file_id as {0}\nNow will store remote copy on least-loaded file server.".format(file_id))
             file_server_id = dir_api.find_least_loaded_file_server(CONNECTED_FILESERVERS_BY_ID, FILESERVER_LOAD_BY_ID)
-            FILESERVER_LOAD_BY_ID[file_server_id] = FILESERVER_LOAD_BY_ID[server_id] + 1
+            FILESERVER_LOAD_BY_ID[file_server_id] += 1
 
             FILES_ON_RECORD_BY_NAME[file_name] = (file_id, file_server_id)
             FILES_ON_RECORD_BY_ID[file_id] = (file_server_id, file_name)
@@ -51,12 +52,15 @@ class DirectoryServer(Resource):
             server_port = CONNECTED_FILESERVERS_BY_ID[file_server_id][1]
 
             response = requests.post(
-                file_api.create_url(server_ip, server_port, 'create_new_file'),
-                json={'file_id': file_id, 'data': '', 'server_id': file_server_id}
+                file_api.create_url(server_ip, server_port, 'create_new_remote_copy'),
+                json={'file_id': file_id, 'data': contents_to_write, 'server_id': file_server_id}
             )
-            print response.json()
-            # return Y to let client now file is created
-            return {'file_id': file_id, 'file_server_id': file_server_id, 'server_details': CONNECTED_FILESERVERS_BY_ID[file_server_id]}
+            new_remote_copy = response.json['new_remote_copy']
+            if new_remote_copy == True:
+                dir_api.print_to_console("Successfully created remote copy with requested changes")
+
+            # TODO handle the receipt of the 'success' on the client API side
+            return {'file_id': file_id, 'file_server_id': file_server_id, 'server_details': CONNECTED_FILESERVERS_BY_ID[file_server_id], 'new_remote_copy': new_remote_copy}
 
 
 class RegisterFileserverInstance(Resource):
