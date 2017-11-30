@@ -17,8 +17,6 @@ FILES_ON_RECORD_BY_NAME = {}
 FILES_ON_RECORD_BY_ID = {}
 NUM_CLIENTS = 0
 
-# TODO look into using a DB to store the key-value pairs?
-
 app = Flask(__name__)
 api = Api(app)
 
@@ -59,7 +57,6 @@ class DirectoryServer(Resource):
             if new_remote_copy == True:
                 dir_api.print_to_console("Successfully created remote copy with requested changes")
 
-            # TODO handle the receipt of the 'success' on the client API side
             return {'file_id': file_id, 'file_server_id': file_server_id, 'file_server_address': CONNECTED_FILESERVERS_BY_ID[file_server_id], 'new_remote_copy': new_remote_copy}
 
 

@@ -9,7 +9,7 @@ import FileManipAPI as file_api
 
 NEWLINE_CHAR = "\n"
 ROOT_DIR = "Client"
-CLIENT_ID = "" # TODO figure out where this gets assigned (probably directory server)
+CLIENT_ID = ""
 running = True
 
 

@@ -11,25 +11,26 @@ LOCKED_FILES_BY_ID = {}
 
 class LockingServer(Resource):
 
-    # we want to put a value in the lookup table
     def put(self):
         print 'In lock server put method - trying to acquire the lock for the file'
 
         file_id = request.get_json()['file_id']
         client_id = request.get_json()['client_id']
-        if file_id in LOCKED_FILES_BY_ID
+        if file_id in LOCKED_FILES_BY_ID:
             if not LOCKED_FILES_BY_ID[file_id]:
                 # take the lock
                 LOCKED_FILES_BY_ID[file_id] = True
                 print 'Client {0} has successfully locked file {1}'.format(client_id, file_id)
                 return{'lock': True}
+            print "Client {0} couldn't lock file {1}".format(client_id, file_id)
             return {'lock': False}
         else:
             LOCKED_FILES_BY_ID[file_id] = True
+            print 'Client {0} has successfully locked file {1}'.format(client_id, file_id)
             return {'lock': True}
 
     # we want to delete a value from the lookup table
-    def delete(self, requested_file_id):
+    def delete(self):
         print 'In lock server delete method - trying to release the lock for the file'
         file_id = request.get_json()['file_id']
         client_id = request.get_json()['client_id']
@@ -38,6 +39,9 @@ class LockingServer(Resource):
             if LOCKED_FILES_BY_ID[file_id] == True:
                 # release the lock
                 LOCKED_FILES_BY_ID[file_id] = False
+                print 'Client {0} has unlocked file {1}'.format(client_id, file_id)
+        # in either case, we return that the file is unlocked
+        print 'File {0} was never locked!'.format(file_id)
         return {'lock': False}
 
 
@@ -46,9 +50,12 @@ class LockingServer(Resource):
         file_id = request.get_json()['file_id']
         if file_id in LOCKED_FILES_BY_ID:
             if LOCKED_FILES_BY_ID[file_id][1] == True:
+                print 'File {0} is locked'.format(file_id)
                 return {'locked': True}
             else:
+                print 'File {0} is not locked'.format(file_id)
                 return {'locked':False}
+        print 'File {0} is not locked'.format(file_id)
         return {'locked': False}
 
 
@@ -56,5 +63,4 @@ class LockingServer(Resource):
 api.add_resource(LockingServer, '/')
 
 if __name__ == "__main__":
-    # specify the host to run it on
-    app.run(debug=True, port=int(sys.argv[1]))
+    app.run(debug=True, host=sys.argv[1], port=int(sys.argv[2]))

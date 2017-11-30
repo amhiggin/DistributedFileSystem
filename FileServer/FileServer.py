@@ -13,7 +13,7 @@ app = Flask(__name__)
 api = Api(app)
 
 DIRECTORY_SERVER_ADDRESS = ("127.0.0.1", 5000)
-LOCKING_SERVER_ADDRESS = "" # TODO @Amber
+LOCKING_SERVER_ADDRESS = ("127.0.0.1", 5001)
 SERVER_ID = "" # used for console messages
 ROOT_DIR = "Server" # updated at startup with the specific number
 

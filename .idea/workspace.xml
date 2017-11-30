@@ -2,8 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="412b1a9a-9cff-49c9-acea-7ddb722bdbc5" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Client/Client/Hello/hello.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Client/Client/hello.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/FileServer/Server0/0.txt" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client/Client.py" afterPath="$PROJECT_DIR$/Client/Client.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client/ClientAPI.py" afterPath="$PROJECT_DIR$/Client/ClientAPI.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DirectoryServer/DirectoryServer.py" afterPath="$PROJECT_DIR$/DirectoryServer/DirectoryServer.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DirectoryServer/DirectoryServerAPI.py" afterPath="$PROJECT_DIR$/DirectoryServer/DirectoryServerAPI.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FileManipAPI.py" afterPath="$PROJECT_DIR$/FileManipAPI.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FileServer/FileServer.py" afterPath="$PROJECT_DIR$/FileServer/FileServer.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LockingServer/LockingServer.py" afterPath="$PROJECT_DIR$/LockingServer/LockingServer.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,8 +25,8 @@
       <file leaf-file-name="FileManipAPI.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/FileManipAPI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" column="4" lean-forward="false" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="4" />
+            <state relative-caret-position="340">
+              <caret line="20" column="14" lean-forward="true" selection-start-line="20" selection-start-column="14" selection-end-line="20" selection-end-column="14" />
               <folding>
                 <element signature="e#80#89#0" expanded="true" />
               </folding>
@@ -30,22 +37,10 @@
       <file leaf-file-name="Client.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/Client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="884">
-              <caret line="52" column="31" lean-forward="true" selection-start-line="52" selection-start-column="31" selection-end-line="52" selection-end-column="31" />
+            <state relative-caret-position="459">
+              <caret line="27" column="0" lean-forward="false" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
               <folding>
                 <element signature="e#204#218#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DirectoryServer.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/DirectoryServer/DirectoryServer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
-              <caret line="98" column="57" lean-forward="false" selection-start-line="98" selection-start-column="57" selection-end-line="98" selection-end-column="57" />
-              <folding>
-                <element signature="e#379#427#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -54,8 +49,8 @@
       <file leaf-file-name="FileServer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/FileServer/FileServer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="833">
-              <caret line="49" column="42" lean-forward="false" selection-start-line="48" selection-start-column="6" selection-end-line="49" selection-end-column="42" />
+            <state relative-caret-position="159">
+              <caret line="80" column="62" lean-forward="false" selection-start-line="80" selection-start-column="40" selection-end-line="80" selection-end-column="62" />
               <folding>
                 <element signature="e#163#193#0" expanded="true" />
               </folding>
@@ -63,11 +58,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ClientAPI.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ClientAPI.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Client/ClientAPI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1088">
-              <caret line="73" column="0" lean-forward="true" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+            <state relative-caret-position="1375">
+              <caret line="152" column="36" lean-forward="true" selection-start-line="152" selection-start-column="36" selection-end-line="152" selection-end-column="36" />
               <folding>
                 <element signature="e#236#250#0" expanded="true" />
               </folding>
@@ -75,24 +70,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LockingServer.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="LockingServer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/LockingServer/LockingServer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="22" column="50" lean-forward="true" selection-start-line="22" selection-start-column="50" selection-end-line="22" selection-end-column="50" />
+            <state relative-caret-position="-277">
+              <caret line="17" column="51" lean-forward="true" selection-start-line="17" selection-start-column="51" selection-end-line="17" selection-end-column="51" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DirectoryServerAPI.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/DirectoryServer/DirectoryServerAPI.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="13" column="65" lean-forward="false" selection-start-line="13" selection-start-column="65" selection-end-line="13" selection-end-column="65" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -120,8 +105,8 @@
       <find>details</find>
       <find>sending re</find>
       <find>.json</find>
-      <find>post</find>
       <find>to update</find>
+      <find>post</find>
       <find>request.json</find>
     </findStrings>
   </component>
@@ -141,13 +126,13 @@
         <option value="$PROJECT_DIR$/FileServer.py" />
         <option value="$PROJECT_DIR$/ClientAPI.py" />
         <option value="$PROJECT_DIR$/DirectoryServer/__init__.py" />
-        <option value="$PROJECT_DIR$/DirectoryServer/DirectoryServerAPI.py" />
         <option value="$PROJECT_DIR$/FileServer/FileServer.py" />
-        <option value="$PROJECT_DIR$/FileManipAPI.py" />
-        <option value="$PROJECT_DIR$/DirectoryServer/DirectoryServer.py" />
-        <option value="$PROJECT_DIR$/Client/ClientAPI.py" />
         <option value="$PROJECT_DIR$/Client/Client.py" />
+        <option value="$PROJECT_DIR$/DirectoryServer/DirectoryServer.py" />
+        <option value="$PROJECT_DIR$/DirectoryServer/DirectoryServerAPI.py" />
         <option value="$PROJECT_DIR$/LockingServer/LockingServer.py" />
+        <option value="$PROJECT_DIR$/FileManipAPI.py" />
+        <option value="$PROJECT_DIR$/Client/ClientAPI.py" />
       </list>
     </option>
   </component>
@@ -196,12 +181,6 @@
               <item name="DistributedFileSystem" type="b2602c69:ProjectViewProjectNode" />
               <item name="DistributedFileSystem" type="462c0819:PsiDirectoryNode" />
               <item name="FileServer" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DistributedFileSystem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DistributedFileSystem" type="462c0819:PsiDirectoryNode" />
-              <item name="FileServer" type="462c0819:PsiDirectoryNode" />
-              <item name="Server0" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="DistributedFileSystem" type="b2602c69:ProjectViewProjectNode" />
@@ -307,37 +286,37 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <configuration name="FileServer" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="LockingServer" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/LockingServer" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="DistributedFileSystem" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FileServer.py" />
-      <option name="PARAMETERS" value="45678" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/LockingServer/LockingServer.py" />
+      <option name="PARAMETERS" value="&quot;127.0.0.1&quot; 5001" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.Client" />
-      <item index="1" class="java.lang.String" itemvalue="Python.FileServer" />
-      <item index="2" class="java.lang.String" itemvalue="Python.FileServer (1)" />
-      <item index="3" class="java.lang.String" itemvalue="Python.DirectoryServer (1)" />
-      <item index="4" class="java.lang.String" itemvalue="Python.Client (1)" />
+      <item index="1" class="java.lang.String" itemvalue="Python.FileServer (1)" />
+      <item index="2" class="java.lang.String" itemvalue="Python.DirectoryServer (1)" />
+      <item index="3" class="java.lang.String" itemvalue="Python.Client (1)" />
+      <item index="4" class="java.lang.String" itemvalue="Python.LockingServer" />
     </list>
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.Client (1)" />
-        <item index="1" class="java.lang.String" itemvalue="Python.DirectoryServer (1)" />
+        <item index="1" class="java.lang.String" itemvalue="Python.LockingServer" />
         <item index="2" class="java.lang.String" itemvalue="Python.FileServer (1)" />
-        <item index="3" class="java.lang.String" itemvalue="Python.Client" />
-        <item index="4" class="java.lang.String" itemvalue="Python.FileServer" />
+        <item index="3" class="java.lang.String" itemvalue="Python.DirectoryServer (1)" />
+        <item index="4" class="java.lang.String" itemvalue="Python.Client" />
       </list>
     </recent_temporary>
   </component>
@@ -356,17 +335,17 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0828125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33584195" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33584195" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32925683" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0828125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283161" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39943075" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -374,7 +353,6 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32922202" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -383,7 +361,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="5" />
+      <option name="time" value="6" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -585,7 +563,45 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/FileServer/Server0/0.txt">
+    <entry file="file://$PROJECT_DIR$/DirectoryServer/DirectoryServerAPI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="20" lean-forward="false" selection-start-line="21" selection-start-column="20" selection-end-line="21" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DirectoryServer/DirectoryServer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding>
+            <element signature="e#379#427#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="27" column="0" lean-forward="false" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+          <folding>
+            <element signature="e#204#218#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/FileServer/FileServer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="159">
+          <caret line="80" column="62" lean-forward="false" selection-start-line="80" selection-start-column="40" selection-end-line="80" selection-end-column="62" />
+          <folding>
+            <element signature="e#163#193#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/FileServer/Server0/1.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -593,70 +609,64 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DirectoryServer/DirectoryServerAPI.py">
+    <entry file="file://$PROJECT_DIR$/FileServer/Server0/2.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="65" lean-forward="false" selection-start-line="13" selection-start-column="65" selection-end-line="13" selection-end-column="65" />
+        <state relative-caret-position="348">
+          <caret line="115" column="0" lean-forward="true" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DirectoryServer/DirectoryServer.py">
+    <entry file="file://$PROJECT_DIR$/FileServer/Server0/3.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="98" column="57" lean-forward="false" selection-start-line="98" selection-start-column="57" selection-end-line="98" selection-end-column="57" />
-          <folding>
-            <element signature="e#379#427#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/FileServer/Server0/4.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/FileServer/Server0/0.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-346">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/FileManipAPI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="4" lean-forward="false" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="4" />
+        <state relative-caret-position="340">
+          <caret line="20" column="14" lean-forward="true" selection-start-line="20" selection-start-column="14" selection-end-line="20" selection-end-column="14" />
           <folding>
             <element signature="e#80#89#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Client.py">
+    <entry file="file://$PROJECT_DIR$/LockingServer/LockingServer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="884">
-          <caret line="52" column="31" lean-forward="true" selection-start-line="52" selection-start-column="31" selection-end-line="52" selection-end-column="31" />
+        <state relative-caret-position="-277">
+          <caret line="17" column="51" lean-forward="true" selection-start-line="17" selection-start-column="51" selection-end-line="17" selection-end-column="51" />
           <folding>
-            <element signature="e#204#218#0" expanded="true" />
+            <element signature="e#0#39#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Client/ClientAPI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1088">
-          <caret line="73" column="0" lean-forward="true" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+        <state relative-caret-position="1375">
+          <caret line="152" column="36" lean-forward="true" selection-start-line="152" selection-start-column="36" selection-end-line="152" selection-end-column="36" />
           <folding>
             <element signature="e#236#250#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/FileServer/FileServer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="833">
-          <caret line="49" column="42" lean-forward="false" selection-start-line="48" selection-start-column="6" selection-end-line="49" selection-end-column="42" />
-          <folding>
-            <element signature="e#163#193#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/LockingServer/LockingServer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="22" column="50" lean-forward="true" selection-start-line="22" selection-start-column="50" selection-end-line="22" selection-end-column="50" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -15,6 +15,7 @@ import subprocess as sp
 
 # Directory server started at default Flask address for ease
 DIRECTORY_SERVER_ADDRESS = ("127.0.0.1", 5000)
+LOCKING_SERVER_ADDRESS = ("127.0.0.1", 5001)
 
 
 # opens file in windows or linux default system text editor
@@ -55,8 +56,8 @@ def read_file(file_path, file_name, client_id):
     open_file_in_text_editor(full_file_path)
 
 
-# upload a changed copy of the file
-# should inform the lock server of the fact that it is updating a copy
+# write to remote copy of file
+# FIXME: assumes that when a remote copy is created, that the remote file doesn't need to be locked
 def write_file(file_path, file_name, client_id):
     full_file_path = file_path + "/" + file_name
     print "Request to write " + full_file_path
@@ -65,14 +66,18 @@ def write_file(file_path, file_name, client_id):
     file_contents = open(full_file_path, 'r').read()
 
     server_address, server_id, file_id, new_remote_copy_created = post_request_to_directory_server_for_file_mapping(full_file_path, file_contents)
+
     if new_remote_copy_created == False:
+        while is_file_locked(file_id):
+            pass
+        acquire_lock_on_file(file_id, client_id)
         print 'A new remote copy was not created for this file {0}: have to push the changes directly'.format(full_file_path)
         # We still have to post the updates to the file server
         response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
         print 'Response: ' + response.json()
+        release_lock_on_file(file_id, client_id)
 
 
-# TODO implement
 # check the file exists on the fileserver, as such
 def open_file(file_path, file_name, client_id):
     print "Request to open " + file_path + "/" + file_name
@@ -86,7 +91,9 @@ def close_file(file_path, file_name, client_id):
     # NOT implemented yet
 
 
-# ------------------#
+# ---------------------------#
+# ---- DIRECTORY SERVER ---- #
+# ---------------------------#
 
 # This method fetches the details of the file and server on which it is stored
 def get_file_mapping_from_directory_server(full_file_path):
@@ -120,19 +127,46 @@ def post_request_to_directory_server_for_file_mapping(full_file_path, file_conte
 
     return file_server_address, file_server_id, file_id, new_remote_copy_created
 
-# placeholder lock server methods
-# NOTE: assumes that we have got the mapping for the file first
+
+# ---------------------------#
+# ----- LOCKING SERVER ----- #
+# ---------------------------#
+
 def acquire_lock_on_file(file_id, client_id):
-    print "In acquire lock method"
-    # does a put request to the lock server
+    print "Attempting to acquire lock on file {0} for client {1}".format(file_id, client_id)
+    response = requests.put(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),
+                             json={'file_id': file_id, 'client_id': client_id})
+
+    locked = response.json()['lock']
+    if not locked:
+        print "We didn't lock File {0} successfully".format(file_id)
+        return False
+    print "We have locked file {0}".format(file_id)
+    return True
 
 
 def release_lock_on_file(file_id, client_id):
-    print "In release lock method"
-    # does a delete request to the lock server
+    print "Attempting to release lock on file {0} for client {1}".format(file_id, client_id)
+
+    response = requests.delete(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),
+                             json={'file_id': file_id, 'client_id': client_id})
+    locked = response.json()['lock']
+    if not locked:
+        print "File {0} is now unlocked".format(file_id)
+        return True
+    print "Couldn't unlock file {0}".format(file_id)
+    return False
 
 
-def check_lock_on_file(file_id, client_id):
-    print "In check lock on file method"
-    # does a get request to the lock server to see whether the file  is locked
+def is_file_locked(file_id):
+    print "Checking whether the file {0} is locked".format(file_id)
+    response = requests.get(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),
+                               json={'file_id': file_id})
 
+    locked = response.json()['locked']
+    if not locked:
+        print "File {0} isn't locked".format(file_id)
+        return False
+    else:
+        print "File {0} is already locked".format(file_id)
+        return True
