@@ -16,8 +16,9 @@ def create_root_dir_if_not_exists(root_path):
 
 # create a url to query
 def create_url(ip, port, endpoint):
-    print "Creating url"
-    return "http://{0}:{1}/{2}".format(ip, port, endpoint)
+    url = "http://{0}:{1}/{2}".format(ip, port, endpoint)
+    print "Creating url: {0}".format(url)
+    return url
 
 
 # This method fetches the details of the file and server on which it is stored
