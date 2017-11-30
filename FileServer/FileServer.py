@@ -33,9 +33,10 @@ class FileServer(Resource):
         # construct the filename from the server id and file id
         file_id = request.get_json()['file_id']
         file_name = ROOT_DIR + "/" + file_api.get_serverside_file_name_by_id(file_id)
-
+        print_to_console("Will send a copy of contents of file {0} to the client".format(file_name))
         with open(file_name, 'r') as in_file:
             file_contents = in_file.read()
+            print_to_console("File contents to be sent: {0}".format(file_contents))
         return {'file_contents': file_contents}
 
     def post(self):
@@ -95,5 +96,5 @@ if __name__ == "__main__":
             file_api.create_root_dir_if_not_exists(ROOT_DIR)
             print_to_console("Server root dir set to {0}".format(ROOT_DIR))
         app.run(debug=True, host=sys.argv[1], port=int(sys.argv[2]))
-else:
-    print_to_console("IP address and port weren't entered for the fileserver: cannot launch")
+    else:
+        print_to_console("IP address and port weren't entered for the fileserver: cannot launch")

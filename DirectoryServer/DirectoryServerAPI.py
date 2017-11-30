@@ -17,7 +17,7 @@ def get_server_file_details(file_name, file_names_on_record, connected_fileserve
         print_to_console("The corresponding server address is {0}:{1}".format(server_address[0], server_address[1]))
         return server_address, server_id, file_id
     else:
-        print "File {0} isn't recorded in the directory server".format(file_name)
+        print "File {0} isn't recorded in the directory server. Sending back nulls.".format(file_name)
         return None, None, None
 
 def find_least_loaded_file_server(connected_fileservers_by_id, file_server_load_by_id):

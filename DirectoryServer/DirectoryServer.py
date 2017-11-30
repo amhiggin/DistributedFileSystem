@@ -26,7 +26,6 @@ class DirectoryServer(Resource):
 
     def get(self):
         file_name =  request.get_json()['file_name']
-        file_contents = request.get_json()['file_contents']
         dir_api.print_to_console("File {0} requested to get ".format(file_name))
 
         server_address, server_id, file_id = dir_api.get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
