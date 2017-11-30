@@ -15,6 +15,7 @@ CONNECTED_FILESERVERS_BY_ID = {}
 FILESERVER_LOAD_BY_ID = {}
 FILES_ON_RECORD_BY_NAME = {}
 FILES_ON_RECORD_BY_ID = {}
+NUM_CLIENTS = 0
 
 # TODO look into using a DB to store the key-value pairs?
 
@@ -86,9 +87,24 @@ class RegisterFileserverInstance(Resource):
         # send the id back to the server
         return {'server_id': server_id}
 
+
+class RegisterClientInstance(Resource):
+
+    def get(self):
+        global NUM_CLIENTS
+        # we know that the client is just looking for an id
+        client_id = NUM_CLIENTS
+        NUM_CLIENTS += 1
+        response = {'client_id': client_id}
+        dir_api.print_to_console("NEW CLIENT REGISTERED")
+        dir_api.print_to_console("CLIENT ID ASSIGNED AS {0}".format(client_id))
+        return response
+
+
 # this adds a url handle for the Directory Server
 api.add_resource(DirectoryServer, '/')
 api.add_resource(RegisterFileserverInstance, '/register_fileserver')
+api.add_resource(RegisterClientInstance, '/register_client')
 
 if __name__ == "__main__":
     app.run(debug=True)

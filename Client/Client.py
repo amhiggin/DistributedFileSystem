@@ -28,8 +28,10 @@ def format_file_path(file_path):
 
 
 def main():
-    global running
+    global running, ROOT_DIR, CLIENT_ID
     print_to_console("Hello world from client!")
+    CLIENT_ID = str(client_api.request_client_id())
+    ROOT_DIR = ROOT_DIR + CLIENT_ID
     file_api.create_root_dir_if_not_exists(ROOT_DIR);
     while running:
         try:

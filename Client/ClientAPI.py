@@ -27,6 +27,13 @@ def open_file_in_text_editor(full_file_path):
         return sp.Popen(['notepad.exe', full_file_path]).wait()
 
 
+def request_client_id():
+    response = requests.get(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], "register_client"), json={'client_id_request': True})
+    client_id = response.json()['client_id']
+    print 'Response to request for new client_id: {0}'.format(client_id)
+    return client_id
+
+
 # download a copy of the file from the file-server
 # should inform lock server of the fact that it has a copy
 # TODO will need to add this file to the list of locked files
@@ -41,7 +48,7 @@ def read_file(file_path, file_name):
     file_contents = response.json()['file_contents']
     if file_contents is not None: #
         print 'Opening file locally to update with response contents: {0}'.format(file_contents)
-        with open(full_file_path1, 'r+') as edit_file:
+        with open(full_file_path, 'r+') as edit_file:
             edit_file.write(file_contents)
 
     # display file to user
