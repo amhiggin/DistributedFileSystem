@@ -10,9 +10,10 @@ Requests are sent in JSON format through HTTP get, post, put, delete requests as
 
 
 ## Transparent File Access
-The system is implemented to replicate the operation of the Network File System (NFS) model. It can support multiple connected clients, and multiple fileservers.
-* Clients can connect to a fileserver through methods such as read, write, open and close. They can also create new directories locally. The default system text editor is also used to open the file before a write occurs, and after a read occurs.
+The system is implemented to replicate the operation of the Network File System (NFS) model. It can support multiple connected clients, and multiple fileservers. 
 * All file accesses are made through a client library called <i>ClientApi.py</i>. This library is the interface exposed to the client-side application for manipulation of the local and remote filesystems.
+* Clients can connect to fileservers through methods read, write, open and close. They can also create new directories locally. 
+* Clients can interact with file contents through the system editor, which is launched before every remote write and after every remote read.
 * On the server side, there is a flat file-storage structure since every file is given a unique numerical name. 
 
 
@@ -25,8 +26,11 @@ The functions of this server are to:
 * Mapping of client-local filenames to remote server filenames, where the client provides the full path of the file (e.g. <i>../Client0/hello.txt</i>) and this is mapped to a unique server-side identifier (e.g. <i>../Server10/18.txt</i>).
 
 ## Locking Service
+The locking server is located at a known address of <b>http://127.0.0.1:5001/</b>. Any requests for a read/write must first be routed through this service for approval.
 * Any client wishing to write to a file, waits until the file is not locked before acquiring the lock. Note: the implementation assumes that when a remote copy is created on a server, that the remote file doesn't need to be locked (nobody will access until it has been created).
-* Any client wishing to read a file, will not be able to read it until it is unlocked. <b>TODO review this.</b>
+* Any client wishing to read a file, will not be able to read it until it is unlocked. 
+
+A safety mechanism in the form of a timeout (50000) is used to guard against infinite waiting for a lock to be released. <b>FIXME: this really only works effectively for the reading, since we can't grab the lock for the case of writing.</b>
 
 ## Caching Mechanism
 * <b>TODO implement</b>
