@@ -21,10 +21,10 @@ LOCKING_SERVER_ADDRESS = ("127.0.0.1", 5001)
 # opens file in windows or linux default system text editor
 def open_file_in_text_editor(full_file_path):
     if _platform == "linux" or _platform == "linux2":
-        print 'We are on linux'
+        print 'Opening with Linux system editor'
         return os.system('%s %s' % (os.getenv('EDITOR'), full_file_path))
     elif _platform == "win32" or "win64":
-        print 'We are on windows '
+        print 'Opening with Windows system editor'
         return sp.Popen(['notepad.exe', full_file_path]).wait()
 
 
@@ -68,14 +68,15 @@ def write_file(file_path, file_name, client_id):
     server_address, server_id, file_id, new_remote_copy_created = post_request_to_directory_server_for_file_mapping(full_file_path, file_contents)
 
     if new_remote_copy_created == False:
-        while is_file_locked(file_id):
+        while not acquire_lock_on_file(file_id, client_id):
             pass
-        acquire_lock_on_file(file_id, client_id)
         print 'A new remote copy was not created for this file {0}: have to push the changes directly'.format(full_file_path)
         # We still have to post the updates to the file server
+        print 'File_id is {0}, and file_contents is {1}'.format(file_id, file_contents)
         response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
         print 'Response: ' + response.json()
         release_lock_on_file(file_id, client_id)
+
 
 
 # check the file exists on the fileserver, as such
