@@ -25,7 +25,7 @@ The functions of this server are to:
 * Mapping of client-local filenames to remote server filenames, where the client provides the full path of the file (e.g. <i>../Client0/hello.txt</i>) and this is mapped to a unique server-side identifier (e.g. <i>../Server10/18.txt</i>).
 
 ## Locking Service
-* Any client wishing to write to a file, waits until the file is not locked before acquiring the lock.
+* Any client wishing to write to a file, waits until the file is not locked before acquiring the lock. Note: the implementation assumes that when a remote copy is created on a server, that the remote file doesn't need to be locked (nobody will access until it has been created).
 * Any client wishing to read a file, will not be able to read it until it is unlocked. <b>TODO review this.</b>
 
 ## Caching Mechanism
