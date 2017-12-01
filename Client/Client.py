@@ -6,6 +6,7 @@
 import os, sys
 import ClientAPI as client_api
 import FileManipAPI as file_api
+import shutil
 
 NEWLINE_CHAR = "\n"
 ROOT_DIR = "Client"
@@ -62,6 +63,7 @@ def main():
             print_to_console('An error occurred with handling the connection request')
             print_to_console(e.message)
     print_to_console("Closing connection to server. Terminating the client.")
+    shutil.rmtree(ROOT_DIR)
     exit(0)
 
 

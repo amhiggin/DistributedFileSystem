@@ -48,7 +48,7 @@ class FileServer(Resource):
         file_name = ROOT_DIR + "/" + file_api.get_serverside_file_name_by_id(file_id)
         print 'Root dir is {0}'.format(ROOT_DIR)
         with open(file_name, 'r+') as edit_file:
-            edit_file.write(file_contents)
+            edit_file.write(str(file_contents))
             file_contents = edit_file.read()
             print 'Wrote {0} to file {1}'.format(file_contents, file_id)
         return {'file_contents': file_contents}

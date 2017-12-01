@@ -43,8 +43,6 @@ def mkdir(dir_to_make):
 
 
 # download a copy of the file from the file-server
-# should inform lock server of the fact that it has a copy
-# TODO will need to add this file to the list of locked files
 def read_file(file_path, file_name, client_id):
     full_file_path = file_path + "/" + file_name
     print "Client requested to read " + full_file_path
@@ -65,11 +63,12 @@ def read_file(file_path, file_name, client_id):
     open_file_in_text_editor(full_file_path)
 
 
-# write to remote copy of file
-# FIXME: assumes that when a remote copy is created, that the remote file doesn't need to be locked
+# write to remote copy of file on file-server
+# FIXME: overwrites the remote file
 def write_file(file_path, file_name, client_id):
     full_file_path = file_path + "/" + file_name
     print "Request to write " + full_file_path
+
     # open file for writing
     open_file_in_text_editor(full_file_path)
     file_contents = open(full_file_path, 'r').read()
@@ -81,24 +80,21 @@ def write_file(file_path, file_name, client_id):
             pass
         print 'A new remote copy was not created for this file {0}: have to push the changes directly'.format(full_file_path)
         # We still have to post the updates to the file server
-        print 'File_id is {0}, and file_contents is {1}'.format(file_id, file_contents)
         response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
         print 'Response: ' + response.json()
         release_lock_on_file(file_id, client_id)
 
 
-
-# check the file exists on the fileserver, as such
+# check the file exists on the file-server, as such
+# TODO implement
 def open_file(file_path, file_name, client_id):
     print "Request to open " + file_path + "/" + file_name
-    # NOT implemented yet
 
 
 # TODO implement
 # doesn't really do anything effective (from what I can see)
 def close_file(file_path, file_name, client_id):
     print "Request to close " + file_path + "/" + file_name
-    # NOT implemented yet
 
 
 # ---------------------------#
@@ -180,4 +176,3 @@ def is_file_locked(file_id):
     else:
         print "File {0} is already locked".format(file_id)
         return True
-
