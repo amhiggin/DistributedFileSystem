@@ -4,11 +4,10 @@
 # Should handle talking to each of the servers to route the response back to the client.
 #
 
-import os, sys
-import flask
-import flask_restful
-import requests
-import json
+import os, sys, flask, flask_restful, requests, json, flask_cache
+import webbrowser
+
+import flask_cache
 import FileManipAPI as file_api
 from sys import platform as _platform
 import subprocess as sp
@@ -26,6 +25,12 @@ def open_file_in_text_editor(full_file_path):
     elif _platform == "win32" or "win64":
         print 'Opening with Windows system editor'
         return sp.Popen(['notepad.exe', full_file_path]).wait()
+
+def decrement_timeout_and_check_value(timeout):
+    timeout -=1
+    if timeout == 0:
+        print 'Lock waiting timed out - will try to grab the lock'
+    return timeout
 
 
 def request_client_id():
@@ -49,9 +54,9 @@ def read_file(file_path, file_name, client_id):
     server_address, server_id, file_id = get_file_mapping_from_directory_server(full_file_path)
 
     # request the file from this file server
-    # TODO potentially have a timeout on this lock checking (address points of failure and infinite waiting)
-    while is_file_locked(file_id):
-        pass
+    timeout = 50000
+    while is_file_locked(file_id) and timeout is not 0:
+        timeout = decrement_timeout_and_check_value(timeout)
     response = requests.get(
         file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_server_id': server_id})
     file_contents = response.json()['file_contents']
@@ -77,9 +82,9 @@ def write_file(file_path, file_name, client_id):
     server_address, server_id, file_id, new_remote_copy_created = post_request_to_directory_server_for_file_mapping(full_file_path, file_contents)
 
     if new_remote_copy_created == False:
-        # TODO potentially have a timeout on this lock checking (address points of failure and infinite waiting)
-        while not acquire_lock_on_file(file_id, client_id):
-            pass
+        timeout = 5000
+        while not acquire_lock_on_file(file_id, client_id) and timeout is not 0:
+            timeout = decrement_timeout_and_check_value(timeout)
         print 'A new remote copy was not created for this file {0}: have to push the changes directly'.format(full_file_path)
         # We still have to post the updates to the file server
         response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
@@ -90,7 +95,10 @@ def write_file(file_path, file_name, client_id):
 # check the file exists on the file-server, as such
 # TODO implement
 def open_file(file_path, file_name, client_id):
-    print "Request to open " + file_path + "/" + file_name
+    full_file_path = file_path + "/" + file_name
+    print "Request to open " + full_file_path
+    absolute_path = os.path.abspath(full_file_path)
+    webbrowser.open(absolute_path)
 
 
 # TODO implement
