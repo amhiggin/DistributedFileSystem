@@ -41,7 +41,8 @@ class LockingServer(Resource):
                 LOCKED_FILES_BY_ID[file_id] = False
                 print 'Client {0} has unlocked file {1}'.format(client_id, file_id)
         # in either case, we return that the file is unlocked
-        print 'File {0} was never locked!'.format(file_id)
+        else:
+            print 'File {0} was never locked!'.format(file_id)
         return {'lock': False}
 
 

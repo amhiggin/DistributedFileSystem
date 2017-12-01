@@ -49,6 +49,7 @@ def read_file(file_path, file_name, client_id):
     server_address, server_id, file_id = get_file_mapping_from_directory_server(full_file_path)
 
     # request the file from this file server
+    # TODO potentially have a timeout on this lock checking (address points of failure and infinite waiting)
     while is_file_locked(file_id):
         pass
     response = requests.get(
@@ -76,12 +77,13 @@ def write_file(file_path, file_name, client_id):
     server_address, server_id, file_id, new_remote_copy_created = post_request_to_directory_server_for_file_mapping(full_file_path, file_contents)
 
     if new_remote_copy_created == False:
+        # TODO potentially have a timeout on this lock checking (address points of failure and infinite waiting)
         while not acquire_lock_on_file(file_id, client_id):
             pass
         print 'A new remote copy was not created for this file {0}: have to push the changes directly'.format(full_file_path)
         # We still have to post the updates to the file server
         response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
-        print 'Response: ' + response.json()
+        print 'Response: ' + str(response.json())
         release_lock_on_file(file_id, client_id)
 
 

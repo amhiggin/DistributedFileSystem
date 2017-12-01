@@ -1,0 +1,14 @@
+Creating another file of the same name on a different client
+Just to see if there ends up being a conflict :)
+
+Now I want to see whether the fileserver will throw a unicode exception
+I think it was only doing it because I was trying to read the file I had just updated, remotely
+
+
+Making a few more changes
+Still haven't been able to test this accurately
+
+Now trying to do a second write
+
+
+It worked the last time, but now correcting an erroneous message
