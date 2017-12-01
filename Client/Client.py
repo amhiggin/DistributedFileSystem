@@ -36,7 +36,7 @@ def main():
     while running:
         try:
             user_input = raw_input(
-                "Select option:\n1) Read a file from the server \n2) Open file from server \n3) Write file to server\n4) Close a file \n5) Kill client\n\n")
+                "Select option:\n1) Read a file from the server \n2) Open file from server \n3) Write file to server\n4) Close a file \n5) Create a new local directory \n6) Kill client\n\n")
             if user_input == "1":
                 file_path, file_name = get_filename_from_user()
                 client_api.read_file(format_file_path(file_path), file_name, CLIENT_ID)
@@ -50,6 +50,11 @@ def main():
                 file_path, file_name = get_filename_from_user()
                 client_api.close_file(format_file_path(file_path), file_name, CLIENT_ID)
             elif user_input == '5':
+                file_path = raw_input("\nEnter dir to create: ")
+                full_file_path = format_file_path(file_path)
+                if not client_api.mkdir(full_file_path):
+                    print_to_console("Dir {0} already existed: didn't duplicate!".format(full_file_path))
+            elif user_input == '6':
                 running = False
             else:
                 print_to_console("You said: " + user_input + ", which is invalid. Give it another go!" + NEWLINE_CHAR)

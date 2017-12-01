@@ -35,6 +35,13 @@ def request_client_id():
     return client_id
 
 
+def mkdir(dir_to_make):
+    if not os.path.exists(dir_to_make):
+        os.mkdir(dir_to_make)
+        return True
+    return False
+
+
 # download a copy of the file from the file-server
 # should inform lock server of the fact that it has a copy
 # TODO will need to add this file to the list of locked files
@@ -44,6 +51,8 @@ def read_file(file_path, file_name, client_id):
     server_address, server_id, file_id = get_file_mapping_from_directory_server(full_file_path)
 
     # request the file from this file server
+    while is_file_locked(file_id):
+        pass
     response = requests.get(
         file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_server_id': server_id})
     file_contents = response.json()['file_contents']
