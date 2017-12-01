@@ -26,7 +26,9 @@ The functions of this server are to:
 
 ## Locking Service
 * Any client wishing to write to a file, waits until the file is not locked before acquiring the lock. Note: the implementation assumes that when a remote copy is created on a server, that the remote file doesn't need to be locked (nobody will access until it has been created).
-* Any client wishing to read a file, will not be able to read it until it is unlocked. <b>TODO review this.</b>
+* Any client wishing to read a file, will not be able to read it until it is unlocked. 
+
+A safety mechanism in the form of a timeout (50000) is used to guard against infinite waiting for a lock to be released. <b>FIXME: this really only works effectively for the reading, since we can't grab the lock for the case of writing.</b>
 
 ## Caching Mechanism
 * <b>TODO implement</b>
