@@ -11,8 +11,9 @@ Requests are sent in JSON format through HTTP get, post, put, delete requests as
 
 ## Transparent File Access
 The system is implemented to replicate the operation of the Network File System (NFS) model. It can support multiple connected clients, and multiple fileservers.
-* Clients can connect to a fileserver through methods such as read, write, open and close. <b> TODO also implement the mkdir, rmdir etc</b>
+* Clients can connect to a fileserver through methods such as read, write, open and close. They can also create new directories locally. The default system text editor is also used to open the file before a write occurs, and after a read occurs.
 * All file accesses are made through a client library called <i>ClientApi.py</i>. This library is the interface exposed to the client-side application for manipulation of the local and remote filesystems.
+* On the server side, there is a flat file-storage structure since every file is given a unique numerical name. 
 
 
 ## Directory Mapping
