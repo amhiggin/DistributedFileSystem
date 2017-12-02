@@ -33,7 +33,12 @@ The locking server is located at a known address of <b>http://127.0.0.1:5001/</b
 A safety mechanism in the form of a timeout (50000) is used to guard against infinite waiting for a lock to be released. <b>FIXME: this really only works effectively for the reading, since we can't grab the lock for the case of writing.</b>
 
 ## Caching Mechanism
-* <b>TODO implement</b>
+<b>TODO implement</b>
+Caching is implemented on the client-side, since this is the most effective strategy for caching in such a system as this.
+The cache a custom implementation (<b>TODO figure out what the persistence model is</b>).
+* <u>Read</u>: the cache is checked for an entry corresponding to the file to be read, and if there exists an entry then the version is checked against that recorded with the fileserver. If the client-side copy has an outdated version, then the call is made to the fileserver to fetch the most up-to-date copy of the file. Otherwise, the copy from the cache is used.
+* <u>Write</u>: 
+* <u>Open</u>: since the file-system is implemented to replicate the NFS model, there are no calls across the network for the open operation, and the file as it exists in the cache is simply displayed in read-only mode. <b>TODO implement the read-only part</b>
 
 
 ## Dependencies
