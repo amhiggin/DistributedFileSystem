@@ -60,23 +60,29 @@ def read_file(file_path, file_name, client_id, cache):
     full_file_path = file_path + "/" + file_name
     print "Client requested to read " + full_file_path
     server_address, server_id, file_id = get_file_mapping_from_directory_server(full_file_path)
-    # FIXME check if file already in the cache is latest version: don't have to go over network then
-    # If not in cache, then proceed to try and lock the file and download from the server
 
-    # request the file from this file server
-    timeout = 50000
-    while (not acquire_lock_on_file(file_id, client_id)) and (timeout is not 0):
-        timeout = decrement_timeout_and_check_value(timeout)
-    response = requests.get(
-        file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_server_id': server_id})
-    file_contents = response.json()['file_contents']
-    # FIXME: add this to the cache
-    if file_contents is not None: #
-        print 'Opening file locally to update with response contents: {0}'.format(file_contents)
+    # FIXME check if file already in the cache is latest version
+    if cache.is_entry_cached(file_id):
+        # Don't bother going to file server to fetch contents
+        cache_entry = cache.fetch_cache_entry(file_id)
+        print 'Opening file locally to update with response contents: {0}'.format(cache_entry[0])
         with open(full_file_path, 'r+') as edit_file:
-            edit_file.write(file_contents)
+            edit_file.write(cache_entry[0])
+    else:
+        # request the file from this file server
+        timeout = 50000
+        while (not acquire_lock_on_file(file_id, client_id)) and (timeout is not 0):
+            timeout = decrement_timeout_and_check_value(timeout)
+        response = requests.get(
+            file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_server_id': server_id})
+        file_contents = response.json()['file_contents']
+        if file_contents is not None: #
+            print 'Opening file locally to update with response contents: {0}'.format(file_contents)
+            with open(full_file_path, 'r+') as edit_file:
+                edit_file.write(file_contents)
+        # FIXME: add this to the cache
+        #cache.add_cache_entry(key, contents, version)
 
-    # display file to user
     open_file_in_text_editor(full_file_path)
 
 
@@ -101,10 +107,10 @@ def write_file(file_path, file_name, client_id, cache):
         response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
         print 'Response: ' + str(response.json())
         release_lock_on_file(file_id, client_id)
-
+    # FIXME: add the local file's new contents to the cached version
+    # cache.add_cache_entry(key, contents, version)
 
 # check the file exists on the file-server, as such
-# TODO implement
 def open_file(file_path, file_name, client_id, cache):
     full_file_path = file_path + "/" + file_name
     print "Request to open " + full_file_path

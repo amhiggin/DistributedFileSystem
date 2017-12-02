@@ -19,7 +19,7 @@ ROOT_DIR = "Server" # updated at startup with the specific number
 
 
 def print_to_console(message):
-    print ("FileServer%s: %s%s" % (SERVER_ID, message, '\n'))
+    print ("FileServer%s: %s" % (SERVER_ID, message))
 
 
 class FileServer(Resource):
