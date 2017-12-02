@@ -40,7 +40,7 @@ def request_client_id():
 
 
 def create_client_cache(client_id, cache_path):
-    cache.setup_cache(client_id, cache_path)
+    cache._init_(client_id, cache_path)
 
 
 def mkdir(dir_to_make):
@@ -55,6 +55,8 @@ def read_file(file_path, file_name, client_id):
     full_file_path = file_path + "/" + file_name
     print "Client requested to read " + full_file_path
     server_address, server_id, file_id = get_file_mapping_from_directory_server(full_file_path)
+    # FIXME check if file already in the cache is latest version: don't have to go over network then
+    # If not in cache, then proceed to try and lock the file and download from the server
 
     # request the file from this file server
     timeout = 50000
@@ -63,6 +65,7 @@ def read_file(file_path, file_name, client_id):
     response = requests.get(
         file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_server_id': server_id})
     file_contents = response.json()['file_contents']
+    # FIXME: add this to the cache
     if file_contents is not None: #
         print 'Opening file locally to update with response contents: {0}'.format(file_contents)
         with open(full_file_path, 'r+') as edit_file:
