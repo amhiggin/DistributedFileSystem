@@ -4,13 +4,12 @@
 # Should handle talking to each of the servers to route the response back to the client.
 #
 
-import os, sys, flask, flask_restful, requests, json, flask_cache
+import os, sys, flask, flask_restful, requests, json
 import webbrowser
-
-import flask_cache
 import FileManipAPI as file_api
 from sys import platform as _platform
 import subprocess as sp
+import ClientCache as cache
 
 # Directory server started at default Flask address for ease
 DIRECTORY_SERVER_ADDRESS = ("127.0.0.1", 5000)
@@ -38,6 +37,10 @@ def request_client_id():
     client_id = response.json()['client_id']
     print 'Response to request for new client_id: {0}'.format(client_id)
     return client_id
+
+
+def create_client_cache(client_id, cache_path):
+    cache.setup_cache(client_id, cache_path)
 
 
 def mkdir(dir_to_make):
@@ -186,3 +189,5 @@ def is_file_locked(file_id):
     else:
         print "File {0} is already locked".format(file_id)
         return True
+
+
