@@ -9,9 +9,10 @@ import webbrowser
 import FileManipAPI as file_api
 from sys import platform as _platform
 import subprocess as sp
-import ClientCache as cache
 
 # Directory server started at default Flask address for ease
+import ClientCache
+
 DIRECTORY_SERVER_ADDRESS = ("127.0.0.1", 5000)
 LOCKING_SERVER_ADDRESS = ("127.0.0.1", 5001)
 
@@ -39,8 +40,11 @@ def request_client_id():
     return client_id
 
 
-def create_client_cache(client_id, cache_path):
-    cache._init_(client_id, cache_path)
+def create_client_cache(cache_path, client_id):
+    cache = ClientCache.ClientCache()
+    cache.setup_cache(cache_path, client_id)
+    print 'New cache for client {0} created at location {1}'.format(client_id, cache_path)
+    return cache
 
 
 def mkdir(dir_to_make):
@@ -51,7 +55,7 @@ def mkdir(dir_to_make):
 
 
 # download a copy of the file from the file-server
-def read_file(file_path, file_name, client_id):
+def read_file(file_path, file_name, client_id, cache):
     full_file_path = file_path + "/" + file_name
     print "Client requested to read " + full_file_path
     server_address, server_id, file_id = get_file_mapping_from_directory_server(full_file_path)
@@ -77,7 +81,7 @@ def read_file(file_path, file_name, client_id):
 
 # write to remote copy of file on file-server
 # FIXME: overwrites the remote file
-def write_file(file_path, file_name, client_id):
+def write_file(file_path, file_name, client_id, cache):
     full_file_path = file_path + "/" + file_name
     print "Request to write " + full_file_path
 
@@ -100,7 +104,7 @@ def write_file(file_path, file_name, client_id):
 
 # check the file exists on the file-server, as such
 # TODO implement
-def open_file(file_path, file_name, client_id):
+def open_file(file_path, file_name, client_id, cache):
     full_file_path = file_path + "/" + file_name
     print "Request to open " + full_file_path
     absolute_path = os.path.abspath(full_file_path)
@@ -109,7 +113,7 @@ def open_file(file_path, file_name, client_id):
 
 # TODO implement
 # doesn't really do anything effective (from what I can see)
-def close_file(file_path, file_name, client_id):
+def close_file(file_path, file_name, client_id, cache):
     print "Request to close " + file_path + "/" + file_name
 
 
