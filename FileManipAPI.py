@@ -2,9 +2,6 @@
 # These are methods that can be used between the fileserver and the client.
 #
 import os
-import requests
-import flask_restful
-from flask import Flask, request
 
 # Directory server started at default Flask address for ease
 DIRECTORY_SERVER_ADDRESS = ("127.0.0.1", 5000)

@@ -34,7 +34,6 @@ class ClientCache():
     def add_cache_entry(self, key, contents, version):
         print("Adding cache entry for {0}".format(key))
 
-
         # FIXME first check if the cache is full, evict least recently used if so
         if not self.cache[key]:
             # adding entry to cache for first time
@@ -64,6 +63,9 @@ class ClientCache():
 
     def clear_cache(self):
         print("Clearing client-side cache for client {0}".format(self.client_id))
+        self.cache = {}
+
+    def cleanup_on_client_exit(self):
         if os._exists(self.cache_dir):
             shutil.rmtree(self.cache_dir)
 
@@ -75,8 +77,7 @@ class ClientCache():
             return False
 
     # should be scheduled as some sort of threadpool task in the client, since the cache should be periodically updated
-    #
-    def refresh_cache(self):
+    def refresh_cache_from_filesystem(self):
         if not self.cache:
             return
         else:

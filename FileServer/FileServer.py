@@ -3,7 +3,7 @@
 # Managed and load-balanced by the directory server, which is available at a defined address.
 #
 
-import sys, requests, json, os
+import sys, requests, os
 from flask_restful import Resource, Api, reqparse
 from flask import Flask, request
 

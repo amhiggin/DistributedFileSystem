@@ -64,13 +64,13 @@ class RegisterFileserverInstance(Resource):
 
     def post(self):
         global FILESERVER_LOAD_BY_ID
-        print "register file server"
+        dir_api.print_to_console("register file server")
         # get server properties
         request_contents = request.get_json()
         server_ip = request_contents['ip']
-        print "ip" + server_ip
+        dir_api.print_to_console("ip" + server_ip)
         server_port = request_contents['port']
-        print "port " + server_port
+        dir_api.print_to_console("port " + server_port)
         server_id = len(CONNECTED_FILESERVERS_BY_ID)
 
         # make record of file server with directory server

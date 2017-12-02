@@ -26,6 +26,7 @@ def open_file_in_text_editor(full_file_path):
         print 'Opening with Windows system editor'
         return sp.Popen(['notepad.exe', full_file_path]).wait()
 
+
 def decrement_timeout_and_check_value(timeout):
     timeout -=1
     if timeout == 0:
@@ -64,7 +65,7 @@ def read_file(file_path, file_name, client_id, cache):
 
     # request the file from this file server
     timeout = 50000
-    while is_file_locked(file_id) and timeout is not 0:
+    while (not acquire_lock_on_file(file_id, client_id)) and (timeout is not 0):
         timeout = decrement_timeout_and_check_value(timeout)
     response = requests.get(
         file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_server_id': server_id})
@@ -123,7 +124,7 @@ def close_file(file_path, file_name, client_id, cache):
 
 # This method fetches the details of the file and server on which it is stored
 def get_file_mapping_from_directory_server(full_file_path):
-    print  "Sending request to directory server for file {0}".format(full_file_path)
+    print  "Sending request to directory server for file {0} mapping".format(full_file_path)
     response = requests.get(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), json={'file_name': full_file_path})
     print 'Response from server: {0}'.format(response.json())
 

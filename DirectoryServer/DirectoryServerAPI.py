@@ -1,8 +1,5 @@
-import hashlib
-
-
 def print_to_console(message):
-    print ("DirectoryServer: %s%s" % (message, '\n'))
+    print ("DirectoryServer: %s" % message)
 
 
 def get_server_file_details(file_name, file_names_on_record, connected_fileservers_by_id):

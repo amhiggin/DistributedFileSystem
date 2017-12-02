@@ -35,7 +35,7 @@ A safety mechanism in the form of a timeout (50000) is used to guard against inf
 ## Caching Mechanism
 <b>TODO implement</b>
 
-The caching mechanism is part of the client-side application, since this is the most effective strategy for caching in an NFS system.
+The caching mechanism is part of the client-side application, since this is the most effective strategy for caching in an NFS system. A separate cache is created for each client, in order to simplify dealing with conflicts.
 The cache is a custom implementation (<b>TODO figure out what the persistence model is</b>), with operations to add to, remove from, update, and clear the cache. <b>TODO figure out if there are any more operations to be added</b>.
 * <b>Read</b>: the cache is checked for an entry corresponding to the file to be read, and if there exists an entry then the version is checked against that recorded with the fileserver. If the client-side copy has an outdated version, then the call is made to the fileserver to fetch the most up-to-date copy of the file. Otherwise, the copy from the cache is used.
 * <b>Write</b>: 
@@ -44,9 +44,9 @@ The cache is a custom implementation (<b>TODO figure out what the persistence mo
 
 ## Dependencies
 * Python 2.7.9
-* Flask
-* Flask_Restful
+* flask, flask_restful
 * requests
+*
 
 ## Additional Notes
 * Originally, I had implemented the fileserver communications with the client application using sockets. I was also starting to work on a locking server.

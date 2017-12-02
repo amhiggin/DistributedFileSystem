@@ -3,13 +3,10 @@
 # It will use a client API to communicate with the server (the client library).
 # Should be able to access the requested files by doing through the required servers.
 #
-import os, sys
 import ClientAPI as client_api
 import FileManipAPI as file_api
 import shutil
-import ClientCache
 
-NEWLINE_CHAR = "\n"
 ROOT_DIR = "Client"
 CACHE_DIR = "Cache"
 CLIENT_ID = ""
@@ -17,7 +14,7 @@ running = True
 
 
 def print_to_console(message):
-	print ("Client%s: %s%s" % (CLIENT_ID, message, NEWLINE_CHAR))
+	print ("Client%s: %s" % (CLIENT_ID, message))
 
 
 def get_filename_from_user():
@@ -74,7 +71,7 @@ def run_client():
 			print_to_console(e.message)
 	print_to_console("Closing connection to server. Terminating the client.")
 	shutil.rmtree(ROOT_DIR)
-	cache.clear_cache()
+	cache.cleanup_on_client_exit()
 	exit(0)
 
 
