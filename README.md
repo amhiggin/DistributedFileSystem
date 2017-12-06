@@ -1,5 +1,6 @@
 # DistributedFileSystem
 <b>Amber Higgins, M.A.I. Computer Engineering, 13327954</b>
+
 Network File System (NFS) distributed file management system implementation with:
 1. Distributed transparent file access
 2. Locking
