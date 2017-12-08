@@ -7,25 +7,41 @@ Network File System (NFS) distributed file management system implementation with
 3. Caching
 4. Directory mapping
 
-Implemented in Python using the Flask Restful framework. 
-Requests are sent in JSON format through HTTP get, post, put, delete requests as appropriate.
+Implemented in Python using the Flask Restful framework. Requests are sent in JSON format through HTTP get, post, put, delete requests.
 
 
 ## Transparent File Access
-The system is implemented to replicate the operation of the Network File System (NFS) model. It can support multiple connected clients, and multiple fileservers. 
+The system operates according to the Network File System (NFS) model. It can support multiple connected clients, and multiple fileservers. 
 * All file accesses are made through a client library called <i>ClientApi.py</i>. This library is the interface exposed to the client-side application for manipulation of the local and remote filesystems.
 * Clients can connect to fileservers through methods read, write, open and close. They can also create new directories locally. 
 * Clients can interact with file contents through the system editor, which is launched before every remote write and after every remote read.
-* On the server side, there is a flat file-storage structure since every file is given a unique numerical name. 
 
 
-## Directory Mapping
-The directory server is located at a known address of <b>http://127.0.0.1:5000/</b>. This server acts as a management application for the distributed filesystem.
+
+## Directory Service
+A directory service has the function of converting human-readable file names displayed to a client, into non-verbose file identifiers on remote file servers. It acts as an intermediary between the client applications and the file servers, and can be thought of as a namespace for the network that maps a unique filename (from which the client can be identified) to a unique file identifier (from which the remote file server can be identified).
+
+### Directory Server
+The directory server is located at a known address of <b>http://127.0.0.1:5000/</b>. This server acts as a management application for the distributed filesystem.  The directory server to maintains a record of the mappings of full client-side file names to enumerated file identifier mappings on the remote servers.
+
 The functions of this server are to:
 * Register new client instances once they are created, assigning a <i>client_id</i> property to each. Each client can register with the directory server at the url handle <b>http://127.0.0.1:5000/register_client</b>.
 * Register new fileserver instances once they are created, assigning a <i>file_server_id</i> property to each. Each fileserver can register with the directory server at the url handle <b>http://127.0.0.1:5000/register_fileserver</b>.
 * Load-balance all registered servers, such that at any time the least-loaded server will be given any new loading.
 * Mapping of client-local filenames to remote server filenames, where the client provides the full path of the file (e.g. <i>../Client0/hello.txt</i>) and this is mapped to a unique server-side identifier (e.g. <i>../Server10/18.txt</i>).
+
+### File Server
+The file servers are implemented as a flat-file system, with each storing files in a single directory. This directory uses the naming pattern <b>ServerX</b>, where X is an id assigned to the server when it registers with the directory server.
+
+All files stored on a file server follow a simple numerical naming system such as <i>0.txt</i> for the first file created on the server. 
+
+The server accepts <i>get()</i> and <i>post()</i> requests from connecting clients. It can be reached at any available host address and port specified by the user, which are provided as sys.argv[0] and sys.argv[1].
+* A client wishing to <b>read</b> a remote copy of a file will send a <i>get()</i> request. The client must provide JSON parameters:
+  * 'file_id': file_id
+  * 'file_server_id': server_id
+* A client wishing to <b>write</b> to a remote copy of a file will send a <i>post()</i> request. The client must provide JSON parameters:
+  * 'file_id': file_id
+  * 'file_contents': file_contents
 
 ## Locking Service
 The locking server is located at a known address of <b>http://127.0.0.1:5001/</b>. Any requests for a read/write must first be routed through this service for approval.
