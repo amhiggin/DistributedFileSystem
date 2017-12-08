@@ -10,12 +10,19 @@ Network File System (NFS) distributed file management system implementation with
 Implemented in Python using the Flask Restful framework. Requests are sent in JSON format through HTTP get, post, put, delete requests.
 
 
-## Transparent File Access
+## Distributed Transparent File Access
 The system operates according to the Network File System (NFS) model. It can support multiple connected clients, and multiple fileservers. 
-* All file accesses are made through a client library called <i>ClientApi.py</i>. This library is the interface exposed to the client-side application for manipulation of the local and remote filesystems.
-* Clients can connect to fileservers through methods read, write, open and close. They can also create new directories locally. 
-* Clients can interact with file contents through the system editor, which is launched before every remote write and after every remote read.
 
+### Client Library
+All file accesses are made through a client library called <i>ClientApi.py</i>. This library is the interface exposed to the client-side application for manipulation of the local and remote filesystems. By using the library, the under-the-hood implementation details of the distributed filesystem are hidden from the user.
+Clients can
+* Connect to fileservers through methods read, write, open and close. They can also create new directories locally. 
+* Interact with file contents through the system editor, which is launched before every remote write and after every remote read.
+
+### Client application
+This application provides a simple interface to a user, offering options to manipulate files. This includes reading, writing, opening, and closing text files, as well as creating new directories.
+
+In the background, the user's choices when interacting with the system are routed through the client library to the appropriate services in order to provide an optimal distributed file-system backend.
 
 
 ## Directory Service
