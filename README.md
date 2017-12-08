@@ -24,11 +24,16 @@ A directory service has the function of converting human-readable file names dis
 ### Directory Server
 The directory server is located at a known address of <b>http://127.0.0.1:5000/</b>. This server acts as a management application for the distributed filesystem.  The directory server to maintains a record of the mappings of full client-side file names to enumerated file identifier mappings on the remote servers.
 
-The functions of this server are to:
-* Register new client instances once they are created, assigning a <i>client_id</i> property to each. Each client can register with the directory server at the url handle <b>http://127.0.0.1:5000/register_client</b>.
-* Register new fileserver instances once they are created, assigning a <i>file_server_id</i> property to each. Each fileserver can register with the directory server at the url handle <b>http://127.0.0.1:5000/register_fileserver</b>.
-* Load-balance all registered servers, such that at any time the least-loaded server will be given any new loading.
-* Mapping of client-local filenames to remote server filenames, where the client provides the full path of the file (e.g. <i>../Client0/hello.txt</i>) and this is mapped to a unique server-side identifier (e.g. <i>../Server10/18.txt</i>).
+Amongst other responsibilities, it
+* Provides a registration mechanism for 
+  * Client applications, at URL handle <b>http://127.0.0.1:5000/register_client</b>
+  * File servers, at URL handle <b>http://127.0.0.1:5000/register_fileserver</b>.
+  
+  including the assignment of unique ids;
+* Records connection details for clients and file servers;
+* Load-balances connected file-servers, such that at any time the least-loaded server will be given any new loading;
+* Maintains records of client-fileserver file mappings, where clients provide a full filepath (e.g. <i>../Client0/hello.txt</i>) and this is mapped to a unique server-side identifier (e.g. <i>../Server10/18.txt</i>).
+
 
 ### File Server
 The file servers are implemented as a flat-file system, with each storing files in a single directory. This directory uses the naming pattern <b>ServerX</b>, where X is an id assigned to the server when it registers with the directory server.
