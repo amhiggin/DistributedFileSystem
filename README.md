@@ -15,7 +15,8 @@ The system operates according to the Network File System (NFS) model. It can sup
 
 ### Client Library
 All file accesses are made through a client library called <i>ClientApi.py</i>. This library is the interface exposed to the client-side application for manipulation of the local and remote filesystems. By using the library, the under-the-hood implementation details of the distributed filesystem are hidden from the user.
-Clients can
+
+Clients can:
 * Connect to fileservers through methods read, write, open and close. They can also create new directories locally. 
 * Interact with file contents through the system editor, which is launched before every remote write and after every remote read.
 
@@ -31,8 +32,8 @@ A directory service has the function of converting human-readable file names dis
 ### Directory Server
 The directory server is located at a known address of <b>http://127.0.0.1:5000/</b>. This server acts as a management application for the distributed filesystem.  The directory server to maintains a record of the mappings of full client-side file names to enumerated file identifier mappings on the remote servers.
 
-Amongst other responsibilities, it
-* Provides a registration mechanism for 
+Amongst other responsibilities, it:
+* Provides a registration mechanism for -
   * Client applications, at URL handle <b>http://127.0.0.1:5000/register_client</b>
   * File servers, at URL handle <b>http://127.0.0.1:5000/register_fileserver</b>.
   
@@ -56,11 +57,19 @@ The server accepts <i>get()</i> and <i>post()</i> requests from connecting clien
   * 'file_contents': file_contents
 
 ## Locking Service
-The locking server is located at a known address of <b>http://127.0.0.1:5001/</b>. Any requests for a read/write must first be routed through this service for approval.
-* Any client wishing to write to a file, waits until the file is not locked before acquiring the lock. Note: the implementation assumes that when a remote copy is created on a server, that the remote file doesn't need to be locked (nobody will access until it has been created).
-* Any client wishing to read a file, will not be able to read it until it is unlocked. 
+A locking service provides concurrency control for multiple clients requiring access the same files. It allows clients exclusive access to files under particular circumstances. A client must request and successfully acquire a single lock for a file in order to perform a restricted-access operation (such as a write).
 
-A safety mechanism in the form of a timeout (50000) is used to guard against infinite waiting for a lock to be released. <b>FIXME: this really only works effectively for the reading, since we can't grab the lock for the case of writing.</b>
+### Locking Server
+The locking server manages the operation of locking and unlocking files as required. It is accessible at URL handle <b>http://127.0.0.1:5001/</b>. Any requests for a read or write operation must first be routed through this service for approval.
+
+Each file which exists on a remote file-server will have a corresponding record with the locking server. This record exists as a lookup-table, where each entry is a [file_id, is_locked] pair.<b>TODO look at storing the details of which client has locked the file, with this lock record too.</b>
+* Any client wishing to write to a file must request the lock for that file. They will not be granted the lock until the file is no longer locked. 
+* Any client wishing to read a file, will not be able to read it until it is unlocked.
+
+<i><b>Note</b>: the implementation assumes that when a remote copy is created on a server, that the remote file doesn't need to be locked (nobody will access until it has been created).</i>
+
+A safety mechanism in the form of a timeout (50000ms) is used to guard against infinite waiting for a lock to be released. <b>FIXME: this really only works effectively for the reading, since we can't grab the lock for the case of writing.</b>
+
 
 ## Caching Mechanism
 <b>TODO implement</b>
