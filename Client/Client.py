@@ -27,7 +27,7 @@ def format_file_path(file_path):
 def clean_up_after_client(cache):
 	print_to_console("Cleaning up after client{0} - removing root dir and cache")
 	shutil.rmtree(ROOT_DIR)
-	cache.cleanup_on_client_exit()
+	cache.clear_cache()
 
 
 def run_client():
@@ -40,8 +40,7 @@ def run_client():
 	ROOT_DIR = ROOT_DIR + CLIENT_ID
 	file_api.create_root_dir_if_not_exists(ROOT_DIR)
 	# create client cache directory
-	CACHE_DIR = CACHE_DIR + CLIENT_ID
-	cache = client_api.create_client_cache(CACHE_DIR, CLIENT_ID)
+	cache = client_api.create_client_cache(CLIENT_ID)
 
 	while running:
 

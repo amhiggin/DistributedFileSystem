@@ -50,16 +50,17 @@ def request_client_id():
     return client_id
 
 
-def create_client_cache(cache_path, client_id):
+def create_client_cache(client_id):
     cache = ClientCache.ClientCache()
-    cache.setup_cache(cache_path, client_id)
-    print 'New cache for client {0} created at location {1}'.format(client_id, cache_path)
+    cache.setup_cache(client_id)
+    print 'New cache for client {0} created '.format(client_id)
     return cache
 
 
 def mkdir(dir_to_make):
     if not os.path.exists(dir_to_make):
         os.mkdir(dir_to_make)
+        print 'Created successfully.'
         return True
     return False
 
@@ -85,59 +86,69 @@ def create_new_empty_file(file_path, file_name):
 
 
 def read_file(file_path, file_name, client_id, cache):
-    full_file_path = file_path + "/" + file_name
-    print "Client requested to read " + full_file_path
-    server_address, server_id, file_id, file_version = get_file_mapping_from_directory_server(full_file_path)
+    try:
+        full_file_path = file_path + "/" + file_name
+        print "Client requested to read " + full_file_path
+        server_address, server_id, file_id, file_version = get_file_mapping_from_directory_server(full_file_path)
 
-    if cache.is_entry_cached_and_up_to_date(file_id, file_version):
-        # Don't bother going to file server to fetch contents
-        cache_entry = cache.fetch_cache_entry(file_id)
-        print 'Opening file locally to update with response contents: {0}'.format(cache_entry[0])
-        with open(full_file_path, 'r+') as edit_file:
-            edit_file.write(cache_entry[0])
-    else:
-        # request the file from this file server
-        timeout = 50000
-        while (not acquire_lock_on_file(file_id, client_id)) and (timeout is not 0):
-            timeout = decrement_timeout_and_check_value(timeout)
-        response = requests.get(
-            file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_server_id': server_id})
-        file_contents = response.json()['file_contents']
-        if file_contents is not None: #
-            print 'Opening file locally to update with response contents: {0}'.format(file_contents)
+        if file_id is None:
+            print "{0} doesn't exist on the server".format(full_file_path)
+            return
+        if cache.is_entry_cached_and_up_to_date(full_file_path, file_version):
+            # Don't bother going to file server to fetch contents
+            cache_entry = cache.fetch_cache_entry(full_file_path)
+            print 'Opening file locally to update with response contents: {0}'.format(cache_entry[0])
             with open(full_file_path, 'r+') as edit_file:
-                edit_file.write(file_contents)
+                edit_file.write(cache_entry[0])
+        else:
+            # request the file from this file server
+            timeout = 50000
+            while (not acquire_lock_on_file(file_id, client_id)) and (timeout is not 0):
+                timeout = decrement_timeout_and_check_value(timeout)
+            response = requests.get(
+                file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_server_id': server_id})
+            file_contents = response.json()['file_contents']
+            if file_contents is not None: #
+                print 'Opening file locally to update with response contents: {0}'.format(file_contents)
+                with open(full_file_path, 'r+') as edit_file:
+                    edit_file.write(file_contents)
 
-        # Add this to the cache
-        cache.add_cache_entry(file_id, file_contents, file_version)
+            # Add this to the cache
+            cache.add_cache_entry(full_file_path, file_contents, file_version)
 
-    open_file_in_text_editor(full_file_path)
+        open_file_in_text_editor(full_file_path)
+
+    except Exception as e:
+        print "Exception caught in read_file method: {0}".format(str(e))
 
 
 # FIXME: overwrites the remote file
 def write_file(file_path, file_name, client_id, cache):
-    full_file_path = file_path + "/" + file_name
-    print "Request to write " + full_file_path
+    try:
+        full_file_path = file_path + "/" + file_name
+        print "Request to write " + full_file_path
 
-    # open file for writing
-    open_file_in_text_editor(full_file_path)
-    file_contents = open(full_file_path, 'r').read()
+        # open file for writing
+        open_file_in_text_editor(full_file_path)
+        file_contents = open(full_file_path, 'r').read()
 
-    server_address, server_id, file_id, file_version, new_remote_copy_created = post_request_to_directory_server_for_file_mapping(full_file_path, file_contents)
+        server_address, server_id, file_id, file_version, new_remote_copy_created = post_request_to_directory_server_for_file_mapping(full_file_path, file_contents)
 
-    if not new_remote_copy_created:
-        # we are updating an existing file on this file server
-        timeout = 5000
-        while not acquire_lock_on_file(file_id, client_id) and timeout is not 0:
-            timeout = decrement_timeout_and_check_value(timeout)
-        print 'A new remote copy was not created for this file {0}: have to push the changes directly'.format(full_file_path)
-        # We still have to post the updates to the file server
-        server_response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
-        print 'Response: ' + str(server_response.json())
-        directory_server_response = requests.post(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], "update_file_version"), json={'file_id':file_id, 'file_version':file_version})
-        release_lock_on_file(file_id, client_id)
+        if not new_remote_copy_created:
+            # we are updating an existing file on this file server
+            timeout = 5000
+            while not acquire_lock_on_file(file_id, client_id) and timeout is not 0:
+                timeout = decrement_timeout_and_check_value(timeout)
+            print 'A new remote copy was not created for this file {0}: have to push the changes directly'.format(full_file_path)
+            # We still have to post the updates to the file server
+            server_response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
+            print 'Response: ' + str(server_response.json())
+            directory_server_response = requests.post(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], "update_file_version"), json={'file_id':file_id, 'file_version':file_version})
+            release_lock_on_file(file_id, client_id)
 
-    cache.add_cache_entry(file_id, file_contents, file_version)
+        cache.add_cache_entry(full_file_path, file_contents, file_version)
+    except Exception as e:
+        print "Exception caught in write_file method: {0}".format(e.message)
 
 # check the file exists on the file-server, as such
 def open_file(file_path, file_name, client_id, cache):
@@ -156,38 +167,28 @@ def open_file(file_path, file_name, client_id, cache):
 
 # This method fetches the details of the file and server on which it is stored
 def get_file_mapping_from_directory_server(full_file_path):
-    print  "Sending request to directory server for file {0} mapping".format(full_file_path)
+    print  "Get {0} mapping from directory server".format(full_file_path)
     response = requests.get(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), json={'file_name': full_file_path})
-    print 'Response from server: {0}'.format(response.json())
+    print 'Directory server response: {0}'.format(response.json())
 
     file_server_address = response.json()['file_server_address']
     file_id = response.json()['file_id']
     file_server_id = response.json()['file_server_id']
     file_version = response.json()['file_version']
-    print 'File server address is {0}:{1}'.format(file_server_address[0], file_server_address[1])
-    print 'File id is {0}'.format(file_id)
-    print 'File server id is {0}'.format(file_server_id)
-    print 'File version is {0}'.format(file_version)
 
     return file_server_address, file_server_id, file_id, file_version
 
 
 def post_request_to_directory_server_for_file_mapping(full_file_path, file_contents):
-    print "Sending request to post update to file {0} from directory server".format(full_file_path)
+    print "Post {0} to directory server".format(full_file_path)
     response = requests.post(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), json={'file_name': full_file_path, 'file_contents': file_contents})
 
+    print "Directory server response: {0}".format(response.json())
     file_server_address = response.json()['file_server_address']
     file_server_id = response.json()['file_server_id']
     file_id = response.json()['file_id']
     file_version = response.json()['file_version']
     new_remote_copy_created = response.json()['new_remote_copy']
-
-    print 'Response from server: {0}'.format(str(response.json()))
-    print 'File server address: {0}{1}'.format(file_server_address[0], file_server_address[1])
-    print 'File server id: {0}'.format(file_server_id)
-    print 'File id: {0}'.format(file_id)
-    print 'File version: {0}'.format(file_version)
-    print 'New remote copy created?: {0}'.format(str(new_remote_copy_created))
 
     return file_server_address, file_server_id, file_id, file_version, new_remote_copy_created
 
@@ -197,32 +198,26 @@ def post_request_to_directory_server_for_file_mapping(full_file_path, file_conte
 # ---------------------------#
 
 def acquire_lock_on_file(file_id, client_id):
-    print "Attempting to acquire lock on file {0} for client {1}".format(file_id, client_id)
     response = requests.put(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),
                             json={'file_id': file_id, 'client_id': client_id})
     locked = response.json()['lock']
     if not locked:
-        print "We didn't lock File {0} successfully".format(file_id)
         return False
-    print "We have locked file {0}".format(file_id)
+    print "Client{0} has locked file {1}".format(client_id, file_id)
     return True
 
 
 def release_lock_on_file(file_id, client_id):
-    print "Attempting to release lock on file {0} for client {1}".format(file_id, client_id)
-
     response = requests.delete(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),
                                json={'file_id': file_id, 'client_id': client_id})
     locked = response.json()['lock']
     if not locked:
-        print "File {0} is now unlocked".format(file_id)
+        print "File {0} has been unlocked".format(file_id)
         return True
-    print "Couldn't unlock file {0}".format(file_id)
     return False
 
 
 def is_file_locked(file_id):
-    print "Checking whether the file {0} is locked".format(file_id)
     response = requests.get(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),
                             json={'file_id': file_id})
 
@@ -231,7 +226,7 @@ def is_file_locked(file_id):
         print "File {0} isn't locked".format(file_id)
         return False
     else:
-        print "File {0} is already locked".format(file_id)
+        print "File {0} is locked".format(file_id)
         return True
 
 

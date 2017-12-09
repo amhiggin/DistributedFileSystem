@@ -9,7 +9,7 @@ api = Api(app)
 LOCKED_FILES_BY_ID = {}
 
 
-def print_to_console(self, message):
+def print_to_console(message):
     print ("LockingServer: %s" % message)
 
 
