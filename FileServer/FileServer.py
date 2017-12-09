@@ -89,7 +89,13 @@ if __name__ == "__main__":
             print_to_console("sending request to directory server")
             url =  file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1],"register_fileserver")
             print_to_console("Connecting to {0}".format(str(url)))
-            response = requests.post(url, json={'ip': sys.argv[1], "port": sys.argv[2]})
+            while true:
+                try:
+                    response = requests.post(url, json={'ip': sys.argv[1], "port": sys.argv[2]})
+                    break
+                except ConnectionError:
+                    # Probably stil waiting for the directory service to start up
+                    pass
             SERVER_ID = response.json()['server_id']
             ROOT_DIR = ROOT_DIR + str(SERVER_ID)
             print_to_console("Successfully registered as server {0}".format(SERVER_ID))
