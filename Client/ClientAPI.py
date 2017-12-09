@@ -4,23 +4,22 @@
 # Should handle talking to each of the servers to route the response back to the client.
 #
 
-import os, sys, flask, flask_restful, requests, json
-import webbrowser
-
-from pip._vendor.requests import ConnectionError
-
-import FileManipAPI as file_api
-from sys import platform as _platform
+import os
 import subprocess as sp
+import webbrowser
+from sys import platform as _platform
+
+import requests
 
 # Directory server started at default Flask address for ease
 import ClientCache
+import FileManipAPI as file_api
 
 DIRECTORY_SERVER_ADDRESS = ("127.0.0.1", 5000)
 LOCKING_SERVER_ADDRESS = ("127.0.0.1", 5001)
 
 
-# opens file in windows or linux default system text editor
+# opens file in windows/linux default system text editor
 def open_file_in_text_editor(full_file_path):
     if _platform == "linux" or _platform == "linux2":
         print 'Opening with Linux system editor'
@@ -31,8 +30,9 @@ def open_file_in_text_editor(full_file_path):
 
 
 def decrement_timeout_and_check_value(timeout):
-    timeout -=1
+    timeout -= 1
     if timeout == 0:
+        # TODO figure out how to grab the lock properly
         print 'Lock waiting timed out - will try to grab the lock'
     return timeout
 
@@ -63,15 +63,33 @@ def mkdir(dir_to_make):
         return True
     return False
 
+# creates an empty text file, LOCALLY
+def create_new_empty_file(file_path, file_name):
+    full_file_path = file_path + "/" + file_name
+    print "Creating new empty text file {0}".format(file_name)
+    if os._exists(file_path):
+        new_file = open(full_file_path, 'w+')
+        new_file.close()
+        return True
+    else:
+        create_new_dir = raw_input("Directory {0} doesn't exist: do you want to create it now? (enter y/n): ".format(file_path))
+        if str(create_new_dir).__contains__("y"):
+            mkdir(file_path)
+            new_file = open(full_file_path, 'w+')
+            new_file.close()
+            print 'Created file {0} successfully.'.format(file_name)
+            return True
+        else:
+            print "Couldn't create file {0}".format(full_file_path)
+            return False
 
-# download a copy of the file from the file-server
+
 def read_file(file_path, file_name, client_id, cache):
     full_file_path = file_path + "/" + file_name
     print "Client requested to read " + full_file_path
-    server_address, server_id, file_id = get_file_mapping_from_directory_server(full_file_path)
+    server_address, server_id, file_id, file_version = get_file_mapping_from_directory_server(full_file_path)
 
-    # FIXME check if file already in the cache is latest version
-    if cache.is_entry_cached(file_id):
+    if cache.is_entry_cached_and_up_to_date(file_id, file_version):
         # Don't bother going to file server to fetch contents
         cache_entry = cache.fetch_cache_entry(file_id)
         print 'Opening file locally to update with response contents: {0}'.format(cache_entry[0])
@@ -89,13 +107,13 @@ def read_file(file_path, file_name, client_id, cache):
             print 'Opening file locally to update with response contents: {0}'.format(file_contents)
             with open(full_file_path, 'r+') as edit_file:
                 edit_file.write(file_contents)
-        # FIXME: add this to the cache
-        #cache.add_cache_entry(key, contents, version)
+
+        # Add this to the cache
+        cache.add_cache_entry(file_id, file_contents, file_version)
 
     open_file_in_text_editor(full_file_path)
 
 
-# write to remote copy of file on file-server
 # FIXME: overwrites the remote file
 def write_file(file_path, file_name, client_id, cache):
     full_file_path = file_path + "/" + file_name
@@ -105,32 +123,31 @@ def write_file(file_path, file_name, client_id, cache):
     open_file_in_text_editor(full_file_path)
     file_contents = open(full_file_path, 'r').read()
 
-    server_address, server_id, file_id, new_remote_copy_created = post_request_to_directory_server_for_file_mapping(full_file_path, file_contents)
+    server_address, server_id, file_id, file_version, new_remote_copy_created = post_request_to_directory_server_for_file_mapping(full_file_path, file_contents)
 
-    if new_remote_copy_created == False:
+    if not new_remote_copy_created:
+        # we are updating an existing file on this file server
         timeout = 5000
         while not acquire_lock_on_file(file_id, client_id) and timeout is not 0:
             timeout = decrement_timeout_and_check_value(timeout)
         print 'A new remote copy was not created for this file {0}: have to push the changes directly'.format(full_file_path)
         # We still have to post the updates to the file server
-        response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
-        print 'Response: ' + str(response.json())
+        server_response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
+        print 'Response: ' + str(server_response.json())
+        directory_server_response = requests.post(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], "update_file_version"), json={'file_id':file_id, 'file_version':file_version})
         release_lock_on_file(file_id, client_id)
-    # FIXME: add the local file's new contents to the cached version
-    # cache.add_cache_entry(key, contents, version)
+
+    cache.add_cache_entry(file_id, file_contents, file_version)
 
 # check the file exists on the file-server, as such
 def open_file(file_path, file_name, client_id, cache):
     full_file_path = file_path + "/" + file_name
     print "Request to open " + full_file_path
     absolute_path = os.path.abspath(full_file_path)
-    webbrowser.open(absolute_path)
-
-
-# TODO implement
-# doesn't really do anything effective (from what I can see)
-def close_file(file_path, file_name, client_id, cache):
-    print "Request to close " + file_path + "/" + file_name
+    if os._exists(absolute_path):
+        webbrowser.open(absolute_path)
+    else:
+        print "{0} doesn't exist".format(absolute_path)
 
 
 # ---------------------------#
@@ -144,30 +161,35 @@ def get_file_mapping_from_directory_server(full_file_path):
     print 'Response from server: {0}'.format(response.json())
 
     file_server_address = response.json()['file_server_address']
-    print 'File server address is {0}:{1}'.format(file_server_address[0], file_server_address[1])
     file_id = response.json()['file_id']
-    print 'File id is {0}'.format(file_id)
     file_server_id = response.json()['file_server_id']
+    file_version = response.json()['file_version']
+    print 'File server address is {0}:{1}'.format(file_server_address[0], file_server_address[1])
+    print 'File id is {0}'.format(file_id)
     print 'File server id is {0}'.format(file_server_id)
+    print 'File version is {0}'.format(file_version)
 
-    return file_server_address, file_server_id, file_id
+    return file_server_address, file_server_id, file_id, file_version
 
 
 def post_request_to_directory_server_for_file_mapping(full_file_path, file_contents):
     print "Sending request to post update to file {0} from directory server".format(full_file_path)
     response = requests.post(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), json={'file_name': full_file_path, 'file_contents': file_contents})
 
-    print 'Response from server: {0}'.format(str(response.json()))
     file_server_address = response.json()['file_server_address']
-    print 'File server address: {0}{1}'.format(file_server_address[0], file_server_address[1])
     file_server_id = response.json()['file_server_id']
-    print 'File server id: {0}'.format(file_server_id)
     file_id = response.json()['file_id']
-    print 'File id: {0}'.format(file_id)
+    file_version = response.json()['file_version']
     new_remote_copy_created = response.json()['new_remote_copy']
+
+    print 'Response from server: {0}'.format(str(response.json()))
+    print 'File server address: {0}{1}'.format(file_server_address[0], file_server_address[1])
+    print 'File server id: {0}'.format(file_server_id)
+    print 'File id: {0}'.format(file_id)
+    print 'File version: {0}'.format(file_version)
     print 'New remote copy created?: {0}'.format(str(new_remote_copy_created))
 
-    return file_server_address, file_server_id, file_id, new_remote_copy_created
+    return file_server_address, file_server_id, file_id, file_version, new_remote_copy_created
 
 
 # ---------------------------#
@@ -177,8 +199,7 @@ def post_request_to_directory_server_for_file_mapping(full_file_path, file_conte
 def acquire_lock_on_file(file_id, client_id):
     print "Attempting to acquire lock on file {0} for client {1}".format(file_id, client_id)
     response = requests.put(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),
-                             json={'file_id': file_id, 'client_id': client_id})
-
+                            json={'file_id': file_id, 'client_id': client_id})
     locked = response.json()['lock']
     if not locked:
         print "We didn't lock File {0} successfully".format(file_id)
@@ -191,7 +212,7 @@ def release_lock_on_file(file_id, client_id):
     print "Attempting to release lock on file {0} for client {1}".format(file_id, client_id)
 
     response = requests.delete(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),
-                             json={'file_id': file_id, 'client_id': client_id})
+                               json={'file_id': file_id, 'client_id': client_id})
     locked = response.json()['lock']
     if not locked:
         print "File {0} is now unlocked".format(file_id)
@@ -203,7 +224,7 @@ def release_lock_on_file(file_id, client_id):
 def is_file_locked(file_id):
     print "Checking whether the file {0} is locked".format(file_id)
     response = requests.get(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),
-                               json={'file_id': file_id})
+                            json={'file_id': file_id})
 
     locked = response.json()['locked']
     if not locked:

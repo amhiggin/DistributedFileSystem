@@ -7,17 +7,16 @@ import sys, os, json, shutil
 
 class ClientCache():
 
-    MAX_SIZE = 1000
+    MAX_SIZE = 10 # TODO update
     client_id = ""
     cache_dir = ""
 
     # entry[i] = {file, version, timestamp, contents}
-    cache = {}
     num_entries = 0
 
 
     def print_to_console(self, message):
-        print message
+        print self.cache_dir + message
 
 
     def __init__(self):
@@ -29,19 +28,20 @@ class ClientCache():
             os.mkdir(cache_path)
             self.cache_dir = cache_path
             self.client_id = client_id
+            self.cache = {}
 
 
     def add_cache_entry(self, key, contents, version):
-        print("Adding cache entry for {0}".format(key))
+        print "Adding cache entry for {0}".format(key)
 
         # FIXME first check if the cache is full, evict least recently used if so
-        if not self.cache[key]:
+        if not self.cache.has_key(key):
             # adding entry to cache for first time
-            self.cache[key] = {contents, version}
+            print "Adding new cache entry"
+            self.cache[key] = {contents, 0}
             self.num_entries += 1
-            print("Added new cache entry")
         else:
-            print("There is an existing entry: will update")
+            print "There is an existing entry: will update"
             self.update_cache_entry(key, contents, version)
 
 
@@ -49,16 +49,21 @@ class ClientCache():
         print("Removing cache entry for {0}".format(key))
         del self.cache[key]
         self.num_entries -= 1
-        print("Removed cache entry successfully")
+        print "Removed cache entry successfully"
 
 
     def fetch_cache_entry(self, key):
-        print('Fetching cache entry for key {0}'.format(key))
         return self.cache[key]
 
 
     def update_cache_entry(self, key, contents, version):
-        print("Updating cache entry for {0}".format(key))
+        print "Updating cache entry for {0}".format(key)
+
+        if self.cache[key][1] is not version:
+            self.cache[key][0] = contents
+            self.cache[key][1] = version
+        else:
+            print "Version of the file in the cache ({0}) hasn't changed".format(version)
 
 
     def clear_cache(self):
@@ -66,17 +71,18 @@ class ClientCache():
         self.cache = {}
 
     def cleanup_on_client_exit(self):
-        if os._exists(self.cache_dir):
-            shutil.rmtree(self.cache_dir)
+        shutil.rmtree(self.cache_dir)
+        print 'Cleaned up the cache dir after client exit'
 
-    def is_entry_cached(self, key):
+    def is_entry_cached_and_up_to_date(self, key, file_version):
         print("In find_entry cache method")
-        if key in self.cache:
-            return True
+        if self.cache[key]:
+            if self.cache[key][1] == file_version:
+                return True
         else:
             return False
 
-    # should be scheduled as some sort of threadpool task in the client, since the cache should be periodically updated
+    # TODO should be scheduled as some sort of threadpool task in the client, since the cache should be periodically updated
     def refresh_cache_from_filesystem(self):
         if not self.cache:
             return

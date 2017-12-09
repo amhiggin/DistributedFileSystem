@@ -16,15 +16,18 @@ running = True
 def print_to_console(message):
 	print ("Client%s: %s" % (CLIENT_ID, message))
 
-
 def get_filename_from_user():
 	file_path = raw_input("\nEnter file path: ")
 	file_name = raw_input("\nEnter file name at this path: ")
 	return file_path, file_name
 
-
 def format_file_path(file_path):
 	return ROOT_DIR + "/" + file_path
+
+def clean_up_after_client(cache):
+	print_to_console("Cleaning up after client{0} - removing root dir and cache")
+	shutil.rmtree(ROOT_DIR)
+	cache.cleanup_on_client_exit()
 
 
 def run_client():
@@ -42,9 +45,12 @@ def run_client():
 
 	while running:
 
+		# TODO should thread this as a separate task
+		cache.refresh_cache_from_filesystem()
+
 		try:
 			user_input = raw_input(
-				"Select option:\n1) Read a file from the server \n2) Open file from server \n3) Write file to server\n4) Close a file \n5) Create a new local directory \n6) Kill client\n\n")
+				"Select option:\n1 = Read a file from the server \n2 = Open file locally \n3 = Write file to server\n4 = Create a new local directory \n5 = Create a new, empty local file \nx = Kill client\n\n")
 			if user_input == "1":
 				file_path, file_name = get_filename_from_user()
 				client_api.read_file(format_file_path(file_path), file_name, CLIENT_ID, cache)
@@ -55,23 +61,24 @@ def run_client():
 				file_path, file_name = get_filename_from_user()
 				client_api.write_file(format_file_path(file_path), file_name, CLIENT_ID, cache)
 			elif user_input == '4':
-				file_path, file_name = get_filename_from_user()
-				client_api.close_file(format_file_path(file_path), file_name, CLIENT_ID, cache)
-			elif user_input == '5':
 				file_path = raw_input("\nEnter dir to create: ")
 				full_file_path = format_file_path(file_path)
 				if not client_api.mkdir(full_file_path):
 					print_to_console("Dir {0} already existed: didn't duplicate!".format(full_file_path))
-			elif user_input == '6':
+			elif user_input == '5':
+				file_path, file_name = get_filename_from_user()
+				if not client_api.create_new_empty_file(format_file_path(file_path), file_name):
+					print "Couldn't create file {0}".format(format_file_path(file_path) + "/" + file_name)
+			elif user_input == 'x':
 				running = False
 			else:
 				print_to_console("You said: " + user_input + ", which is invalid. Give it another go!\n")
 		except Exception as e:
 			print_to_console('An error occurred with handling the connection request')
 			print_to_console(e.message)
+
 	print_to_console("Closing connection to server. Terminating the client.")
-	shutil.rmtree(ROOT_DIR)
-	cache.cleanup_on_client_exit()
+	clean_up_after_client(cache)
 	exit(0)
 
 

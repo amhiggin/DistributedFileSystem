@@ -56,6 +56,8 @@ The server accepts <i>get()</i> and <i>post()</i> requests from connecting clien
   * 'file_id': file_id
   * 'file_contents': file_contents
 
+<b>The fileserver doesn't hold any versioning information about the files it has : it is the directory server which handles this.</b>
+
 ## Locking Service
 A locking service provides concurrency control for multiple clients requiring access the same files. It allows clients exclusive access to files under particular circumstances. A client must request and successfully acquire a single lock for a file in order to perform a restricted-access operation (such as a write).
 
@@ -75,6 +77,7 @@ A safety mechanism in the form of a timeout (50000ms) is used to guard against i
 <b>TODO implement</b>
 
 The caching mechanism is part of the client-side application, since this is the most effective strategy for caching in an NFS system. A separate cache is created for each client, in order to simplify dealing with conflicts.
+
 The cache is a custom implementation (<b>TODO figure out what the persistence model is</b>), with operations to add to, remove from, update, and clear the cache. <b>TODO figure out if there are any more operations to be added</b>.
 * <b>Read</b>: the cache is checked for an entry corresponding to the file to be read, and if there exists an entry then the version is checked against that recorded with the fileserver. If the client-side copy has an outdated version, then the call is made to the fileserver to fetch the most up-to-date copy of the file. Otherwise, the copy from the cache is used.
 * <b>Write</b>: 

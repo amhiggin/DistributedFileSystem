@@ -3,10 +3,13 @@
 # Managed and load-balanced by the directory server, which is available at a defined address.
 #
 
-import sys, requests, os
-from flask_restful import Resource, Api, reqparse
+import os
+import requests
+import sys
+
+import shutil
 from flask import Flask, request
-from pip._vendor.requests import ConnectionError
+from flask_restful import Resource, Api, reqparse
 
 import FileManipAPI as file_api
 
@@ -21,6 +24,10 @@ ROOT_DIR = "Server" # updated at startup with the specific number
 
 def print_to_console(message):
     print ("FileServer%s: %s" % (SERVER_ID, message))
+
+def clean_up_on_exit():
+    if os._exists(ROOT_DIR):
+        shutil.rmtree(ROOT_DIR)
 
 
 class FileServer(Resource):
@@ -46,6 +53,7 @@ class FileServer(Resource):
         file_contents = request.get_json()['file_contents'].strip()
         file_id = request.get_json()['file_id']
         file_name = ROOT_DIR + "/" + file_api.get_serverside_file_name_by_id(file_id)
+
         print_to_console("Root dir is {0}".format(ROOT_DIR))
         with open(file_name, 'r+') as edit_file:
             edit_file.write(str(file_contents))
@@ -58,8 +66,8 @@ class CreateNewRemoteCopy(Resource):
 
     def post(self):
         file_id = request.get_json()['file_id']
-        print_to_console("Request received to create new file for file {0}".format(file_id))
         file_contents = request.get_json()['file_contents']
+        print_to_console("Request received to create new file for file {0}".format(file_id))
         print_to_console("File contents: ".format(file_contents))
 
         # have to get the text-file equivalent name for this file id
@@ -94,7 +102,7 @@ if __name__ == "__main__":
                 try:
                     response = requests.post(url, json={'ip': sys.argv[1], "port": sys.argv[2]})
                     break
-                except ConnectionError:
+                except:
                     # Probably stil waiting for the directory service to start up
                     pass
             SERVER_ID = response.json()['server_id']
@@ -105,3 +113,5 @@ if __name__ == "__main__":
         app.run(debug=True, host=sys.argv[1], port=int(sys.argv[2]))
     else:
         print_to_console("IP address and port weren't entered for the fileserver: cannot launch")
+    clean_up_on_exit()
+    exit(0)

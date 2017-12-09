@@ -16,6 +16,7 @@ FILESERVER_LOAD_BY_ID = {}
 FILES_ON_RECORD_BY_NAME = {}
 FILES_ON_RECORD_BY_ID = {}
 NUM_CLIENTS = 0
+VERSION_ZERO = 0
 
 app = Flask(__name__)
 api = Api(app)
@@ -27,25 +28,31 @@ class DirectoryServer(Resource):
         file_name =  request.get_json()['file_name']
         dir_api.print_to_console("File {0} requested to get ".format(file_name))
 
-        server_address, server_id, file_id = dir_api.get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
-        return {'file_server_address': server_address, 'file_server_id': server_id, 'file_id': file_id}
+        server_address, server_id, file_id, file_version = dir_api.get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
+        return {'file_server_address': server_address, 'file_server_id': server_id, 'file_id': file_id, 'file_version': file_version}
 
     def post(self):
         file_name = request.get_json()['file_name']
         file_contents = request.get_json()['file_contents']
         dir_api.print_to_console("File {0} requested to post".format(file_name))
-        server_address, server_id, file_id = dir_api.get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
+        server_address, server_id, file_id, file_version = dir_api.get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
+
         if file_id is not None:
-            return {'file_server_address': server_address, 'file_server_id': server_id, 'file_id':file_id, 'new_remote_copy': False}
+            # Copy exists on a file-server
+            dir_api.print_to_console('Current file version is {0}'.format(file_version))
+            return {'file_server_address': server_address, 'file_server_id': server_id, 'file_id':file_id, 'file_version':file_version, 'new_remote_copy': False}
         else:
+            # This is a new file: create a brand new remote copy
             dir_api.print_to_console("File {0} wasn't found on any server. Will add it to a file-server".format(file_name))
             file_id = len(FILES_ON_RECORD_BY_NAME)
             dir_api.print_to_console("Assigned file_id as {0}\nNow will store remote copy on least-loaded file server.".format(file_id))
             file_server_id = dir_api.find_least_loaded_file_server(CONNECTED_FILESERVERS_BY_ID, FILESERVER_LOAD_BY_ID)
             FILESERVER_LOAD_BY_ID[file_server_id] += 1
 
-            FILES_ON_RECORD_BY_NAME[file_name] = (file_id, file_server_id)
-            FILES_ON_RECORD_BY_ID[file_id] = (file_server_id, file_name)
+            # add versioning info - initial value
+            file_version = VERSION_ZERO
+            FILES_ON_RECORD_BY_NAME[file_name] = (file_id, file_server_id, file_version)
+            FILES_ON_RECORD_BY_ID[file_id] = (file_server_id, file_name, file_version)
             server_ip = CONNECTED_FILESERVERS_BY_ID[file_server_id][0]
             server_port = CONNECTED_FILESERVERS_BY_ID[file_server_id][1]
 
@@ -57,7 +64,36 @@ class DirectoryServer(Resource):
             if new_remote_copy == True:
                 dir_api.print_to_console("Successfully created remote copy with requested changes")
 
-            return {'file_id': file_id, 'file_server_id': file_server_id, 'file_server_address': CONNECTED_FILESERVERS_BY_ID[file_server_id], 'new_remote_copy': new_remote_copy}
+            return {'file_id': file_id, 'file_server_id': file_server_id, 'file_server_address': CONNECTED_FILESERVERS_BY_ID[file_server_id], 'file_version': file_version, 'new_remote_copy': new_remote_copy}
+
+
+class UpdateFileVersion(Resource):
+    '''
+    This resource is used by the client library to send an update about the version of the file
+    '''
+
+    def post(self):
+        global version_updated
+        request_contents = request.get_json();
+        file_id = request_contents.json()['file_id']
+        file_version = request_contents.json()['file_version']
+        file_server_id = request_contents.json()['file_server_id']
+
+        # have to check that the file being referenced exists
+        if FILES_ON_RECORD_BY_ID[file_id]:
+            # now update the version if necessary
+            if FILES_ON_RECORD_BY_ID[file_id][2] != file_version:
+                if FILES_ON_RECORD_BY_ID[file_id][2] == (file_version - 1):
+                    FILES_ON_RECORD_BY_ID[file_id][2] = file_version
+                    version_updated = True
+                else:
+                    print 'Version of the file {0} is behind that on the directory server'.format(FILES_ON_RECORD_BY_ID[file_id][1])
+                    version_updated = False
+            else:
+                version_updated = False
+
+        return {'version_updated': version_updated}
+
 
 
 class RegisterFileserverInstance(Resource):
@@ -65,12 +101,11 @@ class RegisterFileserverInstance(Resource):
     def post(self):
         global FILESERVER_LOAD_BY_ID
         dir_api.print_to_console("register file server")
+
         # get server properties
         request_contents = request.get_json()
         server_ip = request_contents['ip']
-        dir_api.print_to_console("ip" + server_ip)
         server_port = request_contents['port']
-        dir_api.print_to_console("port " + server_port)
         server_id = len(CONNECTED_FILESERVERS_BY_ID)
 
         # make record of file server with directory server
@@ -93,8 +128,7 @@ class RegisterClientInstance(Resource):
         client_id = NUM_CLIENTS
         NUM_CLIENTS += 1
         response = {'client_id': client_id}
-        dir_api.print_to_console("NEW CLIENT REGISTERED")
-        dir_api.print_to_console("CLIENT ID ASSIGNED AS {0}".format(client_id))
+        dir_api.print_to_console("NEW CLIENT REGISTERED. CLIENT ID ASSIGNED AS {0}".format(client_id))
         return response
 
 
@@ -102,6 +136,8 @@ class RegisterClientInstance(Resource):
 api.add_resource(DirectoryServer, '/')
 api.add_resource(RegisterFileserverInstance, '/register_fileserver')
 api.add_resource(RegisterClientInstance, '/register_client')
+# The following should allow the fileserver to send an update to the dir server about a changed file version
+api.add_resource(UpdateFileVersion, '/update_file_version')
 
 if __name__ == "__main__":
     app.run(debug=True)
