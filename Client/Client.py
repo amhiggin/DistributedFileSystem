@@ -65,7 +65,7 @@ def run_client():
 			elif user_input == '6':
 				running = False
 			else:
-				print_to_console("You said: " + user_input + ", which is invalid. Give it another go!" + NEWLINE_CHAR)
+				print_to_console("You said: " + user_input + ", which is invalid. Give it another go!\n")
 		except Exception as e:
 			print_to_console('An error occurred with handling the connection request')
 			print_to_console(e.message)

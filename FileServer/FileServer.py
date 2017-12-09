@@ -6,6 +6,7 @@
 import sys, requests, os
 from flask_restful import Resource, Api, reqparse
 from flask import Flask, request
+from pip._vendor.requests import ConnectionError
 
 import FileManipAPI as file_api
 
@@ -14,7 +15,7 @@ api = Api(app)
 
 DIRECTORY_SERVER_ADDRESS = ("127.0.0.1", 5000)
 LOCKING_SERVER_ADDRESS = ("127.0.0.1", 5001)
-SERVER_ID = "" # used for console messages
+SERVER_ID = ""
 ROOT_DIR = "Server" # updated at startup with the specific number
 
 
@@ -45,10 +46,10 @@ class FileServer(Resource):
         file_contents = request.get_json()['file_contents'].strip()
         file_id = request.get_json()['file_id']
         file_name = ROOT_DIR + "/" + file_api.get_serverside_file_name_by_id(file_id)
-        print 'Root dir is {0}'.format(ROOT_DIR)
+        print_to_console("Root dir is {0}".format(ROOT_DIR))
         with open(file_name, 'r+') as edit_file:
             edit_file.write(str(file_contents))
-            print 'Wrote to file {0}'.format(file_id)
+            print_to_console('Wrote to file {0}'.format(file_id))
         return {'file_contents': file_contents}
 
 
@@ -70,10 +71,10 @@ class CreateNewRemoteCopy(Resource):
         file_to_write.write(file_contents)
         file_to_write.close()
         if os.path.exists(file_name):
-            print "Remote copy of file id {0} successfully created".format(file_id)
+            print_to_console("Remote copy of file id {0} successfully created".format(file_id))
             return {'new_remote_copy': True}
         else:
-            print "Remote copy of file id {0} could not be created".format(file_id)
+            print_to_console("Remote copy of file id {0} could not be created".format(file_id))
             return {'new_remote_copy': False}
 
 # this adds a url handle for the FileServer
@@ -89,7 +90,7 @@ if __name__ == "__main__":
             print_to_console("sending request to directory server")
             url =  file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1],"register_fileserver")
             print_to_console("Connecting to {0}".format(str(url)))
-            while true:
+            while True:
                 try:
                     response = requests.post(url, json={'ip': sys.argv[1], "port": sys.argv[2]})
                     break

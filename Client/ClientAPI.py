@@ -6,6 +6,9 @@
 
 import os, sys, flask, flask_restful, requests, json
 import webbrowser
+
+from pip._vendor.requests import ConnectionError
+
 import FileManipAPI as file_api
 from sys import platform as _platform
 import subprocess as sp
@@ -35,7 +38,13 @@ def decrement_timeout_and_check_value(timeout):
 
 
 def request_client_id():
-    response = requests.get(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], "register_client"), json={'client_id_request': True})
+    while True:
+        try:
+            response = requests.get(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], "register_client"), json={'client_id_request': True})
+            break
+        except:
+            # probably still waiting for directory server to start up
+            pass
     client_id = response.json()['client_id']
     print 'Response to request for new client_id: {0}'.format(client_id)
     return client_id
