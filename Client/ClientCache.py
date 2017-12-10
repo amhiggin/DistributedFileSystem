@@ -1,8 +1,7 @@
-#
-# A cache class, for a cache to be created for each client currently running.
-# The cache should clear itself after the client has exited.
-# This cache should store file information
-#
+'''
+ A custom implementation of a cache, one of which is created for each client.
+ The cache stores the 10 most recent entries, using a Least-Recently Used (LRU) eviction policy.
+'''
 import datetime
 import itertools
 
@@ -19,7 +18,6 @@ class ClientCache():
     def __init__(self):
         self.print_to_console("Setting up new cache.")
 
-
     def setup_cache(self, client_id):
         self.cache_id = client_id
         self.cache = {}
@@ -27,7 +25,7 @@ class ClientCache():
         self.cache = dict(itertools.izip(xrange(self.cache_size), itertools.repeat(None)))
 
 
-
+    # Method to return the corresponding filename for a given cache index/key
     def get_filename_by_key(self, key):
         try:
             if self.cache[key]:
@@ -37,6 +35,7 @@ class ClientCache():
         except Exception as e:
             self.print_to_console("Exception occurred when getting filename by key: {0}".format(e.message))
 
+    # Method to return the corresponding index/key in the cache for a given filename
     def get_key_by_filename(self, file_name):
         try:
             if self.num_entries == 0 or len(self.cache) == 0:
@@ -49,6 +48,7 @@ class ClientCache():
         except Exception as e:
             self.print_to_console("Exception occurred when getting key by filename: {0}".format(e.message))
 
+    # Method used by the LRU eviction methods, to find the least-recently-used/oldest file in the cache.
     def get_key_of_oldest_file(self):
         try:
             oldest = None
@@ -62,11 +62,12 @@ class ClientCache():
                     if difference < datetime.timedelta(seconds=0):
                         oldest = {'key':key, 'timestamp':timestamp}
             self.print_to_console("Oldest entry has key: {0}".format(oldest['key']))
+            # send back the index/key of the oldest file in the cache
             return oldest['key']
         except Exception as e:
             self.print_to_console("Exception occurred when getting LRU entry: {0}".format(e.message))
 
-
+    # This method adds/updates a new file entry to the cache as appropriate, evicting an existing entry if necessary.
     def add_cache_entry(self, file_path, contents, version):
         self.print_to_console("Adding/updating entry for {0}".format(file_path))
         try:
@@ -87,6 +88,7 @@ class ClientCache():
         except Exception as e:
             self.print_to_console("Exception occurred when evicting cache entry: {0}".format(e.message))
 
+    # This method evicts a cache entry according to the Least-Recently-Used (LRU) cache eviction policy.
     def evict_cache_entry(self):
         try:
             key = self.get_key_of_oldest_file()
@@ -100,7 +102,7 @@ class ClientCache():
         except Exception as e:
             self.print_to_console("Exception occurred when evicting cache entry: {0}".format(e.message))
 
-
+    # This method fetches a file entry from the cache, if one exists.
     def fetch_cache_entry(self, file_path):
         try:
             self.print_to_console("Fetching cache entry.")

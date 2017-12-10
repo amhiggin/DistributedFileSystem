@@ -24,8 +24,6 @@ def timeout_on_lock(locked_files_by_id, file_id):
     else:
         return False
 
-
-
 class LockingServer(Resource):
 
     def put(self):

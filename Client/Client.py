@@ -14,44 +14,57 @@ running = True
 def print_to_console(message):
 	print ("Client%s: %s" % (CLIENT_ID, message))
 
+# This method allows the user to input a file path and the name of a text file, when prompted.
 def get_filename_from_user():
 	file_path = raw_input("\nEnter file path: ")
-	file_name = raw_input("\nEnter file name at this path: ")
+	while True:
+		file_name = raw_input("\nEnter file name at this path: ")
+		if file_name.__contains__(".txt"):
+			break
+		else:
+			print_to_console("Invalid file-name entered: must be a text file.")
 	return file_path, file_name
 
+# This method cleans up the cache after the client exits.
 def clean_up_after_client(cache):
 	print_to_console("Cleaning up after client{0} - removing cache")
 	cache.clear_cache()
 
-
+# This is the client's main method.
 def run_client():
 	global running, CLIENT_ID
 
 	print_to_console("Hello world from client!")
+
+	# Register this client with the directory and locking servers
 	CLIENT_ID = str(client_api.request_client_id())
 	client_api.register_with_locking_server(CLIENT_ID)
 
-	# create client cache directory
+	# create a cache for this client
 	cache = client_api.create_client_cache(CLIENT_ID)
 
 	while running:
-
 		try:
 			user_input = raw_input(
 				"\n-------------------------------------------------\nSelect option:\n1 = Read a file from the server \n2 = Open file locally \n3 = Write file to server\n4 = Create a new, empty local file \nx = Kill client\n\n")
 			if user_input == "1":
+				# Read the specified file from the remote copy, if exists
 				file_path, file_name = get_filename_from_user()
 				client_api.read_file(file_path, file_name, CLIENT_ID, cache)
 			elif user_input == '2':
+				# Open the local copy of the file, if exists
 				file_path, file_name = get_filename_from_user()
 				client_api.open_file(file_path, file_name, CLIENT_ID, cache)
 			elif user_input == '3':
+				# Write to the specified remote copy of the file, if exists
 				file_path, file_name = get_filename_from_user()
 				client_api.write_file(file_path, file_name, CLIENT_ID, cache)
 			elif user_input == '4':
+				# Create the specified file at the specified path, if valid.
 				file_path, file_name = get_filename_from_user()
 				client_api.create_new_empty_file(file_path, file_name)
 			elif user_input == 'x':
+				# Terminate the client
 				running = False
 			else:
 				print_to_console("You said: " + user_input + ", which is invalid. Give it another go!\n")
