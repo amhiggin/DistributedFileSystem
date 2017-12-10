@@ -44,9 +44,6 @@ def run_client():
 
 	while running:
 
-		# TODO should thread this as a separate task
-		cache.refresh_cache_from_filesystem()
-
 		try:
 			user_input = raw_input(
 				"Select option:\n1 = Read a file from the server \n2 = Open file locally \n3 = Write file to server\n4 = Create a new, empty local file \nx = Kill client\n\n")

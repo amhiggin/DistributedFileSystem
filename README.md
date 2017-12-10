@@ -72,17 +72,26 @@ Each file which exists on a remote file-server will have a corresponding record 
 
 A safety mechanism in the form of a timeout (50000ms) is used to guard against infinite waiting for a lock to be released. <b>FIXME: this really only works effectively for the reading, since we can't grab the lock for the case of writing.</b>
 
+<b>TODOs:
+* Update the timeout being used
+* Add a timeout on the server itself to make sure that it doesn't wait infinitely for a client to come back with an unlock.</b>
 
 ## Caching Mechanism
 <b>TODO implement</b>
 
-The caching mechanism is part of the client-side application, since this is the most effective strategy for caching in an NFS system. A separate cache is created for each client, in order to simplify dealing with conflicts.
+The caching mechanism is part of the client-side application, since this is the most effective strategy for caching in an NFS system. A separate cache is created for each client, in order to simplify dealing with conflicts. This cache is a look-up table with a maximum number of entries, <b>which will eventually be managed using a Least-Recently-Used (LRU) eviction policy</b>.
 
-The cache is a custom implementation (<b>TODO figure out what the persistence model is</b>), with operations to add to, remove from, update, and clear the cache. <b>TODO figure out if there are any more operations to be added</b>.
-* <b>Read</b>: the cache is checked for an entry corresponding to the file to be read, and if there exists an entry then the version is checked against that recorded with the fileserver. If the client-side copy has an outdated version, then the call is made to the fileserver to fetch the most up-to-date copy of the file. Otherwise, the copy from the cache is used.
-* <b>Write</b>: 
-* <b>Open</b>: since the file-system is implemented to replicate the NFS model, there are no calls across the network for the open operation, and the file as it exists in the cache is simply displayed in read-only mode. <b>TODO implement the read-only part</b>
+The cache is a custom implementation, with operations to add entries, update entries, find entries, evict entries, and clear the cache upon exit.
 
+The cache is used by the Client API in order to reduce the amount of traffic going over the network.
+
+1. <b>Read</b>: the cache is checked for an entry corresponding to the file to be read, and if there exists an entry then the version is checked against that recorded with the fileserver. If the client-side copy has an outdated version, then the call is made to the fileserver to fetch the most up-to-date copy of the file. Otherwise, the copy from the cache is used.
+2. <b>Write</b>:
+3. <b>Open</b>: since the file-system is implemented to replicate the NFS model, there are no calls across the network for the open operation, and the file as it exists in the cache is simply displayed in read-only mode. <b>TODO implement the read-only part</b>
+
+<b>TODOs:
+* Implement the LRU eviction policy;
+* Add timestamping information to manage the age of the cache entries.</b>
 
 ## Dependencies
 * Python 2.7.9

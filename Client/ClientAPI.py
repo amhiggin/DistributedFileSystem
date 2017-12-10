@@ -95,15 +95,15 @@ def read_file(file_path, file_name, client_id, cache):
         if file_id is None:
             print "{0} doesn't exist on the server".format(full_file_path)
             return
-        if cache.is_entry_cached_and_up_to_date(full_file_path, file_version):
+        if cache.is_entry_cached_and_up_to_date(full_file_path, file_version) is True:
             # Don't bother going to file server to fetch contents
             cache_entry = cache.fetch_cache_entry(full_file_path)
-            print 'Opening file locally to update with response contents: {0}'.format(cache_entry[0])
+            print 'Opening file locally to update with response contents: {0}'.format(cache_entry['file_contents'])
             with open(full_file_path, 'r+') as edit_file:
-                edit_file.write(cache_entry[0])
+                edit_file.write(cache_entry['file_contents'])
         else:
             # request the file from this file server
-            timeout = 50000
+            timeout = 5000
             while (not acquire_lock_on_file(file_id, client_id)) and (timeout is not 0):
                 timeout = decrement_timeout_and_check_value(timeout)
             response = requests.get(
@@ -130,6 +130,9 @@ def write_file(file_path, file_name, client_id, cache):
         print "Request to write " + full_file_path
 
         # open file for writing
+        if not os.path.exists(full_file_path):
+            print 'File {0} does not exist for writing: will create a new empty file'.format(full_file_path)
+            create_new_empty_file(file_path, file_name)
         open_file_in_text_editor(full_file_path)
         file_contents = open(full_file_path, 'r').read()
 
