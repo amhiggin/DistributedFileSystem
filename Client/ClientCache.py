@@ -73,16 +73,15 @@ class ClientCache():
             key = self.get_key_by_filename(file_path)
 
             if key not in self.cache.keys():
-                self.print_to_console('{0} does not exist in the cache: will add'.format(file_path))
+                self.print_to_console('{0} does not exist in the cache. Adding to the cache.'.format(file_path))
                 if self.num_entries == self.cache_size:
-                    self.print_to_console("Cache is full - will evict LRU file.")
+                    self.print_to_console("Cache is full. Will evict LRU file.")
                     key = self.evict_cache_entry()
                 else:
                     key = self.num_entries
                 self.cache[key] = {'file_name': file_path, 'file_contents': contents, 'file_version': version, 'timestamp': datetime.datetime.now()}
                 self.num_entries += 1
                 self.print_to_console('Added entry successfully at key {0}'.format(key))
-
             else:
                 self.update_cache_entry(key, contents, version)
         except Exception as e:
@@ -90,7 +89,6 @@ class ClientCache():
 
     def evict_cache_entry(self):
         try:
-            self.print_to_console("Evicting LRU file from cache.")
             key = self.get_key_of_oldest_file()
             entry_to_remove = self.cache[key]
             # clear the values
@@ -105,7 +103,7 @@ class ClientCache():
 
     def fetch_cache_entry(self, file_path):
         try:
-            self.print_to_console("Fetching entry from cache")
+            self.print_to_console("Fetching cache entry.")
             key = self.get_key_by_filename(file_path)
             if key is not None:
                 return self.cache[key]
@@ -119,14 +117,13 @@ class ClientCache():
     def update_cache_entry(self, key, contents, version):
         try:
             file_name = self.get_filename_by_key(key)
-            self.print_to_console("{0} exists in cache: updating entry with changes".format(file_name))
 
             if self.cache[key]['file_version'] != version:
                 self.cache[key]['file_contents'] = contents
                 self.cache[key]['file_version'] = version
                 self.cache[key]['file_name'] = file_name
                 self.cache[key]['timestamp'] = datetime.datetime.now()
-                self.print_to_console("Updated entry successfully.")
+                self.print_to_console("Updated entry for {0} successfully.".format(self.cache[key]['file_name']))
             else:
                 self.print_to_console("Version of the file in the cache ({0}) hasn't changed".format(version))
         except Exception as e:

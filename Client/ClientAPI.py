@@ -66,16 +66,19 @@ def create_new_empty_file(file_path, file_name):
         new_file.close()
         return True
     else:
-        create_new_dir = raw_input("Directory {0} doesn't exist: do you want to create it now? (enter y/n): ".format(file_path))
-        if str(create_new_dir).__contains__("y"):
-            mkdir(file_path)
-            new_file = open(full_file_path, 'w+')
-            new_file.close()
-            print 'Created file {0} successfully.'.format(file_name)
-            return True
-        else:
-            print "Couldn't create file {0}".format(full_file_path)
-            return False
+        while(True):
+            create_new_dir = raw_input("Directory {0} doesn't exist: do you want to create it now? (enter y/n): ".format(file_path))
+            if str(create_new_dir).__contains__("y"):
+                mkdir(file_path)
+                new_file = open(full_file_path, 'w+')
+                new_file.close()
+                print 'Created file {0} successfully.'.format(file_name)
+                return True
+            elif str(create_new_dir).__contains__("n"):
+                print "Couldn't create file {0}.".format(full_file_path)
+                return False
+            else:
+                print 'Invalid answer {0} - try again!'
 
 
 def read_file(file_path, file_name, client_id, cache):
@@ -100,21 +103,19 @@ def read_file(file_path, file_name, client_id, cache):
             response = requests.get(
                 file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_server_id': server_id})
             file_contents = response.json()['file_contents']
-            if file_contents is not None: #
+            if file_contents is not None:
                 print 'Opening file locally to update with response contents: {0}'.format(file_contents)
                 with open(full_file_path, 'r+') as edit_file:
                     edit_file.write(file_contents)
 
             # Add this to the cache
             cache.add_cache_entry(full_file_path, file_contents, file_version)
-
         open_file_in_text_editor(full_file_path)
 
     except Exception as e:
         print "Exception caught in read_file method: {0}".format(str(e))
 
 
-# FIXME: overwrites the remote file
 def write_file(file_path, file_name, client_id, cache):
     try:
         full_file_path = file_path + "/" + file_name
@@ -124,6 +125,9 @@ def write_file(file_path, file_name, client_id, cache):
         if not os.path.exists(full_file_path):
             print 'File {0} does not exist for writing: will create a new empty file locally.'.format(full_file_path)
             create_new_empty_file(file_path, file_name)
+        if not os.path.exists(full_file_path):
+            print "Cannot write to file {0} as it does not exist".format(full_file_path)
+            return
         open_file_in_text_editor(full_file_path)
         file_contents = open(full_file_path, 'r').read()
 
@@ -197,6 +201,27 @@ def post_request_to_directory_server_for_file_mapping(full_file_path, file_conte
 # ---------------------------#
 # ----- LOCKING SERVER ----- #
 # ---------------------------#
+
+# This method ensures that the client cannot start up until it has registered with a locking server
+def register_with_locking_server(client_id):
+    print 'Sending request to register client {0} with locking server..'
+    while True:
+        try:
+            response = requests.get(
+                file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], "register_new_client"),
+                json={'client_id': client_id})
+            break
+        except:
+            # probably still waiting for locking server to start up
+            pass
+    registered = response.json()['registered']
+    if registered:
+        print 'Registered with locking server.'
+    else:
+        print 'Client could not register with locking server'
+
+
+
 
 def acquire_lock_on_file(file_id, client_id):
     response = requests.put(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),

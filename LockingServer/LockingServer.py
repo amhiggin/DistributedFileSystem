@@ -78,9 +78,18 @@ class LockingServer(Resource):
         print_to_console('File {0} is not locked'.format(file_id))
         return {'locked': False}
 
+class RegisterClientInstance(Resource):
+
+    def get(self):
+        client_id = request.get_json()['client_id']
+        response = {'registered': True}
+        print_to_console("RECEIVED REQUEST FROM CLIENT {0}. REGISTERED SUCCESSFULLY.".format(client_id))
+        return response
+
 
 # this adds a url handle for the Locking Server
 api.add_resource(LockingServer, '/')
+api.add_resource(RegisterClientInstance, '/register_new_client')
 
 if __name__ == "__main__":
     app.run(debug=True, host=sys.argv[1], port=int(sys.argv[2]))
