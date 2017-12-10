@@ -160,11 +160,10 @@ def write_file(file_path, file_name, client_id, cache):
 def open_file(file_path, file_name, client_id, cache):
     full_file_path = file_path + "/" + file_name
     print "Request to open " + full_file_path
-    absolute_path = os.path.abspath(full_file_path)
-    if os._exists(absolute_path):
-        webbrowser.open(absolute_path)
+    if os.path.exists(full_file_path):
+        webbrowser.open(full_file_path)
     else:
-        print "{0} doesn't exist".format(absolute_path)
+        print "{0} doesn't exist".format(full_file_path)
 
 
 # ---------------------------#
