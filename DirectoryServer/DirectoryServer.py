@@ -76,20 +76,24 @@ class UpdateFileVersion(Resource):
         file_id = request.get_json()['file_id']
         file_version = request.get_json()['file_version']
         file_server_id = request.get_json()['file_server_id']
+        file_name = request.get_json()['file_name']
 
         # have to check that the file being referenced exists
         if FILES_ON_RECORD_BY_ID[file_id]:
             # now update the version if necessary
             if FILES_ON_RECORD_BY_ID[file_id][2] != file_version:
                 if FILES_ON_RECORD_BY_ID[file_id][2] == (file_version - 1):
-                    FILES_ON_RECORD_BY_ID[file_id][2] = file_version
-                    return {'version_updated':True}
+                    FILES_ON_RECORD_BY_ID[file_id] = {file_server_id, file_name, file_version}
+                    print 'Successfully updated version of {0} to version = {1}'.format(file_name, file_version)
+                    return {'version_updated': True}
                 else:
                     print 'Version of the file {0} is behind that on the directory server'.format(FILES_ON_RECORD_BY_ID[file_id][1])
-                    return {'version_updated':False}
+                    return {'version_updated': False}
             else:
-                return {'version_updated':False}
-
+                print 'Version of the file {0} is behind that on the directory server'.format(
+                    FILES_ON_RECORD_BY_ID[file_id][1])
+                return {'version_updated': False}
+        print 'Version of the file {0} is behind that on the directory server'.format(FILES_ON_RECORD_BY_ID[file_id][1])
         return {'version_updated': False}
 
 
@@ -98,8 +102,6 @@ class RegisterFileserverInstance(Resource):
 
     def post(self):
         global FILESERVER_LOAD_BY_ID
-        dir_api.print_to_console("register file server")
-
         # get server properties
         request_contents = request.get_json()
         server_ip = request_contents['ip']
@@ -111,8 +113,7 @@ class RegisterFileserverInstance(Resource):
         FILESERVER_LOAD_BY_ID[server_id] = 0
 
         # print
-        dir_api.print_to_console("NEW FILESERVER REGISTERED AT: {0}:{1}/".format(server_ip, server_port))
-        dir_api.print_to_console("SERVER ID ASSIGNED AS {0}\nFILESERVER {0} READY TO SERVE!".format(server_id))
+        dir_api.print_to_console("NEW FILE SERVER REGISTERED AT: {0}:{1}/ WITH ID {2}".format(server_ip, server_port, server_id))
 
         # send the id back to the server
         return {'server_id': server_id}
@@ -134,7 +135,6 @@ class RegisterClientInstance(Resource):
 api.add_resource(DirectoryServer, '/')
 api.add_resource(RegisterFileserverInstance, '/register_fileserver')
 api.add_resource(RegisterClientInstance, '/register_client')
-# The following should allow the fileserver to send an update to the dir server about a changed file version
 api.add_resource(UpdateFileVersion, '/update_file_version')
 
 if __name__ == "__main__":

@@ -103,9 +103,8 @@ def read_file(file_path, file_name, client_id, cache):
                 edit_file.write(cache_entry['file_contents'])
         else:
             # request the file from this file server
-            timeout = 5000
-            while (not acquire_lock_on_file(file_id, client_id)) and (timeout is not 0):
-                timeout = decrement_timeout_and_check_value(timeout)
+            while (not acquire_lock_on_file(file_id, client_id)):
+                pass
             response = requests.get(
                 file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_server_id': server_id})
             file_contents = response.json()['file_contents']
@@ -140,9 +139,8 @@ def write_file(file_path, file_name, client_id, cache):
 
         if not new_remote_copy_created:
             # we are updating an existing file on this file server
-            timeout = 5000
-            while not acquire_lock_on_file(file_id, client_id) and timeout is not 0:
-                timeout = decrement_timeout_and_check_value(timeout)
+            while not acquire_lock_on_file(file_id, client_id):
+                pass
             print 'A new remote copy was not created for this file {0}: have to push the changes directly'.format(full_file_path)
             # We still have to post the updates to the file server
             server_response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
@@ -151,7 +149,7 @@ def write_file(file_path, file_name, client_id, cache):
             # update file version
             file_version += 1
             print 'Before sending update to server, raw file_version = {0}, str file version = {1}'.format(file_version,str(file_version))
-            directory_server_response = requests.post(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], "update_file_version"), json={'file_id':file_id, 'file_version':file_version})
+            directory_server_response = requests.post(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], "update_file_version"), json={'file_id':file_id, 'file_version':file_version, 'file_server_id': server_id, 'file_name': full_file_path})
             if directory_server_response.json()['version_updated']:
                 print 'Updated version on directory server successfully'
             # TODO figure out what need to do if not updated successfully

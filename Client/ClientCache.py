@@ -7,7 +7,7 @@ import sys, os, json, shutil
 
 class ClientCache():
 
-    MAX_SIZE = 10 # TODO update
+    MAX_SIZE = 2 # TODO update
     client_id = ""
 
     # entry[i] = {file, version, timestamp, contents}
