@@ -90,7 +90,7 @@ def read_file(file_path, file_name, client_id, cache):
         if file_id is None:
             print "{0} doesn't exist as a remote copy.".format(full_file_path)
             return
-        if cache.is_entry_cached_and_up_to_date(full_file_path, file_version) is True:
+        if cache.is_entry_cached_and_up_to_date(full_file_path, file_version):
             # Don't bother going to file server to fetch contents
             cache_entry = cache.fetch_cache_entry(full_file_path)
             print 'Opening local copy to update with response contents: {0}'.format(cache_entry['file_contents'])
@@ -179,6 +179,8 @@ def get_file_mapping_from_directory_server(full_file_path):
     file_id = response.json()['file_id']
     file_server_id = response.json()['file_server_id']
     file_version = response.json()['file_version']
+
+    print 'Response from directory server: {0}'.format(response)
 
     return file_server_address, file_server_id, file_id, file_version
 

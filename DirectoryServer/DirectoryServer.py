@@ -29,7 +29,9 @@ class DirectoryServer(Resource):
         dir_api.print_to_console("Getting {0} mapping ".format(file_name))
 
         server_address, server_id, file_id, file_version = dir_api.get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
-        return {'file_server_address': server_address, 'file_server_id': server_id, 'file_id': file_id, 'file_version': file_version}
+        response = {'file_server_address': server_address, 'file_server_id': server_id, 'file_id': file_id, 'file_version': file_version}
+        dir_api.print_to_console('Response being sent to client: {0}'.format(response))
+        return response
 
     def post(self):
         file_name = request.get_json()['file_name']

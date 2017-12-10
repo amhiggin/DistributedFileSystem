@@ -8,7 +8,7 @@ api = Api(app)
 
 # maintain list of locked files
 LOCKED_FILES_BY_ID = {}
-TIMEOUT = 5000
+TIMEOUT = 60
 
 
 def print_to_console(message):
@@ -17,9 +17,9 @@ def print_to_console(message):
 
 def timeout_on_lock(locked_files_by_id, file_id):
     locked_time = LOCKED_FILES_BY_ID[file_id]['timestamp']
-    current_time = str(datetime.datetime.now())
-
-    if (int(current_time) - int(locked_time)) >= TIMEOUT:
+    current_time = datetime.datetime.now()
+    difference = current_time - locked_time
+    if difference >= datetime.timedelta(seconds=TIMEOUT):
         return True
     else:
         return False
@@ -31,11 +31,11 @@ class LockingServer(Resource):
     def put(self):
         file_id = request.get_json()['file_id']
         client_id = request.get_json()['client_id']
-        current_time = str(datetime.datetime.now())
+        current_time = datetime.datetime.now()
 
         if file_id in LOCKED_FILES_BY_ID:
             if timeout_on_lock():
-                LOCKED_FILES_BY_ID[file_id] = {'locked': False, 'timestamp': ''}
+                LOCKED_FILES_BY_ID[file_id] = {'locked': False, 'timestamp': None}
             if not LOCKED_FILES_BY_ID[file_id]:
                 # take the lock
                 LOCKED_FILES_BY_ID[file_id] = {'locked': True, 'timestamp': current_time}
