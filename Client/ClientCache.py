@@ -22,7 +22,7 @@ class ClientCache():
         return hash_value
 
     def __init__(self):
-        self.print_to_console("Setting up the cache")
+        self.print_to_console("Setting up new cache.")
 
 
     def setup_cache(self, client_id):
@@ -37,14 +37,11 @@ class ClientCache():
         # FIXME first check if the cache is full, evict least recently used if so
         if key not in self.cache:
             # adding entry to cache for first time
-            self.print_to_console("Adding new cache entry: key={0}, contents={1}, version={2}".format(file_path, contents, version))
             self.cache[key] = {'file_contents': contents, 'file_version': version}
             self.num_entries += 1
+            self.print_to_console('Added entry successfully')
         else:
-            self.print_to_console("There is an existing entry: will update. The version of the entry we want to add is {0}".format(version))
             self.update_cache_entry(file_path, contents, version)
-        self.print_to_console(
-            "cache entry is now: key={0}, contents={1}, version={2}".format(key, contents, version))
 
     def remove_cache_entry(self, file_path):
         self.print_to_console("Removing cache entry for {0}".format(file_path))
@@ -69,16 +66,15 @@ class ClientCache():
         key = self.get_hash(file_path)
 
         if self.cache[key]['file_version'] != version:
-            self.print_to_console("Cache version is {0}, incoming version is {1}".format(self.cache[key]['file_version'], version))
-            self.print_to_console("Cache entry contents = {0}, incoming contents = {1}".format(self.cache[key]['file_contents'], contents))
             self.cache[key]['file_contents'] = contents
             self.cache[key]['file_version'] = version
+            self.print_to_console("Updated entry successfully.")
         else:
             self.print_to_console("Version of the file in the cache ({0}) hasn't changed".format(version))
 
 
     def clear_cache(self):
-        self.print_to_console("Clearing client-side cache for client {0}".format(self.client_id))
+        self.print_to_console("Clearing cache for client {0}".format(self.client_id))
         self.cache = {}
 
 

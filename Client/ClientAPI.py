@@ -93,12 +93,12 @@ def read_file(file_path, file_name, client_id, cache):
         server_address, server_id, file_id, file_version = get_file_mapping_from_directory_server(full_file_path)
 
         if file_id is None:
-            print "{0} doesn't exist on the server".format(full_file_path)
+            print "{0} doesn't exist as a remote copy.".format(full_file_path)
             return
         if cache.is_entry_cached_and_up_to_date(full_file_path, file_version) is True:
             # Don't bother going to file server to fetch contents
             cache_entry = cache.fetch_cache_entry(full_file_path)
-            print 'Opening file locally to update with response contents: {0}'.format(cache_entry['file_contents'])
+            print 'Opening local copy to update with response contents: {0}'.format(cache_entry['file_contents'])
             with open(full_file_path, 'r+') as edit_file:
                 edit_file.write(cache_entry['file_contents'])
         else:
@@ -130,7 +130,7 @@ def write_file(file_path, file_name, client_id, cache):
 
         # open file for writing
         if not os.path.exists(full_file_path):
-            print 'File {0} does not exist for writing: will create a new empty file'.format(full_file_path)
+            print 'File {0} does not exist for writing: will create a new empty file locally.'.format(full_file_path)
             create_new_empty_file(file_path, file_name)
         open_file_in_text_editor(full_file_path)
         file_contents = open(full_file_path, 'r').read()

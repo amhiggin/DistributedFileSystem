@@ -26,7 +26,7 @@ class DirectoryServer(Resource):
 
     def get(self):
         file_name =  request.get_json()['file_name']
-        dir_api.print_to_console("File {0} requested to get ".format(file_name))
+        dir_api.print_to_console("Getting {0} mapping ".format(file_name))
 
         server_address, server_id, file_id, file_version = dir_api.get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
         return {'file_server_address': server_address, 'file_server_id': server_id, 'file_id': file_id, 'file_version': file_version}
@@ -39,13 +39,11 @@ class DirectoryServer(Resource):
 
         if file_id is not None:
             # Copy exists on a file-server
-            dir_api.print_to_console('Current file version is {0}'.format(file_version))
             return {'file_server_address': server_address, 'file_server_id': server_id, 'file_id':file_id, 'file_version':file_version, 'new_remote_copy': False}
         else:
             # This is a new file: create a brand new remote copy
-            dir_api.print_to_console("File {0} wasn't found on any server. Will add it to a file-server".format(file_name))
+            dir_api.print_to_console("File {0} wasn't found on any server. Will add it least-loaded server.".format(file_name))
             file_id = len(FILES_ON_RECORD_BY_NAME)
-            dir_api.print_to_console("Assigned file_id as {0}\nNow will store remote copy on least-loaded file server.".format(file_id))
             file_server_id = dir_api.find_least_loaded_file_server(CONNECTED_FILESERVERS_BY_ID, FILESERVER_LOAD_BY_ID)
             FILESERVER_LOAD_BY_ID[file_server_id] += 1
 
@@ -62,7 +60,7 @@ class DirectoryServer(Resource):
             )
             new_remote_copy = response.json()['new_remote_copy']
             if new_remote_copy == True:
-                dir_api.print_to_console("Successfully created remote copy with requested changes")
+                dir_api.print_to_console("Successfully created remote copy.")
 
             return {'file_id': file_id, 'file_server_id': file_server_id, 'file_server_address': CONNECTED_FILESERVERS_BY_ID[file_server_id], 'file_version': file_version, 'new_remote_copy': new_remote_copy}
 
@@ -138,4 +136,5 @@ api.add_resource(RegisterClientInstance, '/register_client')
 api.add_resource(UpdateFileVersion, '/update_file_version')
 
 if __name__ == "__main__":
+    # default ip = 127.0.0.1, port = 5000
     app.run(debug=True)
