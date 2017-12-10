@@ -60,15 +60,16 @@ def create_client_cache(client_id):
 def mkdir(dir_to_make):
     if not os.path.exists(dir_to_make):
         os.mkdir(dir_to_make)
-        print 'Created successfully.'
+        print 'Created directory {0} successfully.'.format(dir_to_make)
         return True
     return False
 
 # creates an empty text file, LOCALLY
 def create_new_empty_file(file_path, file_name):
     full_file_path = file_path + "/" + file_name
+    absolute_dir_path = os.path.abspath(file_path)
     print "Creating new empty text file {0}".format(file_name)
-    if os._exists(file_path):
+    if os.path.exists(absolute_dir_path):
         new_file = open(full_file_path, 'w+')
         new_file.close()
         return True
@@ -143,9 +144,17 @@ def write_file(file_path, file_name, client_id, cache):
             # We still have to post the updates to the file server
             server_response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
             print 'Response: ' + str(server_response.json())
+
+            # update file version
+            file_version += 1
+            print 'Before sending update to server, raw file_version = {0}, str file version = {1}'.format(file_version,str(file_version))
             directory_server_response = requests.post(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], "update_file_version"), json={'file_id':file_id, 'file_version':file_version})
+            if directory_server_response.json()['version_updated']:
+                print 'Updated version on directory server successfully'
+            # TODO figure out what need to do if not updated successfully
             release_lock_on_file(file_id, client_id)
 
+        print 'Before adding entry to cache, raw file_version = {0}, str file version = {1}'.format(file_version, str(file_version))
         cache.add_cache_entry(full_file_path, file_contents, file_version)
     except Exception as e:
         print "Exception caught in write_file method: {0}".format(e.message)

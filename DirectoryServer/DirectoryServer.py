@@ -73,11 +73,9 @@ class UpdateFileVersion(Resource):
     '''
 
     def post(self):
-        global version_updated
-        request_contents = request.get_json();
-        file_id = request_contents.json()['file_id']
-        file_version = request_contents.json()['file_version']
-        file_server_id = request_contents.json()['file_server_id']
+        file_id = request.get_json()['file_id']
+        file_version = request.get_json()['file_version']
+        file_server_id = request.get_json()['file_server_id']
 
         # have to check that the file being referenced exists
         if FILES_ON_RECORD_BY_ID[file_id]:
@@ -85,14 +83,14 @@ class UpdateFileVersion(Resource):
             if FILES_ON_RECORD_BY_ID[file_id][2] != file_version:
                 if FILES_ON_RECORD_BY_ID[file_id][2] == (file_version - 1):
                     FILES_ON_RECORD_BY_ID[file_id][2] = file_version
-                    version_updated = True
+                    return {'version_updated':True}
                 else:
                     print 'Version of the file {0} is behind that on the directory server'.format(FILES_ON_RECORD_BY_ID[file_id][1])
-                    version_updated = False
+                    return {'version_updated':False}
             else:
-                version_updated = False
+                return {'version_updated':False}
 
-        return {'version_updated': version_updated}
+        return {'version_updated': False}
 
 
 

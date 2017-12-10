@@ -9,7 +9,6 @@ class ClientCache():
 
     MAX_SIZE = 10 # TODO update
     client_id = ""
-    cache_dir = ""
 
     # entry[i] = {file, version, timestamp, contents}
     num_entries = 0
