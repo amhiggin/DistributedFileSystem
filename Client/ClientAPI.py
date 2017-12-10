@@ -29,14 +29,6 @@ def open_file_in_text_editor(full_file_path):
         return sp.Popen(['notepad.exe', full_file_path]).wait()
 
 
-def decrement_timeout_and_check_value(timeout):
-    timeout -= 1
-    if timeout == 0:
-        # TODO figure out how to grab the lock properly
-        print 'Lock waiting timed out - will try to grab the lock'
-    return timeout
-
-
 def request_client_id():
     while True:
         try:
@@ -139,23 +131,23 @@ def write_file(file_path, file_name, client_id, cache):
 
         if not new_remote_copy_created:
             # we are updating an existing file on this file server
+            print 'Updating remote copy of {0} with new changes'.format(full_file_path)
             while not acquire_lock_on_file(file_id, client_id):
                 pass
-            print 'A new remote copy was not created for this file {0}: have to push the changes directly'.format(full_file_path)
             # We still have to post the updates to the file server
             server_response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
             print 'Response: ' + str(server_response.json())
 
             # update file version
             file_version += 1
-            print 'Before sending update to server, raw file_version = {0}, str file version = {1}'.format(file_version,str(file_version))
             directory_server_response = requests.post(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], "update_file_version"), json={'file_id':file_id, 'file_version':file_version, 'file_server_id': server_id, 'file_name': full_file_path})
             if directory_server_response.json()['version_updated']:
                 print 'Updated version on directory server successfully'
             # TODO figure out what need to do if not updated successfully
             release_lock_on_file(file_id, client_id)
+        else:
+            print 'Created new remote copy of {0} on file server {1}'.format(file_path, server_id)
 
-        print 'Before adding entry to cache, raw file_version = {0}, str file version = {1}'.format(file_version, str(file_version))
         cache.add_cache_entry(full_file_path, file_contents, file_version)
     except Exception as e:
         print "Exception caught in write_file method: {0}".format(e.message)
@@ -179,7 +171,6 @@ def open_file(file_path, file_name, client_id, cache):
 def get_file_mapping_from_directory_server(full_file_path):
     print  "Get {0} mapping from directory server".format(full_file_path)
     response = requests.get(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), json={'file_name': full_file_path})
-    print 'Directory server response: {0}'.format(response.json())
 
     file_server_address = response.json()['file_server_address']
     file_id = response.json()['file_id']
