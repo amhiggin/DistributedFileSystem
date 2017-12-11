@@ -8,10 +8,7 @@ import os
 import subprocess as sp
 import webbrowser
 from sys import platform as _platform
-
 import requests
-
-# Directory server started at default Flask address for ease
 import ClientCache
 import FileManipAPI as file_api
 
@@ -19,7 +16,7 @@ DIRECTORY_SERVER_ADDRESS = ("127.0.0.1", 5000)
 LOCKING_SERVER_ADDRESS = ("127.0.0.1", 5001)
 
 
-# opens file in windows/linux default system text editor
+# This method opens the specified file in the Windows/Linux default system text editor
 def open_file_in_text_editor(full_file_path):
     if _platform == "linux" or _platform == "linux2":
         print 'Opening with Linux system editor'
@@ -29,6 +26,7 @@ def open_file_in_text_editor(full_file_path):
         return sp.Popen(['notepad.exe', full_file_path]).wait()
 
 
+# This method is used to request an id for this client as part of registration with the directory service.
 def request_client_id():
     while True:
         try:
@@ -42,6 +40,7 @@ def request_client_id():
     return client_id
 
 
+# Create an individual cache for the specified client
 def create_client_cache(client_id):
     cache = ClientCache.ClientCache()
     cache.setup_cache(client_id)
@@ -49,6 +48,7 @@ def create_client_cache(client_id):
     return cache
 
 
+# Create a new directory, if it doesn't already exist.
 def mkdir(dir_to_make):
     if not os.path.exists(dir_to_make):
         os.mkdir(dir_to_make)
@@ -56,7 +56,7 @@ def mkdir(dir_to_make):
         return True
     return False
 
-# creates an empty text file, LOCALLY
+# Creates a new, empty text file locally. Doesn't create remote copy as the file is empty.
 def create_new_empty_file(file_path, file_name):
     full_file_path = file_path + "/" + file_name
     absolute_dir_path = os.path.abspath(file_path)
@@ -81,6 +81,8 @@ def create_new_empty_file(file_path, file_name):
                 print 'Invalid answer {0} - try again!'
 
 
+# Reads the specified file from the remote copy. Requires getting the remote mapping from the directory server, and then requesting the file from the fileserver directly.
+# Utilises client-side caching, and waits for write locks to be released if necessary.
 def read_file(file_path, file_name, client_id, cache):
     try:
         full_file_path = file_path + "/" + file_name
@@ -116,6 +118,9 @@ def read_file(file_path, file_name, client_id, cache):
         print "Exception caught in read_file method: {0}".format(str(e))
 
 
+# Writes to the local and remote copies of the specified file. IF the file doesn't exist, it will be created.
+# Obtains mapping from directory server if file already exists, and pushes the changes to the remote copy. If this file didn't exist as a remote copy, the changes are pushed directly by the directory server.
+# Uses write-locking in order to ensure atomicity of concurrent updates to the same file.
 def write_file(file_path, file_name, client_id, cache):
     try:
         full_file_path = file_path + "/" + file_name
@@ -156,7 +161,8 @@ def write_file(file_path, file_name, client_id, cache):
     except Exception as e:
         print "Exception caught in write_file method: {0}".format(e.message)
 
-# check the file exists on the file-server, as such
+
+# Opens the local copy of a file in the system web browser, if it exists.
 def open_file(file_path, file_name, client_id, cache):
     full_file_path = file_path + "/" + file_name
     print "Request to open " + full_file_path
@@ -170,7 +176,7 @@ def open_file(file_path, file_name, client_id, cache):
 # ---- DIRECTORY SERVER ---- #
 # ---------------------------#
 
-# This method fetches the details of the file and server on which it is stored
+# Fetches the mapping details of the requested file and details of the file-server on which it is stored. Used for read requests.
 def get_file_mapping_from_directory_server(full_file_path):
     print  "Get {0} mapping from directory server".format(full_file_path)
     response = requests.get(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), json={'file_name': full_file_path})
@@ -185,6 +191,7 @@ def get_file_mapping_from_directory_server(full_file_path):
     return file_server_address, file_server_id, file_id, file_version
 
 
+# Fetches the mapping details for an existing remote copy, or else creates a new mapping and provides the details if the remote copy didn't exist previously. Used for write requests.
 def post_request_to_directory_server_for_file_mapping(full_file_path, file_contents):
     print "Post {0} to directory server".format(full_file_path)
     response = requests.post(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], ""), json={'file_name': full_file_path, 'file_contents': file_contents})
@@ -203,7 +210,7 @@ def post_request_to_directory_server_for_file_mapping(full_file_path, file_conte
 # ----- LOCKING SERVER ----- #
 # ---------------------------#
 
-# This method ensures that the client cannot start up until it has registered with a locking server
+# Ensures that a client cannot startup until it has registered with a locking server.
 def register_with_locking_server(client_id):
     print 'Sending request to register client {0} with locking server..'
     while True:
@@ -222,8 +229,7 @@ def register_with_locking_server(client_id):
         print 'Client could not register with locking server'
 
 
-
-
+# Allows a client to place a write-lock on a file by contacting the locking server. This lock will time out if not cleared after a certain period.
 def acquire_lock_on_file(file_id, client_id):
     response = requests.put(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),
                             json={'file_id': file_id, 'client_id': client_id})
@@ -233,7 +239,7 @@ def acquire_lock_on_file(file_id, client_id):
     print "Client{0} has locked file {1}".format(client_id, file_id)
     return True
 
-
+# Allows a client to clear a write-lock on a file by contacting the locking server.
 def release_lock_on_file(file_id, client_id):
     response = requests.delete(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),
                                json={'file_id': file_id, 'client_id': client_id})
@@ -243,7 +249,7 @@ def release_lock_on_file(file_id, client_id):
         return True
     return False
 
-
+# Allows a client to determine whether a file is already locked by contacting the locking server.
 def is_file_locked(file_id):
     response = requests.get(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),
                             json={'file_id': file_id})

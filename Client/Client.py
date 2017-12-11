@@ -46,7 +46,7 @@ def run_client():
 	while running:
 		try:
 			user_input = raw_input(
-				"\n-------------------------------------------------\nSelect option:\n1 = Read a file from the server \n2 = Open file locally \n3 = Write file to server\n4 = Create a new, empty local file \nx = Kill client\n\n")
+				"\n-------------------------------------------------\nSelect option:\n1 = Read a file \n2 = Open a file \n3 = Write to a file\n4 = Create a new, empty file \nx = Kill client\n\n")
 			if user_input == "1":
 				# Read the specified file from the remote copy, if exists
 				file_path, file_name = get_filename_from_user()
@@ -69,7 +69,7 @@ def run_client():
 			else:
 				print_to_console("You said: " + user_input + ", which is invalid. Give it another go!\n")
 		except Exception as e:
-			print_to_console('An error occurred with handling the connection request')
+			print_to_console('An error occurred during client operation')
 			print_to_console(e.message)
 
 	print "*-*-*-*-*-*-*-TERMINATING-*-*-*-*-*-*-*"
