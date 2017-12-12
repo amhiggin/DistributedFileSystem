@@ -17,13 +17,17 @@ The system operates according to the Network File System (NFS) model. It can sup
 All file accesses are made through a client library called <i>ClientApi.py</i>. This library is the interface exposed to the client-side application for manipulation of the local and remote file-systems. By using the library, the under-the-hood implementation details of the distributed file-system are hidden from the user.
 
 Clients can:
-* Access remote copies of files stored on fileservers through the <i>read</i> and <i>write</i> function calls. They can also create new files, and open existing files locally.
+* Access remote copies of files stored on file-servers through the <i>read</i> and <i>write</i> function calls. They can also create new files, and open existing files locally.
 * Interact with file contents through the system editor, which is launched before every remote write and after every remote read.
+
+A subtle point here is that <i>in order to 'open' a file in read-only mode, the contents of the file are displayed in the console window.</i> Opening the file in the text editor would give an individual the option to edit the file when they should really just be able to view the contents - an undesirable behaviour that is resolved by this approach.
 
 ### Client application
 This application provides a simple interface to a user, offering options to manipulate files. This includes reading, writing, opening and creating text files. When a text file is created for the first time, the specified directory is automatically created if it doesn’t already exist.
 
-In the background, the user's choices when interacting with the system are routed through the client library to the appropriate services, providing a level of abstraction from the technical implementation.
+All files on the local filesystem are visible to every client. However, each client implements its own cache.
+
+In the background, the user's choices when interacting with the system are routed through the client library to the appropriate services (e.g. cache, locking server, directory server, file server), providing abstraction from the underlying technical implementation.
 
 
 ## Directory Service
@@ -50,7 +54,7 @@ It is possible to have as many file servers as desired in this distributed file-
 
 The file-servers are implemented as a flat-file system, with each storing files in a single directory. This directory uses the naming pattern <b>ServerX</b>, where X is an id assigned to the server when it registers with the directory server. All files stored on a file server follow a simple numerical naming system: for example, <i>0.txt</i> for the first file created on the server.
 
-Each server accepts <i>get()</i> and <i>post()</i> requests from clients. It can be reached at any available host address and port specified by the user, which are provided as <b>sys.argv[1]</b> and <b>sys.argv[2]</b>.
+Each server accepts <i>get()</i> and <i>post()</i> requests from clients. It can be reached at any available host address and port specified by the user, which are provided as <b>sys.argv[1]</b> and <b>sys.argv[2]</b>. <i>Each file-server should be started on a different port number.</i>
 
 * A client wishing to <b>read</b> a remote copy of a file will send a <i>get()</i> request. The client must provide JSON parameters:
   * 'file_id': file_id
@@ -59,7 +63,7 @@ Each server accepts <i>get()</i> and <i>post()</i> requests from clients. It can
   * 'file_id': file_id
   * 'file_contents': file_contents
 
-<b>Note:</b>The fileserver does not hold any versioning information about its files: it is the directory server which handles this.
+<b>Note:</b> The fileserver does not hold any versioning information about its files: it is the directory server which handles this.
 
 ## Locking Service
 A locking service provides concurrency control for multiple clients requiring access to the same files. It allows clients exclusive access to files under particular conditions.

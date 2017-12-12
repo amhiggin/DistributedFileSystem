@@ -66,19 +66,28 @@ def mkdir(dir_to_make, client_id):
 def create_new_empty_file(file_path, file_name, client_id):
     full_file_path = file_path + "/" + file_name
     absolute_dir_path = os.path.abspath(file_path)
-    print_to_console(client_id, "Creating new empty text file {0}".format(file_name))
+
+    # First check if the requested directory exists
     if os.path.exists(absolute_dir_path):
-        new_file = open(full_file_path, 'w+')
-        new_file.close()
-        return True
+        # Directory exists
+       if os.path.exists(full_file_path) and os.path.getsize(full_file_path) >= 0:
+           # File exists and isn't empty - do not overwrite.
+           print_to_console(client_id, "File {0} already exists - will not overwrite contents.".format(file_name))
+       else:
+           # File doesn't exist: create a new empty text file here.
+           new_file = open(full_file_path, "w+")
+           new_file.close()
+           print_to_console(client_id, "Created new file {0} successfully.".format(file_name))
+       return True
     else:
+        # Directory doesn't exist
         while(True):
             create_new_dir = raw_input("Directory {0} doesn't exist: do you want to create it now? (enter y/n): ".format(file_path))
             if str(create_new_dir).__contains__("y"):
                 mkdir(file_path, client_id)
                 new_file = open(full_file_path, 'w+')
                 new_file.close()
-                print_to_console(client_id, 'Created file {0} successfully.'.format(file_name))
+                print_to_console(client_id, 'Created new file {0} successfully.'.format(file_name))
                 return True
             elif str(create_new_dir).__contains__("n"):
                 print_to_console(client_id, "Couldn't create file {0}.".format(full_file_path))
@@ -179,11 +188,12 @@ def write_file(file_path, file_name, client_id, cache):
 
 
 # Opens the local copy of a file in the system web browser, if it exists.
-def open_file(file_path, file_name, client_id, cache):
+def open_file(file_path, file_name, client_id):
     full_file_path = file_path + "/" + file_name
     absolute_dir_path = os.path.abspath(full_file_path)
     print_to_console(client_id, "Opening " + full_file_path + " in console as read-only.")
     if os.path.exists(full_file_path):
+        print '----- '+ full_file_path + ' CONTENTS' + ' -----'
         f = open(full_file_path, 'r')
         print f.read()
     else:
