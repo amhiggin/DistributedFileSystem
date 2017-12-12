@@ -9,7 +9,9 @@ import os
 from flask_restful import Resource, Api, request
 from flask import Flask
 import requests, sys
-sys.path.append("../")
+import os, sys
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(CURRENT_DIR))
 import FileManipAPI as file_api
 
 CONNECTED_FILESERVERS_BY_ID = {}

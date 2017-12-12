@@ -4,11 +4,14 @@
 # Should handle talking to each of the servers to route the response back to the client.
 #
 
-import os
+import os, sys
 import subprocess as sp
 from sys import platform as _platform
 import requests
 import ClientCache
+import os, sys
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(CURRENT_DIR))
 import FileManipAPI as file_api
 
 DIRECTORY_SERVER_ADDRESS = ("127.0.0.1", 5000)

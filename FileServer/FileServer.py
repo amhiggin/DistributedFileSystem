@@ -3,14 +3,13 @@
 # Managed and load-balanced by the directory server, which is available at a defined address.
 #
 
-import os
 import requests
-import sys
-sys.path.append("../")
 import shutil
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
-
+import os, sys
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(CURRENT_DIR))
 import FileManipAPI as file_api
 
 app = Flask(__name__)
