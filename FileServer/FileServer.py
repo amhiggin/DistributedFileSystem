@@ -6,7 +6,6 @@
 import os
 import requests
 import sys
-
 import shutil
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse

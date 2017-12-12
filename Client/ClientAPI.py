@@ -6,7 +6,6 @@
 
 import os
 import subprocess as sp
-import webbrowser
 from sys import platform as _platform
 import requests
 import ClientCache

@@ -5,10 +5,11 @@
 # This will enable lookups between the incoming requested filename, and the id of the file on the file-servers
 # Available at http://127.0.0.1:5000
 #
+import os
 from flask_restful import Resource, Api, request
 from flask import Flask
 import FileManipAPI as file_api
-import requests
+import requests, sys
 
 CONNECTED_FILESERVERS_BY_ID = {}
 FILESERVER_LOAD_BY_ID = {}
@@ -208,5 +209,5 @@ api.add_resource(RegisterClientInstance, '/register_client')
 api.add_resource(UpdateFileVersion, '/update_file_version')
 
 if __name__ == "__main__":
-    # default ip = 127.0.0.1, port = 5000
-    app.run(debug=True)
+    if len(sys.argv) == 3:
+        app.run(debug=True, host=sys.argv[1], port=int(sys.argv[2]))

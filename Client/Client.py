@@ -4,8 +4,6 @@
 # Should be able to access the requested files by doing through the required servers.
 #
 import ClientAPI as client_api
-import FileManipAPI as file_api
-import shutil
 
 CLIENT_ID = ""
 running = True
