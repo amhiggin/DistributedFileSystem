@@ -1,0 +1,8 @@
+flask
+flask-restful
+requests
+werkzeug
+datetime
+itertools
+subprocess
+shutil
