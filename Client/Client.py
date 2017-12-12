@@ -9,6 +9,7 @@ import shutil
 
 CLIENT_ID = ""
 running = True
+DISPLAY_USER_OPTIONS = "\n-------------------------------------------------\nSelect option:\n1 = Read a file \n2 = Open a file \n3 = Write to a file\n4 = Create a new, empty file \nx = Kill client\n\n"
 
 
 def print_to_console(message):
@@ -19,15 +20,15 @@ def get_filename_from_user():
 	file_path = raw_input("\nEnter file path: ")
 	while True:
 		file_name = raw_input("\nEnter file name at this path: ")
-		if file_name.__contains__(".txt"):
+		if file_name.endswith(".txt"):
 			break
 		else:
-			print_to_console("Invalid file-name entered: must be a text file.")
+			print_to_console("Invalid file-name entered: must be a .txt file.")
 	return file_path, file_name
 
-# This method cleans up the cache after the client exits.
+# This method cleans up the cache when the client is terminating.
 def clean_up_after_client(cache):
-	print_to_console("Cleaning up after client{0} - removing cache")
+	print_to_console("Cleaning up after client{0}'s cache")
 	cache.clear_cache()
 
 # This is the client's main method.
@@ -44,9 +45,9 @@ def run_client():
 	cache = client_api.create_client_cache(CLIENT_ID)
 
 	while running:
+		# Display user options until they decide to exit
 		try:
-			user_input = raw_input(
-				"\n-------------------------------------------------\nSelect option:\n1 = Read a file \n2 = Open a file \n3 = Write to a file\n4 = Create a new, empty file \nx = Kill client\n\n")
+			user_input = raw_input(DISPLAY_USER_OPTIONS)
 			if user_input == "1":
 				# Read the specified file from the remote copy, if exists
 				file_path, file_name = get_filename_from_user()
@@ -62,8 +63,8 @@ def run_client():
 			elif user_input == '4':
 				# Create the specified file at the specified path, if valid.
 				file_path, file_name = get_filename_from_user()
-				client_api.create_new_empty_file(file_path, file_name)
-			elif user_input == 'x':
+				client_api.create_new_empty_file(file_path, file_name, CLIENT_ID)
+			elif user_input == 'x' or user_input == 'X':
 				# Terminate the client
 				running = False
 			else:
@@ -72,8 +73,8 @@ def run_client():
 			print_to_console('An error occurred during client operation')
 			print_to_console(e.message)
 
-	print "*-*-*-*-*-*-*-TERMINATING-*-*-*-*-*-*-*"
-	print_to_console("Closing connection to server. Terminating the client.")
+	print "----------------TERMINATING----------------"
+	print_to_console("Closing connection to server. Terminating the client. \n Goodbye world!")
 	clean_up_after_client(cache)
 	exit(0)
 
