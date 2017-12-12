@@ -8,8 +8,9 @@
 import os
 from flask_restful import Resource, Api, request
 from flask import Flask
-import FileManipAPI as file_api
 import requests, sys
+sys.path.append("../")
+import FileManipAPI as file_api
 
 CONNECTED_FILESERVERS_BY_ID = {}
 FILESERVER_LOAD_BY_ID = {}
