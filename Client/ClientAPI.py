@@ -137,6 +137,9 @@ def write_file(file_path, file_name, client_id, cache):
         file_contents = open(full_file_path, 'r').read()
 
         server_address, server_id, file_id, file_version, new_remote_copy_created = post_request_to_directory_server_for_file_mapping(full_file_path, file_contents)
+        if server_id is None:
+            print "There are no file servers registered with the directory server: cannot store remotely.\n Please register at least one fileserver!"
+            return
 
         if not new_remote_copy_created:
             # we are updating an existing file on this file server
@@ -147,12 +150,13 @@ def write_file(file_path, file_name, client_id, cache):
             server_response = requests.post(file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_contents': file_contents})
             print 'Response: ' + str(server_response.json())
 
-            # update file version
+            # TODO fixme update file version isn't working correctly
             file_version += 1
             directory_server_response = requests.post(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], "update_file_version"), json={'file_id':file_id, 'file_version':file_version, 'file_server_id': server_id, 'file_name': full_file_path})
             if directory_server_response.json()['version_updated']:
                 print 'Updated version on directory server successfully'
-            # TODO figure out what need to do if not updated successfully
+            else:
+                print "Couldn't update the version of the remote copy as expected. Consult directory server for details."
             release_lock_on_file(file_id, client_id)
         else:
             print 'Created new remote copy of {0} on file server {1}'.format(file_path, server_id)
@@ -212,7 +216,7 @@ def post_request_to_directory_server_for_file_mapping(full_file_path, file_conte
 
 # Ensures that a client cannot startup until it has registered with a locking server.
 def register_with_locking_server(client_id):
-    print 'Sending request to register client {0} with locking server..'
+    print 'Sending request to register client {0} with locking server..'.format(client_id)
     while True:
         try:
             response = requests.get(
@@ -233,21 +237,27 @@ def register_with_locking_server(client_id):
 def acquire_lock_on_file(file_id, client_id):
     response = requests.put(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),
                             json={'file_id': file_id, 'client_id': client_id})
-    locked = response.json()['lock']
-    if not locked:
+    locked = response.json()['locked']
+    if not locked or locked is None:
         return False
-    print "Client{0} has locked file {1}".format(client_id, file_id)
-    return True
+    else:
+        print "Client{0} has locked file {1}".format(client_id, file_id)
+        return True
 
 # Allows a client to clear a write-lock on a file by contacting the locking server.
 def release_lock_on_file(file_id, client_id):
     response = requests.delete(file_api.create_url(LOCKING_SERVER_ADDRESS[0], LOCKING_SERVER_ADDRESS[1], ""),
                                json={'file_id': file_id, 'client_id': client_id})
-    locked = response.json()['lock']
-    if not locked:
+    locked = response.json()['locked']
+    if locked is None:
+        print 'The client is not registered with the locking server - cannot unlock the file!'
+        return None
+    elif locked is False:
         print "File {0} has been unlocked".format(file_id)
         return True
-    return False
+    else:
+        print 'The lock could not be removed'
+        return False
 
 # Allows a client to determine whether a file is already locked by contacting the locking server.
 def is_file_locked(file_id):
@@ -255,7 +265,7 @@ def is_file_locked(file_id):
                             json={'file_id': file_id})
 
     locked = response.json()['locked']
-    if not locked:
+    if locked is False or locked is None:
         print "File {0} isn't locked".format(file_id)
         return False
     else:

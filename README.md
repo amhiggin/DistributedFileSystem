@@ -46,9 +46,9 @@ Amongst other responsibilities, it:
 
 
 ### Remote File Server
-It is possible to have as many file servers as desired in this distributed file-system, since each file server registers with the directory server when it is launched. The file-servers are implemented as a flat-file system, with each storing files in a single directory. This directory uses the naming pattern <b>ServerX</b>, where X is an id assigned to the server when it registers with the directory server.
+It is possible to have as many file servers as desired in this distributed file-system, since each file server registers with the directory server when it is launched.
 
-All files stored on a file server follow a simple numerical naming system: for example, <i>0.txt</i> for the first file created on the server.
+The file-servers are implemented as a flat-file system, with each storing files in a single directory. This directory uses the naming pattern <b>ServerX</b>, where X is an id assigned to the server when it registers with the directory server. All files stored on a file server follow a simple numerical naming system: for example, <i>0.txt</i> for the first file created on the server.
 
 Each server accepts <i>get()</i> and <i>post()</i> requests from clients. It can be reached at any available host address and port specified by the user, which are provided as <b>sys.argv[0]</b> and <b>sys.argv[1]</b>.
 
@@ -69,16 +69,16 @@ A client must request and successfully acquire a single lock for a file in order
 ### Locking Server
 There is one locking server in the distributed file-system. It manages the operation of locking and unlocking files as requested by clients. It is accessible at URL endpoint http://127.0.0.1:5001/. Any requests for a read or write on a remote file copy must first be routed through this service for approval.
 
-Each file which exists on a remote file-server will have a corresponding record with the locking server. This record exists as a lookup-table, where each entry is a [file_id, is_locked] pair.<b>TODO look at storing the details of which client has locked the file, with this lock record too.</b>
+Each file which exists on a remote file-server will have a corresponding record with the locking server. This record exists as a lookup-table, where each entry is a [file_id, is_locked] pair.
 * Any client wishing to write to a file must request the lock for that file. They will not be granted the lock until the file is no longer locked.
- * <b>However</b>, a safety mechanism in the form of a timeout (60 seconds) is used to guard against infinite waiting for a lock to be released. After the timeout has elapsed, if the file is still locked, it will be assumed that the client has died and the lock is removed.
+  * <b>However</b>, a safety mechanism in the form of a timeout (<b>60 seconds</b>) is used to guard against infinite waiting for a lock to be released. After the timeout has elapsed, if the file is still locked, it will be assumed that the client has died and the lock is removed.
 * Any client wishing to read a file, will not be able to read it until it is unlocked.
 
 <i><b>Assumption</b>: the implementation assumes that when a remote copy is created for the first time on a file-server, it doesn't need to be locked (nobody will try to concurrently access the file until after it has been created).</i>
 
 
 ## Client-side Caching
-A caching solution in a system allows for quicker access time to files if used effectively. It involves the local storage of up-to-date copies of files, so that if the remote copy of a file hasn’t changed since the last time it was accessed, it can be read locally rather than requiring a request over the network. By using caching, the performance of a system can be enhanced since the servers are likely to have less loading at a given time. However, if not implemented appropriately on the client-side it can introduce unnecessary runtime overheads. 
+A caching solution in a system allows for quicker access time to files if used effectively. It involves the local storage of up-to-date copies of files, so that if the remote copy of a file hasn’t changed since the last time it was accessed, it can be read locally rather than requiring a request over the network. By using caching, the performance of a system can be enhanced since the servers are likely to have less loading at a given time. However, if not implemented appropriately on the client-side it can introduce unnecessary runtime overheads.
 
 In general, it is most efficient to use caching on the client-side to reduce the number of relatively-slow additional calls required over the network, in particular reducing the network access required for a file read. Concerns such as cache invalidation for out-of-date copies of cached files, and an eviction policy in order to keep the contents of the cache relevant and small in number, are important to consider.
 
@@ -89,7 +89,7 @@ Operations on the cache include: adding entries, updating entries, finding entri
 The cache is used by the Client API in order to reduce the amount of traffic going over the network. As an NFS implementation, the benefits of this are most clearly seen when performing read operations.
 1.	<b>Read</b>: the cache is checked for an entry corresponding to the file to be read, and if there exists an entry then the version is checked against that recorded with the fileserver. If the client-side copy has an outdated version, then the call is made to the fileserver to fetch the most up-to-date copy of the file. Otherwise, the copy from the cache is used.
 2.	<b>Write</b>:
-3.	<b>Open</b>: since the file-system is implemented to replicate the NFS model, there are no calls across the network for the open operation, and the file as it exists in the cache is simply displayed in read-only mode. 
+3.	<b>Open</b>: since the file-system is implemented to replicate the NFS model, there are no calls across the network for the open operation, and the file as it exists in the cache is simply displayed in read-only mode.
 
 <b>TODO finish this</b>.
 
@@ -101,5 +101,4 @@ The cache is used by the Client API in order to reduce the amount of traffic goi
 *
 
 ## Additional Notes
-* Originally, I had implemented the fileserver communications with the client application using sockets. I was also starting to work on a locking server.
-* However I realised after some time that the Restful approach was a lot simpler.
+* Originally, I had implemented the fileserver communications with the client application using sockets. I was also starting to work on a locking server. However I realised after some time that the Restful approach was a lot simpler, abstracting away the low-level implementation details and allowing me to get on with the feature implementation.

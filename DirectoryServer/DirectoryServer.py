@@ -41,6 +41,9 @@ def get_server_file_details(file_name, file_names_on_record, connected_fileserve
 
 # This method is used to load-balance the file-servers
 def find_least_loaded_file_server(connected_fileservers_by_id, file_server_load_by_id):
+    if len(connected_fileservers_by_id) is 0 or len(file_server_load_by_id) is 0:
+        print_to_console("There are no fileservers registered - cannot service request.")
+        return -1
     server_id = min(file_server_load_by_id, key=file_server_load_by_id.get)
     print_to_console("The least loaded file server is {0}".format(server_id))
     return server_id
@@ -76,6 +79,8 @@ class DirectoryServer(Resource):
             print_to_console("File {0} wasn't found on any server. Will add it least-loaded server.".format(file_name))
             file_id = len(FILES_ON_RECORD_BY_NAME)
             file_server_id = find_least_loaded_file_server(CONNECTED_FILESERVERS_BY_ID, FILESERVER_LOAD_BY_ID)
+            if file_server_id is -1:
+                return {'file_id': file_id, 'file_server_id': None, 'file_server_address': None, 'file_version': None, 'new_remote_copy': None}
             FILESERVER_LOAD_BY_ID[file_server_id] += 1
 
             # add versioning info - initial value
@@ -107,23 +112,25 @@ class UpdateFileVersion(Resource):
         file_server_id = request.get_json()['file_server_id']
         file_name = request.get_json()['file_name']
 
-        # have to check that the file being referenced exists
+        # have to check that the file being referenced has an existing record
         if FILES_ON_RECORD_BY_ID[file_id]:
             # now update the version if necessary
-            if FILES_ON_RECORD_BY_ID[file_id][2] != file_version:
-                if FILES_ON_RECORD_BY_ID[file_id][2] == (file_version - 1):
-                    FILES_ON_RECORD_BY_ID[file_id] = {file_server_id, file_name, file_version}
+            if FILES_ON_RECORD_BY_ID[file_id][2] is not file_version:
+                print_to_console("Our version for file {0} is {1}: different to incoming version {2}".format(file_name, FILES_ON_RECORD_BY_ID[file_id][2], file_version))
+                if FILES_ON_RECORD_BY_ID[file_id][2] is (file_version - 1):
+                    print_to_console("We are one version behind - will update.")
+                    FILES_ON_RECORD_BY_ID[file_id] = (file_server_id, file_name, file_version)
                     print 'Successfully updated version of {0} to version = {1}'.format(file_name, file_version)
                     return {'version_updated': True}
                 else:
                     print 'Version of the file {0} is behind that on the directory server'.format(FILES_ON_RECORD_BY_ID[file_id][1])
                     return {'version_updated': False}
             else:
-                print 'Version of the file {0} is behind that on the directory server'.format(
-                    FILES_ON_RECORD_BY_ID[file_id][1])
+                print_to_console("The version hasn't changed since the last update.")
                 return {'version_updated': False}
-        print 'Version of the file {0} is behind that on the directory server'.format(FILES_ON_RECORD_BY_ID[file_id][1])
-        return {'version_updated': False}
+        else:
+            print 'File {0} does not exist on the directory server'.format(FILES_ON_RECORD_BY_ID[file_id][1])
+            return {'version_updated': False}
 
 
 
