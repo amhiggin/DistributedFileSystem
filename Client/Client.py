@@ -55,7 +55,7 @@ def run_client():
 			elif user_input == '2':
 				# Open the local copy of the file, if exists
 				file_path, file_name = get_filename_from_user()
-				client_api.open_file(file_path, file_name, CLIENT_ID, cache)
+				client_api.open_file(file_path, file_name, CLIENT_ID)
 			elif user_input == '3':
 				# Write to the specified remote copy of the file, if exists
 				file_path, file_name = get_filename_from_user()

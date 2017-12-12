@@ -24,10 +24,10 @@ def print_to_console(client_id, message):
 # This method opens the specified file in the Windows/Linux default system text editor
 def open_file_in_text_editor(full_file_path, client_id):
     if _platform == "linux" or _platform == "linux2":
-        print_to_console(client_id, 'Opening with Linux system editor')
+        print_to_console(client_id, 'Launching Linux system text editor')
         return os.system('%s %s' % (os.getenv('EDITOR'), full_file_path))
     elif _platform == "win32" or "win64":
-        print_to_console(client_id, 'Opening with Windows system editor')
+        print_to_console(client_id, 'Launching Windows system text editor')
         return sp.Popen(['notepad.exe', full_file_path]).wait()
 
 
@@ -121,7 +121,7 @@ def read_file(file_path, file_name, client_id, cache):
                 file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_server_id': server_id})
             file_contents = response.json()['file_contents']
             if file_contents is not None:
-                print_to_console(client_id, 'Opening file locally to update with response contents: {0}'.format(file_contents))
+                print_to_console(client_id, 'Updating file with response contents...')
                 with open(full_file_path, 'r+') as edit_file:
                     edit_file.write(file_contents)
 

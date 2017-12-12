@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="412b1a9a-9cff-49c9-acea-7ddb722bdbc5" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client/Client.py" afterPath="$PROJECT_DIR$/Client/Client.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client/ClientAPI.py" afterPath="$PROJECT_DIR$/Client/ClientAPI.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -27,11 +26,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Client.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Client.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Client/Client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="65" column="43" lean-forward="false" selection-start-line="65" selection-start-column="43" selection-end-line="65" selection-end-column="43" />
+            <state relative-caret-position="268">
+              <caret line="67" column="38" lean-forward="true" selection-start-line="67" selection-start-column="38" selection-end-line="67" selection-end-column="38" />
               <folding>
                 <element signature="e#204#234#0" expanded="true" />
               </folding>
@@ -39,11 +38,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ClientAPI.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ClientAPI.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/ClientAPI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="72" column="79" lean-forward="false" selection-start-line="72" selection-start-column="79" selection-end-line="72" selection-end-column="79" />
+            <state relative-caret-position="203">
+              <caret line="190" column="10" lean-forward="false" selection-start-line="190" selection-start-column="10" selection-end-line="190" selection-end-column="10" />
               <folding>
                 <element signature="e#236#245#0" expanded="true" />
               </folding>
@@ -96,7 +95,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>request to read</find>
       <find>aPI</find>
       <find>get</find>
       <find>isn't</find>
@@ -126,6 +124,7 @@
       <find>on record</find>
       <find>as read</find>
       <find>create</find>
+      <find>open_file</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -151,10 +150,10 @@
         <option value="$PROJECT_DIR$/Client/ClientCache.py" />
         <option value="$PROJECT_DIR$/LockingServer/LockingServer.py" />
         <option value="$PROJECT_DIR$/DirectoryServer/DirectoryServer.py" />
-        <option value="$PROJECT_DIR$/Client/Client.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/Client/Hello/hello.txt" />
         <option value="$PROJECT_DIR$/Client/ClientAPI.py" />
+        <option value="$PROJECT_DIR$/Client/Client.py" />
       </list>
     </option>
   </component>
@@ -341,8 +340,8 @@
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.Client (1)" />
-        <item index="1" class="java.lang.String" itemvalue="Python.FileServer (1)" />
-        <item index="2" class="java.lang.String" itemvalue="Python.LockingServer" />
+        <item index="1" class="java.lang.String" itemvalue="Python.LockingServer" />
+        <item index="2" class="java.lang.String" itemvalue="Python.FileServer (1)" />
         <item index="3" class="java.lang.String" itemvalue="Python.DirectoryServer (1)" />
         <item index="4" class="java.lang.String" itemvalue="Python.Client" />
       </list>
@@ -774,16 +773,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Client.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="65" column="43" lean-forward="false" selection-start-line="65" selection-start-column="43" selection-end-line="65" selection-end-column="43" />
-          <folding>
-            <element signature="e#204#234#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
@@ -802,10 +791,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Client/ClientAPI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="72" column="79" lean-forward="false" selection-start-line="72" selection-start-column="79" selection-end-line="72" selection-end-column="79" />
+        <state relative-caret-position="203">
+          <caret line="190" column="10" lean-forward="false" selection-start-line="190" selection-start-column="10" selection-end-line="190" selection-end-column="10" />
           <folding>
             <element signature="e#236#245#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="268">
+          <caret line="67" column="38" lean-forward="true" selection-start-line="67" selection-start-column="38" selection-end-line="67" selection-end-column="38" />
+          <folding>
+            <element signature="e#204#234#0" expanded="true" />
           </folding>
         </state>
       </provider>
