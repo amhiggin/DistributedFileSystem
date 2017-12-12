@@ -1,6 +1,7 @@
 #!/bin/sh
 
-HOST="127.0.0.1"
-PORT="5001"
+echo "Launching locking server on 127.0.0.1:5001"
 
-python LockingServer.py $HOST $PORT
+# Launch a single locking server
+
+python LockingServer/LockingServer.py "127.0.0.1" "5001"

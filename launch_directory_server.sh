@@ -1,7 +1,8 @@
 #!/bin/sh
 
-HOST = "127.0.0.1"
-PORT = "5000"
+
+echo "Launching directory server on 127.0.0.1:5000"
 
 # Launch a single directory server
-python LockingServer.py $HOST $PORT
+
+python DirectoryServer/DirectoryServer.py "127.0.0.1" "5000"
