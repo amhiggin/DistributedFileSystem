@@ -50,7 +50,7 @@ It is possible to have as many file servers as desired in this distributed file-
 
 The file-servers are implemented as a flat-file system, with each storing files in a single directory. This directory uses the naming pattern <b>ServerX</b>, where X is an id assigned to the server when it registers with the directory server. All files stored on a file server follow a simple numerical naming system: for example, <i>0.txt</i> for the first file created on the server.
 
-Each server accepts <i>get()</i> and <i>post()</i> requests from clients. It can be reached at any available host address and port specified by the user, which are provided as <b>sys.argv[0]</b> and <b>sys.argv[1]</b>.
+Each server accepts <i>get()</i> and <i>post()</i> requests from clients. It can be reached at any available host address and port specified by the user, which are provided as <b>sys.argv[1]</b> and <b>sys.argv[2]</b>.
 
 * A client wishing to <b>read</b> a remote copy of a file will send a <i>get()</i> request. The client must provide JSON parameters:
   * 'file_id': file_id

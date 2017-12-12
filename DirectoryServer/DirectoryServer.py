@@ -33,7 +33,7 @@ def get_server_file_details(file_name, file_names_on_record, connected_fileserve
         print_to_console("{0} on record".format(file_name))
         file_id, server_id, file_version = file_names_on_record[str(file_name)]
         server_address = connected_fileservers_by_id[server_id]
-        print_to_console("The file {0} is stored on server {1}. The corresponding server address is {2}:{3}".format(file_id, server_id, server_address[0], server_address[1]))
+        print_to_console("The file {0}, version {1} is stored on server {2}. The corresponding server address is {3}:{4}".format(file_id, file_version, server_id, server_address[0], server_address[1]))
         return server_address, server_id, file_id, file_version
     else:
         print_to_console("File {0} isn't recorded in the directory server.".format(file_name))
@@ -68,11 +68,12 @@ class DirectoryServer(Resource):
     def post(self):
         file_name = request.get_json()['file_name']
         file_contents = request.get_json()['file_contents']
-        print_to_console("File {0} requested to post".format(file_name))
+        print_to_console("Request to post file {0}".format(file_name))
         server_address, server_id, file_id, file_version = get_server_file_details(file_name, FILES_ON_RECORD_BY_NAME, CONNECTED_FILESERVERS_BY_ID)
 
         if file_id is not None:
             # Copy exists on a file-server
+            print_to_console("A remote copy of {0}, version {1}, exists.".format(file_name, file_version))
             return {'file_server_address': server_address, 'file_server_id': server_id, 'file_id':file_id, 'file_version':file_version, 'new_remote_copy': False}
         else:
             # This is a new file: create a brand new remote copy
@@ -83,10 +84,8 @@ class DirectoryServer(Resource):
                 return {'file_id': file_id, 'file_server_id': None, 'file_server_address': None, 'file_version': None, 'new_remote_copy': None}
             FILESERVER_LOAD_BY_ID[file_server_id] += 1
 
-            # add versioning info - initial value
-            file_version = VERSION_ZERO
-            FILES_ON_RECORD_BY_NAME[file_name] = (file_id, file_server_id, file_version)
-            FILES_ON_RECORD_BY_ID[file_id] = (file_server_id, file_name, file_version)
+            FILES_ON_RECORD_BY_NAME[file_name] = (file_id, file_server_id, VERSION_ZERO)
+            FILES_ON_RECORD_BY_ID[file_id] = (file_server_id, file_name, VERSION_ZERO)
             server_ip = CONNECTED_FILESERVERS_BY_ID[file_server_id][0]
             server_port = CONNECTED_FILESERVERS_BY_ID[file_server_id][1]
 
@@ -98,7 +97,7 @@ class DirectoryServer(Resource):
             if new_remote_copy == True:
                 print_to_console("Successfully created remote copy.")
 
-            return {'file_id': file_id, 'file_server_id': file_server_id, 'file_server_address': CONNECTED_FILESERVERS_BY_ID[file_server_id], 'file_version': file_version, 'new_remote_copy': new_remote_copy}
+            return {'file_id': file_id, 'file_server_id': file_server_id, 'file_server_address': CONNECTED_FILESERVERS_BY_ID[file_server_id], 'file_version': VERSION_ZERO, 'new_remote_copy': new_remote_copy}
 
 
 class UpdateFileVersion(Resource):
@@ -120,16 +119,17 @@ class UpdateFileVersion(Resource):
                 if FILES_ON_RECORD_BY_ID[file_id][2] is (file_version - 1):
                     print_to_console("We are one version behind - will update.")
                     FILES_ON_RECORD_BY_ID[file_id] = (file_server_id, file_name, file_version)
+                    FILES_ON_RECORD_BY_NAME[file_name] = (file_id, file_server_id, file_version)
                     print 'Successfully updated version of {0} to version = {1}'.format(file_name, file_version)
                     return {'version_updated': True}
                 else:
                     print 'Version of the file {0} is behind that on the directory server'.format(FILES_ON_RECORD_BY_ID[file_id][1])
                     return {'version_updated': False}
             else:
-                print_to_console("The version hasn't changed since the last update.")
+                print_to_console("The version hasn't changed since the last update. Was {0}, is now {1}..".format(FILES_ON_RECORD_BY_ID[file_id][2], file_version))
                 return {'version_updated': False}
         else:
-            print 'File {0} does not exist on the directory server'.format(FILES_ON_RECORD_BY_ID[file_id][1])
+            print 'There is no remote copy of file {0} recorded with the directory server'.format(FILES_ON_RECORD_BY_ID[file_id][1])
             return {'version_updated': False}
 
 

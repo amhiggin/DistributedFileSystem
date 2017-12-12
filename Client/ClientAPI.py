@@ -151,7 +151,9 @@ def write_file(file_path, file_name, client_id, cache):
             print 'Response: ' + str(server_response.json())
 
             # TODO fixme update file version isn't working correctly
+            print 'File version is {0}'.format(file_version)
             file_version += 1
+            print 'File version is now updated to be {0}'.format(file_version)
             directory_server_response = requests.post(file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1], "update_file_version"), json={'file_id':file_id, 'file_version':file_version, 'file_server_id': server_id, 'file_name': full_file_path})
             if directory_server_response.json()['version_updated']:
                 print 'Updated version on directory server successfully'
