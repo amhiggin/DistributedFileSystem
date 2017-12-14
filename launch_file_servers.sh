@@ -5,7 +5,7 @@ INITIAL_PORT=45678
 
 for i in $( seq 2 $1 )
 do
-	python FileServer/FileServer.py $HOST "$INITIAL_PORT" &
-	INITIAL_PORT = INITIAL_PORT + 1
+        python FileServer/FileServer.py $HOST $INITIAL_PORT &
+        INITIAL_PORT=$((INITIAL_PORT+1))
 done
-python FileServer/FileServer.py $HOST "$INITIAL_PORT"
+python FileServer/FileServer.py $HOST $INITIAL_PORT
