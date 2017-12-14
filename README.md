@@ -7,46 +7,45 @@ A distributed Network File System (NFS) implementation with:
 3.	Locking service
 4.	Client-side caching
 
-Implemented in Python using the Flask Restful framework. Communication is through HTTP in JSON format.
+Implemented in Python 2.7 using the Flask-Restful framework. All communication is in JSON format, and all servers are run on <i>localhost</i> (i.e. hostname is <b>127.0.0.1</b>).
 
 
 ## Distributed Transparent File Access
-The system operates according to the Network File System (NFS) model. It can support multiple connected clients, and multiple fileservers. It deals exclusively with .txt files.
+The system operates according to the Network File System (NFS) model. It can support multiple connected clients, and multiple fileservers. It deals <i>exclusively</i> with .txt files.
 
 ### Client Library
-All file accesses are made through a client library called <i>ClientApi.py</i>. This library is the interface exposed to the client-side application for manipulation of the local and remote file-systems. By using the library, the under-the-hood implementation details of the distributed file-system are hidden from the user.
+All file accesses are made through a client library called a client library called <b><i>ClientApi.py</i></b>. This library is the interface exposed to the client-side application for manipulation of the local and remote file-systems (also the cache: see later sections). By using the library, the under-the-hood implementation details of the distributed file-system are hidden from the client application.
 
 Clients can:
-* Access remote copies of files stored on file-servers through the <i>read</i> and <i>write</i> function calls. They can also create new files, and open existing files locally.
-* Interact with file contents through the system editor, which is launched before every remote write and after every remote read.
+*	Access remote copies of files stored on file-servers through the <i>read</i> and <i>write</i> function calls. They can also create new files, and open existing files locally to view the contents.
+* Interact with file contents through the system editor, which is launched before every remote write and after every remote read. In Windows, this is <b>notepad.exe</b>, and in Linux it is <b>nano</b> which is used.
 
-A subtle point here is that <i>in order to 'open' a file in read-only mode, the contents of the file are displayed in the console window.</i> Opening the file in the text editor would give an individual the option to edit the file when they should really just be able to view the contents - an undesirable behaviour that is resolved by this approach.
+<b>Note on opening files:</b> in order to 'open' a file in read-only mode, the contents of the file are displayed in the console window.</i> Opening the file in the text editor (as is done with the <i>read</i> and <i>write</i> operations) would give an individual the option to edit the file when they should really just be able to view the contents - an undesirable behaviour that is resolved by this approach.
 
 ### Client application
-This application provides a simple interface to a user, offering options to manipulate files. This includes reading, writing, opening and creating text files. When a text file is created for the first time, the specified directory is automatically created if it doesn’t already exist.
+This application, called <b><i>Client.py</i></b>, provides a simple interface offering options to manipulate files. This includes reading, writing, opening and creating of text files. When a text file is created for the first time, the specified directory is automatically created if it doesn’t already exist.
 
-All files on the local filesystem are visible to every client. However, each client implements its own cache.
-
-In the background, the user's choices when interacting with the system are routed through the client library to the appropriate services (e.g. cache, locking server, directory server, file server), providing abstraction from the underlying technical implementation.
+* All files on the local filesystem are visible to every client. However, each client implements its own cache, allowing them to keep their own most frequently accessed content close at hand.
+* In the background, the user's choices when interacting with the system are routed through the client library to the appropriate services (e.g. cache, locking server, directory server, file server), providing abstraction from the underlying technical implementation.
+* Upon termination of the client, the contents of the cache are erased: however, no changes are made to the files in the local file-system.
 
 
 ## Directory Service
-A directory service has the function of converting human-readable file names displayed to a client, into non-verbose file identifiers on remote file servers. It acts as a namespace for the system that maps a unique filename (from which the client can be identified) to a unique file identifier (from which the remote file server can be identified) – an intermediary between the client and the remote file servers.
+A directory service in any distributed file-system has the function of converting human-readable file names displayed to a client, into non-verbose file identifiers on remote file-servers. It acts as a namespace for the system that maps a unique filename (from which the client can be identified) to a unique file identifier (from which the remote file server can be identified) – an intermediary between the client and the remote file-servers.
 
 ### Directory Server
-There is one directory server located at a known address of <b>http://127.0.0.1:5000/</b>. This server acts as a management application for the distributed file-system.  The directory server maintains a record of the mappings of full client-side file names to enumerated file identifier mappings on the remote servers.
+The system has one directory server located at a known address of <b>http://127.0.0.1:5000/</b>, called <b><i>DirectoryServer.py</i></b>. This server acts as a management application for the distributed file-system.  It maintains a record of the mappings of full client-side filenames to enumerated file identifiers on the remote file-servers.
 
 Amongst other responsibilities, it:
 * Provides a registration mechanism for -
   * Client applications, at URL endpoint <b>http://127.0.0.1:5000/register_client</b>
-  * File servers, at URL endpoint <b>http://127.0.0.1:5000/register_fileserver</b>
+  * File-servers, at URL endpoint <b>http://127.0.0.1:5000/register_fileserver</b>
   
   including the assignment of unique ids to each;
-* Records connection details for clients and file servers;
+* Records connection details for clients and file-servers that have registered with it;
 * Load-balances connected file-servers, such that at any time the least-loaded server will be given any new loading;
 * Maintains records of client-fileserver file-directory mappings, where clients provide a full file path (e.g. ../Client0/hello.txt) and this is mapped to a unique server-side identifier in the server’s root directory (e.g. ../Server10/18.txt).
-* Maintains versioning of the files as an integer value, according to the number of times they have been updated by clients. This is a crucial element of the client-side caching.
-
+* Maintains versioning of the files using integer values, according to the number of times they have been updated by clients. This is a crucial enabling element of the client-side caching.
 
 
 ### Remote File Server
@@ -63,7 +62,10 @@ Each server accepts <i>get()</i> and <i>post()</i> requests from clients. It can
   * 'file_id': file_id
   * 'file_contents': file_contents
 
-<b>Note:</b> The fileserver does not hold any versioning information about its files: it is the directory server which handles this.
+<b>Notes:</b> 
+* The fileserver does not hold any versioning information about the files that it stores: it is the directory server which handles this.
+* The client is able to identify the values of 'file_id' and 'file_server_id' by consulting the directory server for the file mapping it requires.
+
 
 ## Locking Service
 A locking service provides concurrency control for multiple clients requiring access to the same files. It allows clients exclusive access to files under particular conditions.
@@ -71,29 +73,43 @@ A locking service provides concurrency control for multiple clients requiring ac
 A client must request and successfully acquire a single lock for a file in order to perform a restricted-access operation (such as a write). This means that for all writes in the distributed file-system, the request must first be routed through a <b>locking server</b> before access to the remote copy is granted.
 
 ### Locking Server
-There is one locking server in the distributed file-system. It manages the operation of locking and unlocking files as requested by clients. It is accessible at URL endpoint http://127.0.0.1:5001/. Any requests for a read or write on a remote file copy must first be routed through this service for approval.
+There is one locking server in this distributed file-system, called <b><i>LockingServer.py</i></b>. It manages the operation of locking and unlocking files as requested by clients. It is accessible at URL endpoint http://127.0.0.1:5001/. Any requests for a read or write on a remote file copy must first be routed through this service for approval.
 
 Each file which exists on a remote file-server will have a corresponding record with the locking server. This record exists as a lookup-table, where each entry is a [file_id, is_locked] pair.
 * Any client wishing to write to a file must request the lock for that file. They will not be granted the lock until the file is no longer locked.
-  * <b>However</b>, a safety mechanism in the form of a timeout (<b>60 seconds</b>) is used to guard against infinite waiting for a lock to be released. After the timeout has elapsed, if the file is still locked, it will be assumed that the client has died and the lock is removed.
-* Any client wishing to read a file, will not be able to read it until it is unlocked.
+  * <b>However</b>, a safety mechanism in the form of a timeout (<b>60 seconds</b>) is used to guard against infinite waiting for a lock to be released. After the timeout has elapsed, if the file is still locked, it will be assumed that the client has died and the lock is released by the server itself.
+* Any client wishing to read a file, will not be able to read it until it is unlocked. However, in the client library there are no cases where a read request requires the acquisition of a lock - the file simply should not be readable until it is no longer locked by another client.
 
-<i><b>Assumption</b>: the implementation assumes that when a remote copy is created for the first time on a file-server, it doesn't need to be locked (nobody will try to concurrently access the file until after it has been created).</i>
+<i><b>Assumption</b>: when a remote copy is created for the first time on a file-server, it doesn't need to be locked (nobody will try to concurrently access the file until after it has been created).</i>
 
 
 ## Client-side Caching
 A caching solution in a system allows for quicker access time to files if used effectively. It involves the local storage of up-to-date copies of files, so that if the remote copy of a file hasn’t changed since the last time it was accessed, it can be read locally rather than requiring a request over the network. By using caching, the performance of a system can be enhanced since the servers are likely to have less loading at a given time. However, if not implemented appropriately on the client-side it can introduce unnecessary runtime overheads.
 
-In general, it is most efficient to use caching on the client-side to reduce the number of relatively-slow additional calls required over the network, in particular reducing the network access required for a file read. Concerns such as cache invalidation for out-of-date copies of cached files, and an eviction policy in order to keep the contents of the cache relevant and small in number, are important to consider.
+In general, it is most efficient to use caching on the client-side to reduce the number of relatively-slow calls required over the network – particularly in the case of file reads. Concerns such as cache invalidation for out-of-date copies of cached files, and an eviction policy in order to keep the contents of the cache relevant and small in number, are important to consider.
 
 ### Cache
-The cache is custom-implemented, and an individual cache is created for each client when it launches in order to simplify dealing with conflicts. This cache is a look-up table with a maximum number of entries, whose contents are managed using <b>file versioning</b> and a <b>Least-Recently-Used (LRU) cache eviction policy</b>.
+A custom-implemented cache called <b><i>ClientCache.py</i></b> is used to provide client-side caching in this distributed file-system. An individual cache is created for each client during initialisation: this allows each client to cache the files that they access most often close by and up-to-date. The cache uses a look-up table with a maximum number of entries, whose contents are managed using (i) file versioning, and (ii) a Least-Recently-Used (LRU) cache eviction policy.
 
-Operations on the cache include: adding entries, updating entries, finding entries, evicting entries, and clearing the cache upon exit.
-The cache is used by the Client API in order to reduce the amount of traffic going over the network. As an NFS implementation, the benefits of this are most clearly seen when performing read operations.
-1.	<b>Read</b>: the cache is checked for an entry corresponding to the file to be read, and if there exists an entry then the version is checked against that recorded with the fileserver. If the client-side copy has an outdated version, then the call is made to the fileserver to fetch the most up-to-date copy of the file. Otherwise, the copy from the cache is used.
+Operations implemented in the cache include: adding entries, updating entries, finding entries, evicting entries, and clearing the cache upon exit. Each cache entry looks similar to:
+
+  <b>{'file_contents': file_contents, 'file_version': file_version, 'file_name': file_name, 'timestamp' timestamp}</b>
+
+The timestamp is used to determine the age of the file, and the version is used to determine whether the entry is up-to-date with the remote copy at any given time.
+
+The benefit of the cache is the reduction in volume of traffic going over the network, as well as more instantaneous access to files in many cases. As an NFS implementation, the benefits of this are most clearly seen when performing read operations.
+
+1.	<b>Read</b>: 
+  The cache is checked for an entry corresponding to the file to be read.
+  * If there exists a corresponding entry, then the version is checked against that recorded with the directory server.
+  * If the cache copy is of an outdated version of the file, then a request is made to the file-server on which the remote copy is stored to provide the most up-to-date copy of the file. 
+  * If the copy in the cache is up-to-date with the remote copy, the copy from the cache is used. This results in two fewer network accesses: one saving by not needing to request the file from the file-server, and another by the file-server not needing to service an extra request.
 2.	<b>Write</b>:
 3.	<b>Open</b>: since the file-system is implemented to replicate the NFS model, there are no calls across the network for the open operation, and the file as it exists in the cache is simply displayed in read-only mode.
+
+<b>LRU Eviction Policy</b>: The Least-Recently Used cache eviction policy enforces a maximum number of cache entries at any particular time. This allows the cache to be indexed more quickly, and keeps the contents maximally relevant to the needs of the client it is associated with. 
+* In this implementation, <b>a maximum of 10 entries</b> can be stored in the cache at any given time. This empirically selected value could easily be increased or decreased depending on the requirements of this cache in practise.
+* Once the cache is full, the client will not be able to add another entry until the least-recently used entry has been evicted. The least-recently used entry is determined by the timestamp of the entry, which corresponds to the last time at which the cache entry was updated.
 
 <b>TODO finish this</b>.
 
