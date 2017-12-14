@@ -144,7 +144,26 @@ The benefit of the cache is the reduction in volume of traffic going over the ne
 * In this implementation, <b>a maximum of 10 entries</b> can be stored in the cache at any given time. This empirically selected value could easily be increased or decreased depending on the requirements of this cache in practise.
 * Once the cache is full, the client will not be able to add another entry until the least-recently used entry has been evicted. The least-recently used entry is determined by the timestamp of the entry, which corresponds to the last time at which the cache entry was updated.
 
+## Examples of Operation
 
+### Creating New file for writing
+![client_initialisation](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/initialising%20and%20writing%20a%20file%20-%20client.PNG)
+
+![create_new_remote_copy_dir_server](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/creation%20of%20new%20remote%20copy%20of%20file%20-%20directory%20server.PNG)
+
+![create_new_remote_copy_file_server](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/creating%20new%20remote%20copy%20of%20file%20-%20fileserver.PNG)
+
+### Reading Cached Copy of File
+TODO
+
+## Writing to Existing Remote Copy
+![client_writing_to_remote_copy](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20writing%20to%20existing%20remote%20copy.PNG)
+
+![provide_remote_copy_mapping_dir_server](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/directory%20server%20-%20response%20to%20request%20to%20write%20through%20to%20remote%20copy.PNG)
+
+![lock_requested_remote_copy_locking_server](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/locking%20server%20-%20locking%20and%20unlocking%20a%20file.PNG)
+
+TODO writing to remote copy fileserver
 
 ## Dependencies
 * Python 2.7.9
