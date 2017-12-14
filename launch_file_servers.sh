@@ -1,7 +1,5 @@
 #!/bin/sh
 
-declare -i INITIAL_PORT
-
 HOST="127.0.0.1"
 INITIAL_PORT=45678
 
