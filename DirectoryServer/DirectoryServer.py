@@ -214,3 +214,6 @@ api.add_resource(UpdateFileVersion, '/update_file_version')
 if __name__ == "__main__":
     if len(sys.argv) == 3:
         app.run(debug=True, host=sys.argv[1], port=int(sys.argv[2]))
+    else:
+        print_to_console("IP address and port weren't entered correctly for the directory server: cannot launch.")
+    exit(0)
