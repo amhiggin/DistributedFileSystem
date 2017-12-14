@@ -96,6 +96,7 @@ class LockingServer(Resource):
                 print_to_console('Client {0} has unlocked file {1}'.format(client_id, file_id))
                 return {'locked': False}
             else:
+                # We can't unlock the file - either it isn't locked, or we aren't the one who locked it.
                 return {'locked': LOCKED_FILES_BY_ID[file_id]['locked']}
         # in either case, we return that the file is unlocked
         else:
