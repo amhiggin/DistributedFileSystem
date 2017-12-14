@@ -2,8 +2,8 @@
 
 declare -i INITIAL_PORT
 
-HOST = "127.0.0.1"
-INITIAL_PORT = 45678
+HOST="127.0.0.1"
+INITIAL_PORT=45678
 
 for i in $( seq 2 $1 )
 do

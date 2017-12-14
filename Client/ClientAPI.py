@@ -27,7 +27,7 @@ def print_to_console(client_id, message):
 def open_file_in_text_editor(full_file_path, client_id):
     if _platform == "linux" or _platform == "linux2":
         print_to_console(client_id, 'Launching Linux system text editor')
-        return os.system('%s %s' % (os.getenv('EDITOR'), full_file_path))
+        return sp.call(['nano', full_file_path])
     elif _platform == "win32" or "win64":
         print_to_console(client_id, 'Launching Windows system text editor')
         return sp.Popen(['notepad.exe', full_file_path]).wait()
