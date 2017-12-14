@@ -50,6 +50,7 @@ class FileServer(Resource):
     def get(self):
         # extract the requested file's identifier
         file_id = request.get_json()['file_id']
+
         # construct the filename from the file id, if the file exists
         file_name = ROOT_DIR + "/" + file_api.get_serverside_file_name_by_id(file_id)
         with open(file_name, 'r') as in_file:

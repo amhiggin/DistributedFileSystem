@@ -23,7 +23,7 @@ def print_to_console(client_id, message):
     print 'Client{0}: {1}'.format(client_id, message)
 
 
-# This method opens the specified file in the Windows/Linux default system text editor
+# This method opens the specified file in the Windows/Linux default system text editor, depending on the platform.
 def open_file_in_text_editor(full_file_path, client_id):
     if _platform == "linux" or _platform == "linux2":
         print_to_console(client_id, 'Launching Linux system text editor')
@@ -109,12 +109,14 @@ def read_file(file_path, file_name, client_id, cache):
         if file_id is None:
             print_to_console(client_id, "{0} doesn't exist as a remote copy.".format(full_file_path))
             return
+
         if cache.is_entry_cached_and_up_to_date(full_file_path, file_version):
             # Don't bother going to file server to fetch contents
             cache_entry = cache.fetch_cache_entry(full_file_path)
             print_to_console(client_id, 'Opening local copy to update with response contents: {0}'.format(cache_entry['file_contents']))
             with open(full_file_path, 'r+') as edit_file:
                 edit_file.write(cache_entry['file_contents'])
+
         else:
             # request the file from this file server
             while not acquire_lock_on_file(file_id, client_id):

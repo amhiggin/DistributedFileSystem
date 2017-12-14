@@ -1,7 +1,6 @@
 #
 # This is the client application.
-# It will use a client API to communicate with the server (the client library).
-# Should be able to access the requested files by doing through the required servers.
+# It uses a client API (essentially a proxy) to communicate with the various components of the distributed file-system.
 #
 import ClientAPI as client_api
 
