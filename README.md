@@ -46,10 +46,11 @@ Clients can:
 <b>Note on opening files:</b> in order to 'open' a file in read-only mode, the contents of the file are displayed in the console window.</i> Opening the file in the text editor (as is done with the <i>read</i> and <i>write</i> operations) would give an individual the option to edit the file when they should really just be able to view the contents - an undesirable behaviour that is resolved by this approach.
 
 ### Client application
-This application, called <b><i>Client.py</i></b>, provides a simple interface offering options to manipulate files. This includes reading, writing, opening and creating of text files. When a text file is created for the first time, the specified directory is automatically created if it doesn’t already exist.
+This application, called <b><i>Client.py</i></b>, provides a simple console-based UI offering options to manipulate files. This includes reading, writing, opening and creating of text files. 
 
-* All files on the local filesystem are visible to every client. However, each client implements its own cache, allowing them to keep their own most frequently accessed content close at hand.
 * In the background, the user's choices when interacting with the system are routed through the client library to the appropriate services (e.g. cache, locking server, directory server, file server), providing abstraction from the underlying technical implementation.
+* When a text file is created for the first time, the specified directory is automatically created if it doesn’t already exist. Error handling is included to prevent overwriting of existing file contents.
+* All files on the local filesystem are visible to every active client using the system, meaning that concurrent accesses to files can easily occur. However, each client implements its own cache, allowing them to keep their own most frequently accessed content close at hand.
 * Upon termination of the client, the contents of the cache are erased: however, no changes are made to the files in the local file-system.
 
 
@@ -103,11 +104,14 @@ A client must request and successfully acquire a single lock for a file in order
 There is one locking server in this distributed file-system, called <b><i>LockingServer.py</i></b>. It manages the operation of locking and unlocking files as requested by clients. It is accessible at URL endpoint http://127.0.0.1:5001/. Any requests for a read or write on a remote file copy must first be routed through this service for approval.
 
 Each file which exists on a remote file-server will have a corresponding record with the locking server. This record exists as a lookup-table, where each entry is a [file_id, is_locked] pair.
-* Any client wishing to write to a file must request the lock for that file. They will not be granted the lock until the file is no longer locked.
-  * <b>However</b>, a safety mechanism in the form of a timeout (<b>60 seconds</b>) is used to guard against infinite waiting for a lock to be released. After the timeout has elapsed, if the file is still locked, it will be assumed that the client has died and the lock is released by the server itself.
+* Any client wishing to write to a file must request the lock for that file. They will not be granted the lock until the file is no longer locked. 
+* Any client who is granted the lock for a file, will have their client_id stored with the locking server's records for that file. This prevents a client who didn't lock the file originally, from releasing the lock on the file.
+  * <b>However</b>, a safety mechanism in the form of a timeout (<b>60 seconds</b>) is used to guard against infinite waiting for a lock to be released. After the timeout has elapsed, if the file is still locked, it will be assumed that the client who locked it has died and the lock is released by the server itself.
 * Any client wishing to read a file, will not be able to read it until it is unlocked. However, in the client library there are no cases where a read request requires the acquisition of a lock - the file simply should not be readable until it is no longer locked by another client.
 
-<i><b>Assumption</b>: when a remote copy is created for the first time on a file-server, it doesn't need to be locked (nobody will try to concurrently access the file until after it has been created).</i>
+<b>Notes</b>:
+* <i><b>Assumption</i></b>: when a remote copy is created for the first time on a file-server, it doesn't need to be locked (nobody will try to concurrently access the file until after it has been created).
+* 
 
 
 
