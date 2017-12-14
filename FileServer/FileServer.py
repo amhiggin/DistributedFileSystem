@@ -104,10 +104,10 @@ api.add_resource(CreateNewRemoteCopy, '/create_new_remote_copy')
 if __name__ == "__main__":
     if len(sys.argv) == 3:
         if os.environ.get("WERKZEUG_RUN_MAIN") == 'true':
-            print_to_console("Hello, I'm a Fileserver! Lets register with the directory server...")
+            print_to_console("Hello, I'm a Fileserver! My address is {0}:{1}".format(sys.argv[1], sys.argv[2]))
             # Send a request to the directory server to get our ID
             url =  file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1],"register_fileserver")
-            print_to_console("Connecting ...")
+            print_to_console("Connecting to directory server...")
             while True:
                 try:
                     response = requests.post(url, json={'ip': sys.argv[1], 'port': sys.argv[2]})
@@ -127,5 +127,5 @@ if __name__ == "__main__":
 
         app.run(debug=True, host=sys.argv[1], port=int(sys.argv[2]))
     else:
-        print_to_console("IP address and port weren't entered correctly for the fileserver: cannot launch.")
+        print_to_console("IP address and port weren't entered correctly for the file server: cannot launch.")
     exit(0)
