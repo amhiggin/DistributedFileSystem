@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="412b1a9a-9cff-49c9-acea-7ddb722bdbc5" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/Client/Hello/hello.txt#" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FileServer/FileServer.py" afterPath="$PROJECT_DIR$/FileServer/FileServer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/launch_file_servers.sh" afterPath="$PROJECT_DIR$/launch_file_servers.sh" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/code-stealing.PNG" afterPath="" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -15,11 +14,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="FileServer.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="FileServer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/FileServer/FileServer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="71">
-              <caret line="98" column="0" lean-forward="true" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
+            <state relative-caret-position="1666">
+              <caret line="98" column="0" lean-forward="false" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
               <folding>
                 <element signature="e#164#179#0" expanded="true" />
               </folding>
@@ -31,7 +30,7 @@
         <entry file="file://$PROJECT_DIR$/FileManipAPI.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="221">
-              <caret line="13" column="0" lean-forward="true" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+              <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -51,7 +50,7 @@
         <entry file="file://$PROJECT_DIR$/Client/ClientAPI.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="493">
-              <caret line="29" column="48" lean-forward="true" selection-start-line="29" selection-start-column="48" selection-end-line="29" selection-end-column="48" />
+              <caret line="29" column="48" lean-forward="false" selection-start-line="29" selection-start-column="48" selection-end-line="29" selection-end-column="48" />
               <folding>
                 <element signature="e#236#250#0" expanded="true" />
               </folding>
@@ -62,8 +61,8 @@
       <file leaf-file-name="ClientCache.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/ClientCache.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1724">
-              <caret line="30" column="31" lean-forward="true" selection-start-line="30" selection-start-column="31" selection-end-line="30" selection-end-column="31" />
+            <state relative-caret-position="1700">
+              <caret line="100" column="22" lean-forward="false" selection-start-line="100" selection-start-column="22" selection-end-line="100" selection-end-column="22" />
               <folding>
                 <element signature="e#183#198#0" expanded="true" />
               </folding>
@@ -81,11 +80,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LockingServer.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="LockingServer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/LockingServer/LockingServer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" column="23" lean-forward="true" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
+            <state relative-caret-position="-1326">
+              <caret line="9" column="23" lean-forward="false" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -96,7 +95,7 @@
       <file leaf-file-name="DirectoryServer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DirectoryServer/DirectoryServer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1299">
+            <state relative-caret-position="1533">
               <caret line="111" column="20" lean-forward="false" selection-start-line="111" selection-start-column="20" selection-end-line="111" selection-end-column="20" />
               <folding>
                 <element signature="e#379#388#0" expanded="true" />
@@ -743,26 +742,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DirectoryServer/DirectoryServer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1299">
-          <caret line="111" column="20" lean-forward="false" selection-start-line="111" selection-start-column="20" selection-end-line="111" selection-end-column="20" />
-          <folding>
-            <element signature="e#379#388#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/LockingServer/LockingServer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="23" lean-forward="true" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Client/Client.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="605">
@@ -774,7 +753,7 @@
     <entry file="file://$PROJECT_DIR$/FileManipAPI.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
-          <caret line="13" column="0" lean-forward="true" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -782,7 +761,7 @@
     <entry file="file://$PROJECT_DIR$/Client/ClientAPI.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="493">
-          <caret line="29" column="48" lean-forward="true" selection-start-line="29" selection-start-column="48" selection-end-line="29" selection-end-column="48" />
+          <caret line="29" column="48" lean-forward="false" selection-start-line="29" selection-start-column="48" selection-end-line="29" selection-end-column="48" />
           <folding>
             <element signature="e#236#250#0" expanded="true" />
           </folding>
@@ -791,20 +770,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Client/ClientCache.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1724">
-          <caret line="30" column="31" lean-forward="true" selection-start-line="30" selection-start-column="31" selection-end-line="30" selection-end-column="31" />
+        <state relative-caret-position="1700">
+          <caret line="100" column="22" lean-forward="false" selection-start-line="100" selection-start-column="22" selection-end-line="100" selection-end-column="22" />
           <folding>
             <element signature="e#183#198#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/DirectoryServer/DirectoryServer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1533">
+          <caret line="111" column="20" lean-forward="false" selection-start-line="111" selection-start-column="20" selection-end-line="111" selection-end-column="20" />
+          <folding>
+            <element signature="e#379#388#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/FileServer/FileServer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="71">
-          <caret line="98" column="0" lean-forward="true" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
+        <state relative-caret-position="1666">
+          <caret line="98" column="0" lean-forward="false" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
           <folding>
             <element signature="e#164#179#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LockingServer/LockingServer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1326">
+          <caret line="9" column="23" lean-forward="false" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
           </folding>
         </state>
       </provider>
