@@ -7,7 +7,30 @@ A distributed Network File System (NFS) implementation with:
 3.	Locking service
 4.	Client-side caching
 
-Implemented in Python 2.7 using the Flask-Restful framework. All communication is in JSON format, and all servers are run on <i>localhost</i> (i.e. hostname is <b>127.0.0.1</b>).
+Implemented in Python 2.7 using the Flask-Restful framework. All servers are run on <i>localhost</i> (hostname <b>127.0.0.1</b>).
+
+
+## Launch Instructions
+A number of shell scripts are provided for running this file-system in a Linux environment. Each of these will need to be given <i>execute permissions</i>, which can be assigned using the shell command '<b>chmod +x <script_name></b>'. To launch the system in the least time possible, the launch order 1-5 below should be followed.
+ 
+1. <b>install_dependencies.sh</b>
+
+    This script should be run first, since it will install all project dependencies specified in the <i>requirements.txt</i> file.
+2. <b>launch_directory_server.sh</b>
+
+    This script launches a directory server on localhost, at URL <b>http://127.0.0.1:5000</b>.
+3. <b>launch_locking_server.sh</b>
+
+    This script launches a locking server on localhost, at URL <b>http://127.0.0.1:5001</b>.
+4. <b>launch_file_servers.sh</b>
+
+    This script launches a number of file-servers on localhost, which will connect to the directory server if available. The number of file-servers should be specified by the user as <b>$1</b>. Each file-server will then be launched on sequential ports, starting from port <b>45678</b>. This means that the first file-server to be launched will be available at <b>http://127.0.0.1:45678</b>.
+5. <b>launch_client.sh</b>
+
+    This script launches a client application, which will connect to the directory and locking servers if they are available. Since the client requires user input, each client should be launched individually in a separate session.
+
+
+
 
 
 ## Distributed Transparent File Access
@@ -30,6 +53,8 @@ This application, called <b><i>Client.py</i></b>, provides a simple interface of
 * Upon termination of the client, the contents of the cache are erased: however, no changes are made to the files in the local file-system.
 
 
+
+
 ## Directory Service
 A directory service in any distributed file-system has the function of converting human-readable file names displayed to a client, into non-verbose file identifiers on remote file-servers. It acts as a namespace for the system that maps a unique filename (from which the client can be identified) to a unique file identifier (from which the remote file server can be identified) – an intermediary between the client and the remote file-servers.
 
@@ -49,11 +74,11 @@ Amongst other responsibilities, it:
 
 
 ### Remote File Server
-It is possible to have as many file servers as desired in this distributed file-system, since each file server registers with the directory server when it is launched.
+It is possible to have as many file servers as desired in this distributed file-system, since each file server registers with (and is subsequently managed by) the directory server when it is launched.
 
 The file-servers are implemented as a flat-file system, with each storing files in a single directory. This directory uses the naming pattern <b>ServerX</b>, where X is an id assigned to the server when it registers with the directory server. All files stored on a file server follow a simple numerical naming system: for example, <i>0.txt</i> for the first file created on the server.
 
-Each server accepts <i>get()</i> and <i>post()</i> requests from clients. It can be reached at any available host address and port specified by the user, which are provided as <b>sys.argv[1]</b> and <b>sys.argv[2]</b>. <i>Each file-server should be started on a different port number.</i>
+Each server accepts <i>get()</i> and <i>post()</i> requests from clients. It can be reached at any available host address and port specified by the user, which are provided as <b>sys.argv[1]</b> and <b>sys.argv[2]</b>. Each file-server should be started on a <i>different port number</i>, and this mechanism is provided in the accompanying launch scripts.
 
 * A client wishing to <b>read</b> a remote copy of a file will send a <i>get()</i> request. The client must provide JSON parameters:
   * 'file_id': file_id
@@ -63,8 +88,10 @@ Each server accepts <i>get()</i> and <i>post()</i> requests from clients. It can
   * 'file_contents': file_contents
 
 <b>Notes:</b> 
-* The fileserver does not hold any versioning information about the files that it stores: it is the directory server which handles this.
+* The fileserver does not hold any versioning information about the files that it stores: it is the directory server which handles this. Versioning is used as part of the caching mechanism.
 * The client is able to identify the values of 'file_id' and 'file_server_id' by consulting the directory server for the file mapping it requires.
+
+
 
 
 ## Locking Service
@@ -81,6 +108,8 @@ Each file which exists on a remote file-server will have a corresponding record 
 * Any client wishing to read a file, will not be able to read it until it is unlocked. However, in the client library there are no cases where a read request requires the acquisition of a lock - the file simply should not be readable until it is no longer locked by another client.
 
 <i><b>Assumption</b>: when a remote copy is created for the first time on a file-server, it doesn't need to be locked (nobody will try to concurrently access the file until after it has been created).</i>
+
+
 
 
 ## Client-side Caching
@@ -111,14 +140,15 @@ The benefit of the cache is the reduction in volume of traffic going over the ne
 * In this implementation, <b>a maximum of 10 entries</b> can be stored in the cache at any given time. This empirically selected value could easily be increased or decreased depending on the requirements of this cache in practise.
 * Once the cache is full, the client will not be able to add another entry until the least-recently used entry has been evicted. The least-recently used entry is determined by the timestamp of the entry, which corresponds to the last time at which the cache entry was updated.
 
-<b>TODO finish this</b>.
 
 
 ## Dependencies
 * Python 2.7.9
-* flask, flask_restful
+* flask
+* flask-restful
 * requests
-*
+* werkzeug
+
 
 ## Additional Notes
 * Originally, I had implemented the fileserver communications with the client application using sockets. I was also starting to work on a locking server. However I realised after some time that the Restful approach was a lot simpler, abstracting away the low-level implementation details and allowing me to get on with the feature implementation.
