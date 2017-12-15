@@ -7,11 +7,11 @@ A distributed Network File System (NFS) implementation with:
 3.	Locking service
 4.	Client-side caching
 
-Implemented in Python 2.7 using the Flask-Restful framework. All servers are run on <i>localhost</i> (hostname <b>127.0.0.1</b>).
+Implemented in Python 2.7 using the Flask-Restful framework. All servers are run on <i>localhost</i> (hostname <b>127.0.0.1</b>). 
 
 
 ## Launch Instructions
-A number of shell scripts are provided for running this file-system in a Linux environment. Each of these will need to be given <i>execute permissions</i>, which can be assigned using the shell command '<b>chmod +x <script_name></b>'. For ease, just <b>copy and paste the following into a terminal session</b> to give execute permissions to all scripts in the repository:
+The application can be run on either Windows or Linux environments. A number of shell scripts are provided for running this file-system in a <b>Linux environment</b>. Each of these will need to be given <i>execute permissions</i>, which can be assigned using the shell command '<i>chmod +x <script_name></i>'. For ease, just <b>copy and paste the following into a terminal session</b> to give execute permissions to all scripts in the repository:
  
 <i>chmod +x install_dependencies.sh ; chmod +x launch_locking_server.sh ; chmod +x launch_directory_server.sh ; chmod +x launch_client.sh ; chmod +x launch_file_servers.sh </i>
  
@@ -210,8 +210,10 @@ In order to best explain the operation of the distributed file-system, some sequ
 1. Client input for writing to a new remote copy of file <i>Hello/hello.txt</i>
 ![client_first_write_new_remote_copy](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20writing%20to%20NEW%20remote%20copy.PNG)
 
-2. Opening of the file <i>Hello/hello.txt</i> for writing in Nano
+2. Writing to <i>Hello/hello.txt</i> in Nano (Linux) and Notepad (Windows)
 ![open_file_nano](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20writing%20of%20a%20file%20in%20NANO.PNG)
+
+![open_file_notepad](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20writing%20of%20a%20file%20in%20notepad.PNG)
 
 3. Directory server output for creating new remote copy of file
 ![create_new_remote_copy_dir_server](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/creation%20of%20new%20remote%20copy%20of%20file%20-%20directory%20server.PNG)
@@ -241,7 +243,25 @@ In order to best explain the operation of the distributed file-system, some sequ
 
 ### Load-Balancing Multiple File Servers
 1. Directory Server Output: Load-Balancing
-![](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/directory%20server%20-%20load%20balancing.PNG)
+![load_balancing](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/directory%20server%20-%20load%20balancing.PNG)
+
+### Timeout of File Lock
+1. Client2 places write-lock on file <i>Hello/hello.txt</i> and never releases it
+![client2_never_releases_lock](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client2%20-%20never%20releases%20lock.PNG)
+
+2. Client0 requests write-lock on file <i>Hello/hello.txt</i>
+![client0_requests_already_locked_file]()
+TODO!!!!
+
+3. Locking server releases lock on <i>Hello/hello.txt</i> after timeout elapses
+![lock_timeout_release](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/locking%20server%20-%20timeout%20on%20lock.PNG)
+
+### Invalidation of File's Cache Copy
+1. Client1 performing a write-update on remote copy of <i>Hello/hello.txt</i> created by Client0
+![client1_invalidating_client0_cachecopy](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client1%20-%20invalidating%20client0s%20cache%20copy.PNG)
+
+2. Client0 invalidating and updating it's cache copy of <i>Hello/hello.txt</i> on a read
+![client0_updating_cachecopy](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client0%20-%20updating%20its%20invalidated%20cache%20copy.PNG)
 
 ### LRU Cache Eviction
 1. Client console output for cache eviction
@@ -250,7 +270,7 @@ In order to best explain the operation of the distributed file-system, some sequ
 ### Termination of Client
 1. Console output showing the termination of a client
 TODO!!!
-![client_]()
+![client_termination]()
 
 ## Dependencies
 * Python 2.7.9
