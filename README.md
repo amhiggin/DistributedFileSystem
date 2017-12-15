@@ -165,20 +165,33 @@ The benefit of the cache is the reduction in volume of traffic going over the ne
 Upon termination of the client, the contents of the cache are erased. The copies of the corresponding files in the local file-system however, are persisted.
 
 ## Examples of Operation
-In order to best explain the operation of the distributed file-system, a set of sequences of screenshots corresponding to different scenarios, are provided below with brief explanations.
+In order to best explain the operation of the distributed file-system, some sequences of screenshots corresponding to different scenarios are provided below with brief explanations.
+
+### Launch and Registration of Directory Server, Locking Server, Multiple Clients, Multiple Fileservers
+1. Client Output: Launching and registering two clients (Client0, Client1)
+![launch_two_clients](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%202%20clients%20running%20at%20same%20time.PNG)
+
+2. Fileserver Output: Launching and registering multiple fileservers
+![launch_two_fileservers](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/file%20server%20-%20multiple%20fileservers%20launched.PNG)
+
+3. Directory Server Output: Launching and registering multiple clients and fileservers 
+![registered_two_clients_two_fileservers](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/directory%20server%20-%20multiple%20fileservers%20AND%20multiple%20clients.PNG)
+
+4. Locking Server Output: Launching and registering multiple clients
+![registered_two_clients](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/locking%20server%20-%20registration%20of%20two%20clients%20with%20locking%20server.PNG)
 
 ### Creating a New File Locally
-1. Creating a new file successfully
+1. Client creating a new file successfully
 ![create_new_empty_file](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20create%20new%20empty%20file%20successfully%20including%20new%20directory.PNG)
 
-2. Incorrect attempt to create non-text file
+2. Incorrect attempt to create a non '.txt' file
 ![incorrect_txt_file_creation](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20handling%20non-txt%20file%20entered%20during%20file%20creation.PNG)
 
 3. Incorrect attempt to re-create existing file
 ![incorrect_creation_file_already_exists](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20attempt%20to%20create%20file%20that%20already%20exists.PNG)
 
 
-## Request Remote Read with No Fileservers Launched
+### Request Remote Read with No Fileservers Launched
 1. Client error message when no fileservers exist
 ![client_no_fileservers_launched](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20no%20fileservers%20registered.PNG)
 
@@ -197,17 +210,23 @@ In order to best explain the operation of the distributed file-system, a set of 
 1. Client input for writing to a new remote copy of file <i>Hello/hello.txt</i>
 ![client_first_write_new_remote_copy](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20writing%20to%20NEW%20remote%20copy.PNG)
 
-2. Directory server output for creating new remote copy of file
+2. Opening of the file <i>Hello/hello.txt</i> for writing in Nano
+![open_file_nano](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20writing%20of%20a%20file%20in%20NANO.PNG)
+
+3. Directory server output for creating new remote copy of file
 ![create_new_remote_copy_dir_server](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/creation%20of%20new%20remote%20copy%20of%20file%20-%20directory%20server.PNG)
 
-3. File server output for creating new remote copy of file
+4. File server output for creating new remote copy of file
 ![create_new_remote_copy_file_server](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/creating%20new%20remote%20copy%20of%20file%20-%20fileserver.PNG)
 
 ### Reading Up-to-Date Cached Copy of File
 1. Client reading up-to-date cache copy of file <i>Hello/hello.txt</i>
 ![client_cache_read_up_to_date](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20reading%20up%20to%20date%20cache%20copy.PNG)
 
-## Writing to Existing Remote Copy
+2. Directory Server response to request for version of file <i>Hello/hello.txt</i>
+![dir_server_providing_file_version](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/directory%20server%20-%20providing%20version%20information%20on%20up-to-date%20cached%20file%20to%20client.PNG)
+
+### Writing to Existing Remote Copy
 1. Client output when writing to existing remote copy
 ![client_writing_to_remote_copy](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20writing%20update%20to%20remote%20copy.PNG)
 
@@ -219,6 +238,19 @@ In order to best explain the operation of the distributed file-system, a set of 
 
 4. Fileserver performing update on remote copy
 ![fileserver_update_remote_copy](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/file%20server%20-%20write%20update%20to%20remote%20copy.PNG)
+
+### Load-Balancing Multiple File Servers
+1. Directory Server Output: Load-Balancing
+![](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/directory%20server%20-%20load%20balancing.PNG)
+
+### LRU Cache Eviction
+1. Client console output for cache eviction
+![cache_eviction](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20LRU%20eviction.PNG)
+
+### Termination of Client
+1. Console output showing the termination of a client
+TODO!!!
+![client_]()
 
 ## Dependencies
 * Python 2.7.9
