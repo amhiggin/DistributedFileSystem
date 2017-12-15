@@ -25,6 +25,7 @@ A number of shell scripts are provided for running this file-system in a Linux e
 4. <b>launch_file_servers.sh</b>
 
     This script launches a number of file-servers on localhost, which will connect to the directory server if available. The number of file-servers should be specified by the user as <b>$1</b>. Each file-server will then be launched on sequential ports, starting from port <b>45678</b>. This means that the first file-server to be launched will be available at <b>http://127.0.0.1:45678</b>.
+       * <b>Note</b>: this script will also kill any existing processes running on these ports, before attempting to attach. This was deemed to be acceptable since this range of ports is not reserved for any specific application.
 5. <b>launch_client.sh</b>
 
     This script launches a client application, which will connect to the directory and locking servers if they are available. Since the client requires user input, each client should be launched individually in a separate session.
