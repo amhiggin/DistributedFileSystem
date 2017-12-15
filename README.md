@@ -165,25 +165,60 @@ The benefit of the cache is the reduction in volume of traffic going over the ne
 Upon termination of the client, the contents of the cache are erased. The copies of the corresponding files in the local file-system however, are persisted.
 
 ## Examples of Operation
+In order to best explain the operation of the distributed file-system, a set of sequences of screenshots corresponding to different scenarios, are provided below with brief explanations.
 
-### Creating New file for writing
-![client_initialisation](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/initialising%20and%20writing%20a%20file%20-%20client.PNG)
+### Creating a New File Locally
+1. Creating a new file successfully
+![create_new_empty_file](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20create%20new%20empty%20file%20successfully%20including%20new%20directory.PNG)
 
+2. Incorrect attempt to create non-text file
+![incorrect_txt_file_creation](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20handling%20non-txt%20file%20entered%20during%20file%20creation.PNG)
+
+3. Incorrect attempt to re-create existing file
+![incorrect_creation_file_already_exists](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20attempt%20to%20create%20file%20that%20already%20exists.PNG)
+
+
+## Request Remote Read with No Fileservers Launched
+1. Client error message when no fileservers exist
+![client_no_fileservers_launched](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20no%20fileservers%20registered.PNG)
+
+2. Directory server error message when no fileservers exist
+![dir_server_no_fileservers_launched](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/directory%20server%20-%20no%20fileservers%20registered.PNG)
+
+### Attempt to Read Non-Existent Remote Copy
+1. Client application output
+
+![client_read_non_existent_remote_copy](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20trying%20to%20read%20non-existent%20remote%20copy.PNG)
+
+2. Directory server response to request
+![dir_server_non_existent_remote_copy](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/directory%20server%20-%20no%20remote%20copy%20found%20after%20read%20request%20received.PNG)
+
+### Create New Remote File Copy (First Write)
+1. Client input for writing to a new remote copy of file <i>Hello/hello.txt</i>
+![client_first_write_new_remote_copy](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20writing%20to%20NEW%20remote%20copy.PNG)
+
+2. Directory server output for creating new remote copy of file
 ![create_new_remote_copy_dir_server](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/creation%20of%20new%20remote%20copy%20of%20file%20-%20directory%20server.PNG)
 
+3. File server output for creating new remote copy of file
 ![create_new_remote_copy_file_server](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/creating%20new%20remote%20copy%20of%20file%20-%20fileserver.PNG)
 
-### Reading Cached Copy of File
-TODO
+### Reading Up-to-Date Cached Copy of File
+1. Client reading up-to-date cache copy of file <i>Hello/hello.txt</i>
+![client_cache_read_up_to_date](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20reading%20up%20to%20date%20cache%20copy.PNG)
 
 ## Writing to Existing Remote Copy
-![client_writing_to_remote_copy](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20writing%20to%20existing%20remote%20copy.PNG)
+1. Client output when writing to existing remote copy
+![client_writing_to_remote_copy](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20writing%20update%20to%20remote%20copy.PNG)
 
-![provide_remote_copy_mapping_dir_server](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/directory%20server%20-%20response%20to%20request%20to%20write%20through%20to%20remote%20copy.PNG)
+2. Directory server response to request for remote copy mapping
+![provide_remote_copy_mapping_dir_server](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/directory%20server%20-%20write-update%20remote%20copy.PNG)
 
+3. Locking server allowing lock of remote copy for writing
 ![lock_requested_remote_copy_locking_server](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/locking%20server%20-%20locking%20and%20unlocking%20a%20file.PNG)
 
-TODO writing to remote copy fileserver
+4. Fileserver performing update on remote copy
+![fileserver_update_remote_copy](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/file%20server%20-%20write%20update%20to%20remote%20copy.PNG)
 
 ## Dependencies
 * Python 2.7.9
