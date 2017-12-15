@@ -7,16 +7,16 @@ A distributed Network File System (NFS) implementation with:
 3.	Locking service
 4.	Client-side caching
 
-Implemented in Python 2.7 using the Flask-Restful framework. All servers are run on <i>localhost</i> (hostname <b>127.0.0.1</b>). 
+Implemented in Python 2.7 using the Flask-Restful framework. All servers are run on <i>localhost</i> (hostname <b>127.0.0.1</b>).
 
 
 ## Launch Instructions
 The application can be run on either Windows or Linux environments. A number of shell scripts are provided for running this file-system in a <b>Linux environment</b>. Each of these will need to be given <i>execute permissions</i>, which can be assigned using the shell command '<i>chmod +x <script_name></i>'. For ease, just <b>copy and paste the following into a terminal session</b> to give execute permissions to all scripts in the repository:
- 
+
 <i>chmod +x install_dependencies.sh ; chmod +x launch_locking_server.sh ; chmod +x launch_directory_server.sh ; chmod +x launch_client.sh ; chmod +x launch_file_servers.sh </i>
- 
+
 To launch the entire distributed file-system in the least time possible, the launch order 1-5 below should be followed.
- 
+
 1. <b>install_dependencies.sh</b>
 
     This script should be run first, since it will install all project dependencies specified in the <i>requirements.txt</i> file.
@@ -29,7 +29,7 @@ To launch the entire distributed file-system in the least time possible, the lau
 4. <b>launch_file_servers.sh</b>
 
     This script launches a number of file-servers on localhost, which will connect to the directory server if available. The number of file-servers should be specified by the user as <b>$1</b>. Each file-server will then be launched on sequential ports, starting from port <b>45678</b>. This means that the first file-server to be launched will be available at <b>http://127.0.0.1:45678</b>.
-       * <b>Note</b>: this script will also kill any existing processes running on these ports, before attempting to attach. This was deemed to be acceptable since this range of ports is not reserved for any specific application.
+        * <b>Note</b>: this script will also kill any existing processes running on these ports, before attempting to attach. This was deemed to be acceptable since this range of ports is not reserved for any specific application.
 5. <b>launch_client.sh</b>
 
     This script launches a client application, which will connect to the directory and locking servers if they are available. Since the client requires user input, each client should be launched individually in a separate session.
@@ -45,7 +45,7 @@ To launch the entire distributed file-system in the least time possible, the lau
 
 ## Additional Notes
 * Originally, I had implemented the fileserver communications with the client application using sockets. I was also starting to work on a locking server. However I realised after some time that the Restful approach was a lot simpler, abstracting away the low-level implementation details and allowing me to get on with the feature implementation.
-* The commit at which I scrapped working with sockets can be found [here](https://github.com/amhiggin/DistributedFileSystem/commit/104ee0e5f1b3785d61622c3673e9c9773e2a6969). 
+* The commit at which I scrapped working with sockets can be found [here](https://github.com/amhiggin/DistributedFileSystem/commit/104ee0e5f1b3785d61622c3673e9c9773e2a6969).
 
 # Documentation
 
@@ -64,11 +64,11 @@ Clients can:
 
 
 ### Client application
-This application, called <b><i>Client.py</i></b>, provides a simple console-based UI offering options to manipulate files. This includes reading, writing, opening and creating of text files. 
+This application, called <b><i>Client.py</i></b>, provides a simple console-based UI offering options to manipulate files. This includes reading, writing, opening and creating of text files.
 
 * In the background, the user's choices when interacting with the system are routed through the client library to the appropriate services (e.g. cache, locking server, directory server, file server), providing abstraction from the underlying technical implementation.
 * When a text file is created for the first time, the specified directory is automatically created if it doesn’t already exist. Error handling is included to prevent overwriting of existing file contents.
-* All files on the local filesystem are visible to every active client using the system, meaning that concurrent accesses to files can easily occur. However, each client implements its own cache, allowing them to keep their own most frequently accessed content close at hand.
+* All files on the local file-system are visible to every active client using the system, meaning that concurrent accesses to files can easily occur. However, each client implements its own cache, allowing them to keep their own most frequently accessed content close at hand.
 * Upon termination of the client, the contents of the cache are erased: however, no changes are made to the files in the local file-system.
 
 
@@ -84,7 +84,7 @@ Amongst other responsibilities, it:
 * Provides a registration mechanism for -
   * Client applications, at URL endpoint <b>http://127.0.0.1:5000/register_client</b>
   * File-servers, at URL endpoint <b>http://127.0.0.1:5000/register_fileserver</b>
-  
+
   including the assignment of unique ids to each;
 * Records connection details for clients and file-servers that have registered with it;
 * Load-balances connected file-servers, such that at any time the least-loaded server will be given any new loading;
@@ -106,7 +106,7 @@ Each server accepts <i>get()</i> and <i>post()</i> requests from clients. It can
   * 'file_id': file_id
   * 'file_contents': file_contents
 
-<b>Notes:</b> 
+<b>Notes:</b>
 * The fileserver does not hold any versioning information about the files that it stores: it is the directory server which handles this. Versioning is used as part of the caching mechanism.
 * The client is able to identify the values of 'file_id' and 'file_server_id' by consulting the directory server for the file mapping it requires.
 * The fileserver, upon startup, also erases any previous contents of a root directory under the same name, e.g. if a directory called 'Server0/' exists from a previous run of the application, when a new Server0 is launched it will erase the contents of this file.
@@ -129,7 +129,7 @@ The locking server also maintains a record of the clients that have registered w
 * Since any client who is granted a lock will have their client_id stored with the locking server's records for that file, we prevent a client who didn't lock the file originally, from releasing the lock on the file.
 
 There are a number of other conditions that can occur in the locking and unlocking of a file in the distributed file-system. Some of these scenarios are as follows:
-* A client wishing to write to a file must request the lock for that file. They will not be granted the lock until the file is no longer locked by another client. Until they are granted the lock, the requesting client essentially <b>polls</b> the locking server. 
+* A client wishing to write to a file must request the lock for that file. They will not be granted the lock until the file is no longer locked by another client. Until they are granted the lock, the requesting client essentially <b>polls</b> the locking server.
 * A client wishing to read a file, will not be able to read it until it is unlocked. However, no read operation requires the acquisition of a lock - the file simply should not be readable until it is no longer locked by another client.
 * To guard against infinite waiting for a lock to be released by a client, a safety mechanism in the form of a timeout (<b>60 seconds</b>) is used. After the timeout has elapsed, if the file is still locked, it will be assumed that the client who locked it has died and the lock is released by the server itself.
 
@@ -158,7 +158,7 @@ The benefit of the cache is the reduction in volume of traffic going over the ne
 
 1.	<b>Read</b>: The cache is checked for an entry corresponding to the file to be read.
   	* If there exists a corresponding entry, then the version is checked against that recorded with the directory server.
-  	* If the cache copy is of an outdated version of the file, then a request is made to the file-server on which the remote copy is stored to provide the most up-to-date copy of the file. 
+  	* If the cache copy is of an outdated version of the file, then a request is made to the file-server on which the remote copy is stored to provide the most up-to-date copy of the file.
   	* If the copy in the cache is up-to-date with the remote copy, the copy from the cache is used. This results in two fewer network accesses: one saving by not needing to request the file from the file-server, and another by the file-server not needing to service an extra request.
 2.	<b>Write</b>:	The cache is updated after a successful write to a remote file copy.
   	* When a client writes to a file, the cache will not be updated until the remote copy has been updated. If it did, the cache copy and remote copy could easily become out of sync if the remote write failed.
@@ -168,9 +168,9 @@ The benefit of the cache is the reduction in volume of traffic going over the ne
   	* Thanks to the implementation of the <b>locking service</b> for remote write operations, concurrent updates to a remote file are sequenced such that any cache update will be correct at the time that its corresponding remote-write update occurs.
   	* The updating of the version of the file on the directory server occurs during the write operation, before the updating of the cache. This ensures that any references that the cache makes to the remote copy's version, will be based on the latest update of record for that file on the directory server.
 3.	<b>Open</b>: since the file-system is implemented to replicate the NFS model, there are no calls across the network for the open operation, and the file as it exists in the cache is simply displayed in read-only mode.
-<b>Note on opening files:</b> in order to 'open' a file in read-only mode, the contents of the file are displayed in the console window.</i> Opening the file in the text editor (as is done with the <i>read</i> and <i>write</i> operations) would give an individual the option to edit the file when they should really just be able to view the contents - an undesirable behaviour that is resolved by this approach. 
+<b>Note on opening files:</b> in order to 'open' a file in read-only mode, the contents of the file are displayed in the console window.</i> Opening the file in the text editor (as is done with the <i>read</i> and <i>write</i> operations) would give an individual the option to edit the file when they should really just be able to view the contents - an undesirable behaviour that is resolved by this approach.
 
-<b>LRU Eviction Policy</b>: The Least-Recently Used cache eviction policy enforces a maximum number of cache entries at any particular time. This allows the cache to be indexed more quickly, and keeps the contents maximally relevant to the needs of the client it is associated with. 
+<b>LRU Eviction Policy</b>: The Least-Recently Used cache eviction policy enforces a maximum number of cache entries at any particular time. This allows the cache to be indexed more quickly, and keeps the contents maximally relevant to the needs of the client it is associated with.
 * In this implementation, <b>a maximum of 10 entries</b> can be stored in the cache at any given time. This empirically selected value could easily be increased or decreased depending on the requirements of this cache in practise - however, for this experimental design a small value is more than sufficient.
 * Once the cache is full, the client will not be able to add another entry until the least-recently used entry has been evicted. The least-recently used entry is determined by the timestamp of the entry, which corresponds to the last time at which the cache entry was updated.
 
@@ -183,10 +183,10 @@ In order to best explain the operation of the distributed file-system, some sequ
 1. Client Output: Launching and registering two clients (Client0, Client1)
 ![launch_two_clients](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%202%20clients%20running%20at%20same%20time.PNG)
 
-2. Fileserver Output: Launching and registering multiple fileservers
+2. Fileserver Output: Launching and registering multiple fileservers (FileServer0, FileServer1)
 ![launch_two_fileservers](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/file%20server%20-%20multiple%20fileservers%20launched.PNG)
 
-3. Directory Server Output: Launching and registering multiple clients and fileservers 
+3. Directory Server Output: Launching and registering multiple clients and fileservers
 ![registered_two_clients_two_fileservers](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/directory%20server%20-%20multiple%20fileservers%20AND%20multiple%20clients.PNG)
 
 4. Locking Server Output: Launching and registering multiple clients
@@ -280,6 +280,5 @@ In order to best explain the operation of the distributed file-system, some sequ
 
 ### Termination of Client
 1. Console output showing the termination of a client
-TODO!!!
 ![client_termination](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20termination%20of%20client.PNG)
 
