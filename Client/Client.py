@@ -25,7 +25,7 @@ def get_filename_from_user():
 
 # This method cleans up the cache when the client is terminating.
 def clean_up_after_client(cache):
-	print_to_console("Cleaning up after client{0}'s cache")
+	print_to_console("Cleaning up after client{0}'s cache".format(CLIENT_ID))
 	cache.clear_cache()
 
 # This is the client's main method.

@@ -119,7 +119,7 @@ def read_file(file_path, file_name, client_id, cache):
 
         else:
             # request the file from this file server
-            while not acquire_lock_on_file(file_id, client_id):
+            while is_file_locked(file_id, client_id):
                 pass
             response = requests.get(
                 file_api.create_url(server_address[0], server_address[1], ""), json={'file_id': file_id, 'file_server_id': server_id})
