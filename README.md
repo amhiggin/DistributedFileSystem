@@ -35,6 +35,18 @@ To launch the entire distributed file-system in the least time possible, the lau
     This script launches a client application, which will connect to the directory and locking servers if they are available. Since the client requires user input, each client should be launched individually in a separate session.
 
 
+## Dependencies
+* Python 2.7.9
+* flask
+* flask-restful
+* requests
+* werkzeug
+
+
+## Additional Notes
+* Originally, I had implemented the fileserver communications with the client application using sockets. I was also starting to work on a locking server. However I realised after some time that the Restful approach was a lot simpler, abstracting away the low-level implementation details and allowing me to get on with the feature implementation.
+* The commit at which I scrapped working with sockets can be found [here](https://github.com/amhiggin/DistributedFileSystem/commit/104ee0e5f1b3785d61622c3673e9c9773e2a6969). 
+
 # Documentation
 
 
@@ -271,13 +283,3 @@ In order to best explain the operation of the distributed file-system, some sequ
 TODO!!!
 ![client_termination](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20termination%20of%20client.PNG)
 
-## Dependencies
-* Python 2.7.9
-* flask
-* flask-restful
-* requests
-* werkzeug
-
-
-## Additional Notes
-* Originally, I had implemented the fileserver communications with the client application using sockets. I was also starting to work on a locking server. However I realised after some time that the Restful approach was a lot simpler, abstracting away the low-level implementation details and allowing me to get on with the feature implementation.
