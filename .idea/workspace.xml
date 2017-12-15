@@ -73,7 +73,7 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-509">
-              <caret line="188" column="86" lean-forward="true" selection-start-line="188" selection-start-column="86" selection-end-line="188" selection-end-column="86" />
+              <caret line="188" column="86" lean-forward="false" selection-start-line="188" selection-start-column="86" selection-end-line="188" selection-end-column="86" />
               <folding />
             </state>
           </provider>
@@ -799,7 +799,7 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-509">
-          <caret line="188" column="86" lean-forward="true" selection-start-line="188" selection-start-column="86" selection-end-line="188" selection-end-column="86" />
+          <caret line="188" column="86" lean-forward="false" selection-start-line="188" selection-start-column="86" selection-end-line="188" selection-end-column="86" />
           <folding />
         </state>
       </provider>
