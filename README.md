@@ -35,7 +35,7 @@ To launch the entire distributed file-system in the least time possible, the lau
     This script launches a client application, which will connect to the directory and locking servers if they are available. Since the client requires user input, each client should be launched individually in a separate session.
 
 
-
+# Documentation
 
 
 ## Distributed Transparent File Access
@@ -164,7 +164,7 @@ The benefit of the cache is the reduction in volume of traffic going over the ne
 
 Upon termination of the client, the contents of the cache are erased. The copies of the corresponding files in the local file-system however, are persisted.
 
-## Examples of Operation
+# Operation Examples
 In order to best explain the operation of the distributed file-system, some sequences of screenshots corresponding to different scenarios are provided below with brief explanations.
 
 ### Launch and Registration of Directory Server, Locking Server, Multiple Clients, Multiple Fileservers
@@ -249,9 +249,8 @@ In order to best explain the operation of the distributed file-system, some sequ
 1. Client2 places write-lock on file <i>Hello/hello.txt</i> and never releases it
 ![client2_never_releases_lock](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client2%20-%20never%20releases%20lock.PNG)
 
-2. Client0 requests write-lock on file <i>Hello/hello.txt</i>
-![client0_requests_already_locked_file]()
-TODO!!!!
+2. Client0 requests and obtains write-lock on file <i>Hello/hello.txt</i>
+![client0_requests_already_locked_file](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client0%20-%20obtains%20lock%20after%20timeout.PNG)
 
 3. Locking server releases lock on <i>Hello/hello.txt</i> after timeout elapses
 ![lock_timeout_release](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/locking%20server%20-%20timeout%20on%20lock.PNG)
@@ -270,7 +269,7 @@ TODO!!!!
 ### Termination of Client
 1. Console output showing the termination of a client
 TODO!!!
-![client_termination]()
+![client_termination](https://github.com/amhiggin/DistributedFileSystem/blob/master/Screenshots/client%20-%20termination%20of%20client.PNG)
 
 ## Dependencies
 * Python 2.7.9
