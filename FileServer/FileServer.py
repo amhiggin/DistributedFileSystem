@@ -102,30 +102,34 @@ api.add_resource(CreateNewRemoteCopy, '/create_new_remote_copy')
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 3:
-        if os.environ.get("WERKZEUG_RUN_MAIN") == 'true':
-            print_to_console("Hello, I'm a Fileserver! My address is {0}:{1}".format(sys.argv[1], sys.argv[2]))
-            # Send a request to the directory server to get our ID
-            url =  file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1],"register_fileserver")
-            print_to_console("Connecting to directory server...")
-            while True:
-                try:
-                    response = requests.post(url, json={'ip': sys.argv[1], 'port': sys.argv[2]})
-                    print_to_console("Connected.")
-                    break
-                except:
-                    # Probably stil waiting for the directory service to start up
-                    pass
-            SERVER_ID = response.json()['server_id']
-            print_to_console("Successfully registered as server {0}".format(SERVER_ID))
+    try:
+        if len(sys.argv) == 3:
+            if os.environ.get("WERKZEUG_RUN_MAIN") == 'true':
+                print_to_console("Hello, I'm a Fileserver! My address is {0}:{1}".format(sys.argv[1], sys.argv[2]))
+                # Send a request to the directory server to get our ID
+                url =  file_api.create_url(DIRECTORY_SERVER_ADDRESS[0], DIRECTORY_SERVER_ADDRESS[1],"register_fileserver")
+                print_to_console("Connecting to directory server...")
+                while True:
+                    try:
+                        response = requests.post(url, json={'ip': sys.argv[1], 'port': sys.argv[2]})
+                        print_to_console("Connected.")
+                        break
+                    except:
+                        # Probably stil waiting for the directory service to start up
+                        pass
+                SERVER_ID = response.json()['server_id']
+                print_to_console("Successfully registered as server {0}".format(SERVER_ID))
 
-            # Now create our own root directory, deleting any old existing one of the same name.
-            ROOT_DIR = ROOT_DIR + str(SERVER_ID)
-            clean_up_old_root_dir_if_exists(ROOT_DIR)
-            file_api.create_root_dir_if_not_exists(ROOT_DIR)
-            print_to_console("Created new {0} root directory".format(ROOT_DIR))
+                # Now create our own root directory, deleting any old existing one of the same name.
+                ROOT_DIR = ROOT_DIR + str(SERVER_ID)
+                clean_up_old_root_dir_if_exists(ROOT_DIR)
+                file_api.create_root_dir_if_not_exists(ROOT_DIR)
+                print_to_console("Created new {0} root directory".format(ROOT_DIR))
 
-        app.run(debug=True, host=sys.argv[1], port=int(sys.argv[2]))
-    else:
-        print_to_console("IP address and port weren't entered correctly for the file server: cannot launch.")
-    exit(0)
+            app.run(debug=True, host=sys.argv[1], port=int(sys.argv[2]))
+        else:
+            print_to_console("IP address and port weren't entered correctly for the file server: cannot launch.")
+        exit(0)
+    except Exception as e:
+        print_to_console("An error occurred when trying to launch using params {0}:{1}. Error message: {2}".format(sys.argv[1], sys.argv[2], e.message))
+        exit(0)
